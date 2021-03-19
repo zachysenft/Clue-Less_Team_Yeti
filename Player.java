@@ -6,7 +6,7 @@
 
 
 
-public class Player extends Locations {
+public class Player {
 	
 	//Creating attributes
 	int playerID;
