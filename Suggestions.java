@@ -15,31 +15,32 @@ public class Suggestions
     this.isAccusation = isAccusation;
   }
   
-  public int getSuggestionID
+  public int getSuggestionID()
   { return suggestionID; }
   
   public void setSuggestionID(int suggestionID)
-  { this.suggestionID = ssuggestionID; }
+  { this.suggestionID = suggestionID; }
   
-  public String getPlayer
+  public String getPlayer()
+    
   { return player; }
 
   public void setPlayer(String player)
   { this.player = player; }
   
-  public String getRoom
+  public String getRoom()
   { return room; }
 
   public void setRoom(String room)
   { this.room = room; }
   
-  public String getWeapon
+  public String getWeapon()
   { return weapon; }
   
   public void setWeapon(String weapon)
   { this.weapon = weapon; }
   
-  public boolean getIsAccusation
+  public boolean getIsAccusation()
   { return isAccusation; }
   
   public void setIsAccusation(boolean isAccusation)
@@ -52,6 +53,6 @@ public class Suggestions
   
   public void toPrint()
   {
-    System.out.print("Suggestion " + suggestionID + ": " + player + " committed the crime in " + room + " using a " + weapon + ".";);
+    System.out.print("Suggestion " + suggestionID + ": " + player + " committed the crime in " + room + " using a " + weapon + ".");
   }
 }
