@@ -1,6 +1,6 @@
-import clueLess.Locations.LocationType;
-import yeti_client_server.YetiClient;
-import yeti_client.PlayersClientService;
+//import clueLess.Locations.LocationType;
+//import yeti_client_server.YetiClient;
+//import yeti_client.PlayersClientService;
 
 /*
  * Zach update 4/4/21
@@ -14,7 +14,7 @@ public class Player {
 	boolean activeFlag;
 	boolean LostGameFlag;
 	int orderNum;
-	private Location location;
+	private Locations location;
 	private Card playerCard[];
 	
 	
@@ -44,11 +44,11 @@ public class Player {
 		return this.orderNum;
 	}
 	
-	public void setLocation(Location location) {
+	public void setLocation(Locations location) {
 		this.location = location;
 	}
 	
-	public Location getLocation() {
+	public Locations getLocation() {
 		return this.location;
 	}
 	

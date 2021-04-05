@@ -1,4 +1,4 @@
-package clueLess;
+
 
 public class Locations {
 	
