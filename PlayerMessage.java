@@ -19,23 +19,31 @@ public class PlayerMessage extends Player {
 		//suggestionID is inherited from PlayerMessage - use messageID because its essentially the same purpose
 		Player character;
 		//location is inherited from Player
+		Location location; //you can make an accusation from anywhere, in this case you would need to pass through a location
 		String weapon;
 		//Player is inherited from Player...?
+		//^ I agree we may not need the player: Player property
 		boolean AccusationFlag;
-		
 		//suggestions need to be stored and check the other players cards...
+		
+		public SuggestionOrAccusation(Player character, Location location, String weapon, boolean AccusationFlag) { //added this constructor
+			this.character = character;
+			this.location = location;
+			this.weapon = weapon;
+			this.AccusationFlag = AccusationFlag
+		}
 		public void print() {
 		
 			if(AccusationFlag == true) {
 				System.out.println(playerName + " has made an accusation!" + "\nID: " + messageID);
 				System.out.println("Weapon: " + getWeapon());
-				System.out.println("Location: " + super.getLocation());
+				System.out.println("Location: " + getLocation());
 				System.out.println("Accused : " + getCharacter());
 			}
 			else {
 				System.out.println(playerName + " has made a suggestion!" + "\nID: " + messageID);
 				System.out.println("Weapon: " + getWeapon());
-				System.out.println("Location: " + super.getLocation());
+				System.out.println("Location: " + getLocation());
 				System.out.println("Accused : " + getCharacter());
 			}
 		}
@@ -48,13 +56,16 @@ public class PlayerMessage extends Player {
 			return this.character;
 		}
 		
-		public void setWeapon(String weapon) {
-			this.weapon = weapon;
-		}
-		
 		public String getWeapon() {
 			return this.weapon;
 		}
+
+		public Location getLocation() {
+			return location;
+		}
+
+		
+		
 		
 		
 	}
