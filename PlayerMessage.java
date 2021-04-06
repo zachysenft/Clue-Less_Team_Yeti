@@ -59,5 +59,38 @@ public class PlayerMessage extends Player {
 		
 	}
 	
+	//Matt Louis updates for the SuggestionResponse and MoveMsg sub classes:
+	
+	class SuggestionResponse extends PlayerMessage { //class for allowing players to respond to suggestions
+		private Card card;
+		public SuggestionResponse(Card card) {
+			setCard(card);
+		}
+		public Card getCard() {
+			return card;
+		}
+		public void setCard(Card card) {
+			this.card = card;
+		}
+		
+		
+	}
+	class MoveMsg extends PlayerMessage{ //class for telling players where they have moved to
+		private Location location;
+		
+		public MoveMsg(Location location) {
+			setLocation(location);
+		}
+		
+		public Location getLocation() {
+			return location;
+		}
+
+		public void setLocation(Location location) {
+			this.location = location;
+		}
+		
+		
+	}
 	
 }
