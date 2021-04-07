@@ -1,21 +1,26 @@
 package clueLess;
+import java.util.*;
 
-public class Room {
+public class Room extends Location {
 
-	private int roomId;
-	private String roomName;
-	
-	public int getRoomId() {
-		return roomId;
-	}
-	public void setRoomId(int roomId) {
-		this.roomId = roomId;
-	}
-	public String getRoomName() {
-		return roomName;
-	}
-	public void setRoomName(String roomName) {
-		this.roomName = roomName;
-	}
-	
+ private boolean available;
+ private ArrayList<Player> player;
+ 
+ public Room(int id, String name, boolean avail) {
+   super(id, name, LocationType.ROOM);
+   this.available = avail;
+   this.player = new ArrayList<Player>();
+ }
+ 
+ public Room(int id, String name) {
+   super(id, name, LocationType.ROOM);
+   available = true;
+   this.player = new ArrayList<Player>();
+ }
+ 
+ public boolean isAvailable() {
+   return available;
+ }
+ 
 }
+
