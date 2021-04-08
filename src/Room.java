@@ -1,4 +1,4 @@
-package clueLess;
+
 import java.util.*;
 
 public class Room extends Location {
