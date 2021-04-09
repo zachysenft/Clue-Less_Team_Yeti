@@ -1,6 +1,5 @@
-
 /*
- * Zach update 4/8/21
+ * Matt Louis update 4/8/21 9pm
  */
 
 public class Player {
@@ -104,6 +103,22 @@ public class Player {
 	//include an if in driver method to retry if returned is 0.
 	//Need to add in conditionals of hallways being occupied
 	
+	
+
+	//We can use the isOccupied() method I added to the location class to check if someone can move there or not
+	public boolean updateLocation(Location curLoc, Location destLoc) {
+		if (destLoc.isOccupied()) {
+			System.out.println("Move failed, location is occupied");
+			return false;
+		} 
+		if(move(curLoc.locationID,destLoc.locationID)!=-1) { //checks if valid destination location was passed through
+			System.out.println("Player location updated to: "+ destLoc);
+			destLoc.addPlayer(this); //updates player array list
+			curLoc.removePlayer(this);
+			return true;
+		}
+		return false;
+	}
 	public int move(int curLoc, int destLoc) {
 		
 		if(curLoc == 1) {
@@ -111,7 +126,7 @@ public class Player {
 			if(destLoc == 12 || destLoc == 14) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 2) {
@@ -119,7 +134,7 @@ public class Player {
 			if(destLoc == 12 || destLoc == 25 || destLoc == 23) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 3) {
@@ -127,7 +142,7 @@ public class Player {
 			if(destLoc == 23 || destLoc == 36) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 4) {
@@ -135,7 +150,7 @@ public class Player {
 			if(destLoc == 14 || destLoc == 45 || destLoc == 47) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 5) {
@@ -143,7 +158,7 @@ public class Player {
 			if(destLoc == 45 || destLoc == 58 || destLoc == 56 || destLoc == 25) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 6) {
@@ -151,7 +166,7 @@ public class Player {
 			if(destLoc == 36 || destLoc == 56 || destLoc == 69) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 7) {
@@ -159,7 +174,7 @@ public class Player {
 			if(destLoc == 47 || destLoc == 78) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 8) {
@@ -167,7 +182,7 @@ public class Player {
 			if(destLoc == 78 || destLoc == 58 || destLoc == 89) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		if(curLoc == 9) {
@@ -175,17 +190,96 @@ public class Player {
 			if(destLoc == 69 || destLoc == 89) {
 				return destLoc;
 			}
-			return 0;
+			return -1;
 		}
 		
 		//All rooms done, need to do all twelve hallways now.
 		//Need to add in if a hallway is preoccupied by checking other player's locationID's
 		
-		
-		
-		
-		
-		
+		if(curLoc == 14) {
+			//In hallway 14, need destLoc 1 or 4
+			if(destLoc == 1 || destLoc == 4) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 47) {
+			//In hallway 47, need destLoc 4 or 7
+			if(destLoc == 4 || destLoc == 7) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 12) {
+			//In hallway 12, need destLoc 1 or 2
+			if(destLoc == 1 || destLoc == 2) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 45) {
+			//In hallway 45, need destLoc 4 or 5
+			if(destLoc == 4 || destLoc == 5) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 78) {
+			//In hallway 45, need destLoc 4 or 5
+			if(destLoc == 7 || destLoc == 8) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 25) {
+			//In hallway 25, need destLoc 2 or 5
+			if(destLoc == 2 || destLoc == 5) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 58) {
+			//In hallway 58, need destLoc 5 or 8
+			if(destLoc == 5 || destLoc == 8) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 23) {
+			//In hallway 23, need destLoc 2 or 3
+			if(destLoc == 2 || destLoc == 3) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 56) {
+			//In hallway 23, need destLoc 2 or 3
+			if(destLoc == 5 || destLoc == 6) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 89) {
+			//In hallway 89, need destLoc 8 or 9
+			if(destLoc == 8 || destLoc == 9) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 36) {
+			//In hallway 36, need destLoc 3 or 6
+			if(destLoc == 3 || destLoc == 6) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(curLoc == 69) {
+			//In hallway 89, need destLoc 8 or 9
+			if(destLoc == 6 || destLoc == 9) {
+				return destLoc;
+			}
+			return -1;
+		}
 		
 		
 		return curLoc;
