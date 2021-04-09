@@ -36,7 +36,7 @@ public class Location {
   public void removePlayer(Player remPlayer) {
 	  playerList.remove(remPlayer);
   }
-  public boolean isOccupied() { //Having trouble implementing this method
+  public boolean isOccupied() { //Having trouble implementing this method, not sure if i'm checking the location type correctly
 	  if (this.locationType.equals("HALLWAY") && playerList.size()>0){ //if the location is hallway and there's a player
 		  return true; //it's occupied
 	  } else { 
