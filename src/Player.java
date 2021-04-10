@@ -123,7 +123,7 @@ public class Player {
 		return false;
 	}
 	
-		public int [] validDestLocations(Location curLoc, Location destLoc) { //added to show the player the potential locations they can move to
+	public int [] validDestLocations(Location curLoc, Location destLoc) { //added to show the player the potential locations they can move to
 		int [] validLocs = new int[4]; //stores up to 4 (in case you are in room 5)
 		int validIndex = 0; //tracks adding to validIndex
 		int [] HALLWAYS = {14,47,12,45,78,25,58,23,56,89,36,69}; //hardcoded hallway/room ids
