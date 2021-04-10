@@ -11,6 +11,7 @@ public class Player {
 	boolean LostGameFlag;
 	int orderNum;
 	private Location location;
+	private int locationID;
 	private Card playerCard[];
 	int index;
 
@@ -109,16 +110,20 @@ public class Player {
 	public boolean updateLocation(Location curLoc, Location destLoc) {
 		if (destLoc.isOccupied()) {
 			System.out.println("Move failed, location is occupied");
+			location = curLoc;
 			return false;
 		} 
 		if(move(curLoc.locationID,destLoc.locationID)!=-1) { //checks if valid destination location was passed through
 			System.out.println("Player location updated to: "+ destLoc);
 			destLoc.addPlayer(this); //updates player array list
 			curLoc.removePlayer(this);
+			location = destLoc;		//added this not sure if needed but i don't see where it's updated in player attribute
 			return true;
 		}
 		return false;
 	}
+	
+	
 	public int move(int curLoc, int destLoc) {
 		
 		if(curLoc == 1) {
