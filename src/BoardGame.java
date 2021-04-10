@@ -16,6 +16,11 @@ public class BoardGame{
     ArrayList<Player> activePlayers = new ArrayList<Player>();
     int gameID = 0;
     Dictionary<String, String> winCondition = new Hashtable<String, String>();
+    const String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
+    const int [] startingHallways = {47, 78, 69, 36, 23, 12};
+    const String [] rooms = {"Study", "Library", "Conservatory", "Hall", "Billiard Room", "Ballroom", "Lounge", "Dining Room", "Kitchen"};
+    const String [] weapons = {"Revolver", "Dagger", "Lead Pipe", "Rope", "Candlestick", "Wrench"};
+
     
     public void newGame() {
         
@@ -23,13 +28,33 @@ public class BoardGame{
         System.out.println("How many players are there?: ");
         
         int numPlayers = input.nextInt();
+
         
         for (int i = 0; i < numPlayers; i++){
             
             Player x = new Player();
             this.addPlayer(x);
+            x.setPlayerActive();
+            x.setPlayerID(i);
+            x.setPlayerName(players[i]);
+            x.setOrderNum(i);
+            x.setLocation(new Hallway(startingHallways[i], "Hallway" + startingHallways[i], true));
             
         }
+        
+        //generate win condition
+        ArrayList<Card> cards = generateWinCondition();
+        storeWinCondinDB();
+        //deal cards to players
+        dealCards(cards);
+        
+        //instantiate rooms and rest of hallways - zach
+        //instantiate inactive players - Ashley
+        //-Dawit and Matt
+        //while game is not won - make accusation (y/n), option to move (y/n), option to make sugg (y/n)
+        //check if suggestion is disprovable, choose card to show, end turn
+        //PowerPoint - abby
+        
         
         
     }
@@ -71,11 +96,9 @@ public class BoardGame{
         
     }
     
-    public String generateWinCondition(){
-        
-        String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
-        String [] rooms = {"Study", "Hall", "Lounge", "Dining Room", "Billiard Room", "Library", "Conservatory", "Ballroom", "Kitchen"};
-        String [] weapons = {"Revolver", "Dagger", "Lead Pipe", "Rope", "Candlestick", "Wrench"};
+    
+    public ArrayList<Card> generateWinCondition(){
+
         
         int rndPlayer = new Random().nextInt(players.length);
         int rndRoom = new Random().nextInt(rooms.length);
@@ -84,9 +107,29 @@ public class BoardGame{
         winCondition.put("Player", players[rndPlayer]);
         winCondition.put("Room", rooms[rndRoom]);
         winCondition.put("Weapon", weapons[rndWeapon]);
-
-        return players[rndPlayer] +" " + rooms[rndRoom] + " " + weapons[rndWeapon];
         
+        Card[] array_cards = createCards();
+        ArrayList<Card> cards = new ArrayList<Card>(array_cards);
+        cards.remove(rndPlayer);
+        cards.remove(rndRoom + 12);
+        cards.remove(rndWeapon + 6);
+
+        return cards;
+        
+    }
+    
+    public void dealCards(ArrayList<Card> cards) {
+   	 
+   	 
+   	 for(int i = 0; i < cards.size(); i++) {
+   		 
+   		 int x = i % activePlayers.size();
+   		 activePlayers(x).playerCards.add(cards(i)));
+   		 
+   		 
+   	 }
+   	 
+   	 
     }
     
     public void storeWinCondinDB(){
@@ -120,17 +163,6 @@ public class BoardGame{
 		}catch(Exception e){ System.out.println(e);}  
 		}  
         
-    
-   /* public boolean validSuggestion(){
-        
-        
-    }
-    
-    public boolean validAccusation(){
-        
-        
-        
-    }*/
     
     public boolean isPlayerActive(Player player){
         
