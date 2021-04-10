@@ -123,6 +123,45 @@ public class Player {
 		return false;
 	}
 	
+		public int [] validDestLocations(Location curLoc, Location destLoc) { //added to show the player the potential locations they can move to
+		int [] validLocs = new int[4]; //stores up to 4 (in case you are in room 5)
+		int validIndex = 0; //tracks adding to validIndex
+		int [] HALLWAYS = {14,47,12,45,78,25,58,23,56,89,36,69}; //hardcoded hallway/room ids
+		int [] ROOMS = {1,2,3,4,5,6,7,8,9};
+		String curLocIDStr = String.valueOf(curLoc.getLocationID()); 
+		if (curLoc.getLocationType().equals("ROOM")){ //if you are in a room, track potential hallways to move to
+			for (int i=0; i<HALLWAYS.length;i++) {
+				String tempHallway = String.valueOf(HALLWAYS[i]);
+				if (tempHallway.contains(curLocIDStr)){ //if the hallway is next to the room, add to array
+					validLocs[validIndex] = HALLWAYS[i]; 
+					validIndex++;
+				}
+			}
+			//need to add secret passage rooms as options
+		if (curLoc.getLocationID()==3) {
+			validLocs[validIndex] = 7;
+		} else if (curLoc.getLocationID()==7) {
+			validLocs[validIndex] = 3;
+		} else if (curLoc.getLocationID()==9) {
+			validLocs[validIndex] = 1;
+		} else if (curLoc.getLocationID()==1) {
+			validLocs[validIndex] = 9;
+		}
+		
+		//hallways
+		if (curLoc.getLocationType().equals("HALLWAYS")) {
+			for (int j=0; j<ROOMS.length;j++) {
+				String tempRoom = String.valueOf(ROOMS[j]);
+				if (tempRoom.contains(curLocIDStr)) { //if room is next to hallway, add to array
+					validLocs[validIndex] = ROOMS[j];
+					validIndex++;
+				}
+			}
+		}
+		}
+		return validLocs;
+	}
+	
 	
 	public int move(int curLoc, int destLoc) {
 		
