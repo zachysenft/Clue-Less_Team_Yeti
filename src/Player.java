@@ -59,9 +59,9 @@ public class Player {
 	}
 
 	public Card chooseCardToShow(String cardName) { //made this return a Card so it can get passed through
-		for (int i = 0; i<this.playerCard.length;i++) {
-			if (this.playerCard[i].getName().equalsIgnoreCase(cardName)) {
-				return this.playerCard[i];
+		for (int i = 0; i<this.playerCards.size();i++) {
+			if (this.playerCards.get(i).getName().equalsIgnoreCase(cardName)) {
+				return this.playerCards.get(i);
 			} 
 		
 	}
@@ -82,9 +82,9 @@ public class Player {
 	
 	public boolean canAnswerSuggestion(PlayerMessage.SuggestionOrAccusation sugg) {
 		
-		for(int i = 0; i < playerCard.length; i++) {
+		for(int i = 0; i < playerCards.size(); i++) {
 			
-			if(sugg.character == playerCard[i].name || sugg.weapon == playerCard[i].name || sugg.loc == playerCard[i].name) {
+			if(sugg.character == playerCards.get(i).getName() || sugg.weapon == playerCards.get(i).getName() || sugg.loc == playerCards.get(i).getName()) {
 				index = i;
 				return true;
 			}
@@ -97,7 +97,7 @@ public class Player {
 	
 	public Card chooseCardToShow(int index) {
 		
-		return playerCard[index];
+		return playerCards.get(index);
 		
 	}
 
@@ -106,37 +106,74 @@ public class Player {
 	//include an if in driver method to retry if returned is 0.
 	//Need to add in conditionals of hallways being occupied
 	
-	
+	//going to use this method in target increment
+		public int [] validDestLocations(Location curLoc, Location destLoc) { //added to show the player the potential locations they can move to
+			int [] validLocs = new int[4]; //stores up to 4 (in case you are in room 5)
+			int validIndex = 0; //tracks adding to validIndex
+			int [] HALLWAYS = {14,47,12,45,78,25,58,23,56,89,36,69}; //hardcoded hallway/room ids
+			int [] ROOMS = {1,2,3,4,5,6,7,8,9};
+			String curLocIDStr = String.valueOf(curLoc.getLocationID()); 
+			if (curLoc.getLocationType().equals("ROOM")){ //if you are in a room, track potential hallways to move to
+				for (int i=0; i<HALLWAYS.length;i++) {
+					String tempHallway = String.valueOf(HALLWAYS[i]);
+					if (tempHallway.contains(curLocIDStr)){ //if the hallway is next to the room, add to array
+						validLocs[validIndex] = HALLWAYS[i]; 
+						validIndex++;
+					}
+				}
+				//need to add secret passage rooms as options
+			if (curLoc.getLocationID()==3) {
+				validLocs[validIndex] = 7;
+			} else if (curLoc.getLocationID()==7) {
+				validLocs[validIndex] = 3;
+			} else if (curLoc.getLocationID()==9) {
+				validLocs[validIndex] = 1;
+			} else if (curLoc.getLocationID()==1) {
+				validLocs[validIndex] = 9;
+			}
+			
+			//hallways
+			if (curLoc.getLocationType().equals("HALLWAYS")) {
+				for (int j=0; j<ROOMS.length;j++) {
+					String tempRoom = String.valueOf(ROOMS[j]);
+					if (tempRoom.contains(curLocIDStr)) { //if room is next to hallway, add to array
+						validLocs[validIndex] = ROOMS[j];
+						validIndex++;
+					}
+				}
+			}
+			}
+			return validLocs;
+		}
 
 	//We can use the isOccupied() method I added to the location class to check if someone can move there or not
-	public boolean updateLocation(Location curLoc, Location destLoc) {
+	public boolean updateLocation(Location destLoc) {
 		if (destLoc.isOccupied()) {
 			System.out.println("Move failed, location is occupied");
-			location = curLoc;
 			return false;
 		} 
-		if(move(curLoc.locationID,destLoc.locationID)!=-1) { //checks if valid destination location was passed through
+		if(move(destLoc.locationID)!=-1) { //checks if valid destination location was passed through
 			System.out.println("Player location updated to: "+ destLoc);
 			destLoc.addPlayer(this); //updates player array list
-			curLoc.removePlayer(this);
-			location = destLoc;		//added this not sure if needed but i don't see where it's updated in player attribute
+			this.location.removePlayer(this);
+			this.location = destLoc;		//added this not sure if needed but i don't see where it's updated in player attribute
 			return true;
 		}
 		return false;
 	}
 	
 	
-	public int move(int curLoc, int destLoc) {
+	public int move(int destLoc) {
 		
-		if(curLoc == 1) {
-			//In room 1, need destLoc to be 12 or 14 hallway...
-			if(destLoc == 12 || destLoc == 14) {
+		if(this.location.getLocationID() == 1) {
+			//In room 1, need destLoc to be 12 or 14 hallway or 9 (secret pasasge)
+			if(destLoc == 12 || destLoc == 14 || destLoc == 9) {
 				return destLoc;
 			}
 			return -1;
 		}
 		
-		if(curLoc == 2) {
+		if(this.location.getLocationID() == 2) {
 			//In room 2, need destLoc to be 12, 25, or 23 hallway
 			if(destLoc == 12 || destLoc == 25 || destLoc == 23) {
 				return destLoc;
@@ -144,15 +181,15 @@ public class Player {
 			return -1;
 		}
 		
-		if(curLoc == 3) {
-			//In room 3, need destLoc to be 23 or 36
-			if(destLoc == 23 || destLoc == 36) {
+		if(this.location.getLocationID() == 3) {
+			//In room 3, need destLoc to be 23 or 36, or 7 (secret passage)
+			if(destLoc == 23 || destLoc == 36 || destLoc == 7 ) {
 				return destLoc;
 			}
 			return -1;
 		}
 		
-		if(curLoc == 4) {
+		if(this.location.getLocationID() == 4) {
 			//In room 4, need destLoc 14, 47, 45
 			if(destLoc == 14 || destLoc == 45 || destLoc == 47) {
 				return destLoc;
@@ -160,7 +197,7 @@ public class Player {
 			return -1;
 		}
 		
-		if(curLoc == 5) {
+		if(this.location.getLocationID() == 5) {
 			//In room 5, need destLoc 45, 58, 56, 25
 			if(destLoc == 45 || destLoc == 58 || destLoc == 56 || destLoc == 25) {
 				return destLoc;
@@ -168,7 +205,7 @@ public class Player {
 			return -1;
 		}
 		
-		if(curLoc == 6) {
+		if(this.location.getLocationID() == 6) {
 			//In room 6, need destLoc 36, 56, 69
 			if(destLoc == 36 || destLoc == 56 || destLoc == 69) {
 				return destLoc;
@@ -176,15 +213,15 @@ public class Player {
 			return -1;
 		}
 		
-		if(curLoc == 7) {
-			//In room 7, need destLoc 47, 78
-			if(destLoc == 47 || destLoc == 78) {
+		if(this.location.getLocationID() == 7) {
+			//In room 7, need destLoc 47, 78 or 3 (secret passage)
+			if(destLoc == 47 || destLoc == 78 || destLoc == 3) {
 				return destLoc;
 			}
 			return -1;
 		}
 		
-		if(curLoc == 8) {
+		if(this.location.getLocationID() == 8) {
 			//In room 8, need destLoc 78, 58, 89
 			if(destLoc == 78 || destLoc == 58 || destLoc == 89) {
 				return destLoc;
@@ -192,9 +229,9 @@ public class Player {
 			return -1;
 		}
 		
-		if(curLoc == 9) {
+		if(this.location.getLocationID() == 9) {
 			//In room 9, need destLoc 69 or 89
-			if(destLoc == 69 || destLoc == 89) {
+			if(destLoc == 69 || destLoc == 89 || destLoc == 1) {
 				return destLoc;
 			}
 			return -1;
@@ -203,84 +240,84 @@ public class Player {
 		//All rooms done, need to do all twelve hallways now.
 		//Need to add in if a hallway is preoccupied by checking other player's locationID's
 		
-		if(curLoc == 14) {
+		if(this.location.getLocationID() == 14) {
 			//In hallway 14, need destLoc 1 or 4
 			if(destLoc == 1 || destLoc == 4) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 47) {
+		if(this.location.getLocationID() == 47) {
 			//In hallway 47, need destLoc 4 or 7
 			if(destLoc == 4 || destLoc == 7) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 12) {
+		if(this.location.getLocationID() == 12) {
 			//In hallway 12, need destLoc 1 or 2
 			if(destLoc == 1 || destLoc == 2) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 45) {
+		if(this.location.getLocationID() == 45) {
 			//In hallway 45, need destLoc 4 or 5
 			if(destLoc == 4 || destLoc == 5) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 78) {
+		if(this.location.getLocationID() == 78) {
 			//In hallway 45, need destLoc 4 or 5
 			if(destLoc == 7 || destLoc == 8) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 25) {
+		if(this.location.getLocationID() == 25) {
 			//In hallway 25, need destLoc 2 or 5
 			if(destLoc == 2 || destLoc == 5) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 58) {
+		if(this.location.getLocationID() == 58) {
 			//In hallway 58, need destLoc 5 or 8
 			if(destLoc == 5 || destLoc == 8) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 23) {
+		if(this.location.getLocationID() == 23) {
 			//In hallway 23, need destLoc 2 or 3
 			if(destLoc == 2 || destLoc == 3) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 56) {
+		if(this.location.getLocationID() == 56) {
 			//In hallway 23, need destLoc 2 or 3
 			if(destLoc == 5 || destLoc == 6) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 89) {
+		if(this.location.getLocationID() == 89) {
 			//In hallway 89, need destLoc 8 or 9
 			if(destLoc == 8 || destLoc == 9) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 36) {
+		if(this.location.getLocationID() == 36) {
 			//In hallway 36, need destLoc 3 or 6
 			if(destLoc == 3 || destLoc == 6) {
 				return destLoc;
 			}
 			return -1;
 		}
-		if(curLoc == 69) {
+		if(this.location.getLocationID() == 69) {
 			//In hallway 89, need destLoc 8 or 9
 			if(destLoc == 6 || destLoc == 9) {
 				return destLoc;
@@ -289,7 +326,7 @@ public class Player {
 		}
 		
 		
-		return curLoc;
+		return -1;
 		
 	}
 
