@@ -100,6 +100,9 @@ public class Player {
 		return playerCards.get(index);
 		
 	}
+	public void addCard(Card card) {
+		this.playerCards.add(card);
+	}
 
 	//Matt... I developed a schematic of numbering for locations that will work for this algo
 	//Returns where the player location should update to, then another method will update it.
