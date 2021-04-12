@@ -67,6 +67,13 @@ public class BoardGame{
         Hallway Hallway56 = new Hallway(56, "Hallway 56");
         Hallway Hallway58 = new Hallway(58, "Hallway 58");
         Hallway Hallway89 = new Hallway(89, "Hallway 89");
+        // going to add the rest here just so they have names....
+        Hallway Hallway47 = new Hallway(47, "Hallway 47");
+        Hallway Hallway12 = new Hallway(12, "Hallway 12");
+        Hallway Hallway78 = new Hallway(47, "Hallway 78");
+        Hallway Hallway23 = new Hallway(23, "Hallway 23");
+        Hallway Hallway36 = new Hallway(36, "Hallway 36");
+        Hallway Hallway69 = new Hallway(69, "Hallway 69");
         if(numPlayers < 6) {
       	  int x = numPlayers; //4 players means last 2 hallways in array have not been instantiated
       	  
@@ -135,21 +142,73 @@ public class BoardGame{
         	if (this.activePlayers.get(currPlayerIndex).getLostGameFlag() == true) {
         		//do nothing/exit while loop iteration
         	} else { //if player hasn't lost the game
-        		System.out.println("You are currently in "); // NEED TO UPDATE THIS ONCE ALL ROOMS AND HALLWAYS ARE INSTANTIATED
+        		System.out.println("You are currently in "); 
         		System.out.println("Would you like to move somewhere? (yes/no)");
         		String moveAns = input.next();
-        		if (moveAns.equalsIgnoreCase("yes")) {
+        		if (moveAns.equalsIgnoreCase("yes")) { //if they want to move somewhere
         			System.out.println("Where would you like to move?");
         			String moveLoc = input.next(); // will use name for this... gonna be a little weird with hallways
+        			Location destLoc = null;
+        			if (moveLoc.startsWith("Hallway")) { //if they want to move to a hallway
+        				if (moveLoc.endsWith("14")) {
+        					destLoc = Hallway14;
+        				} else if (moveLoc.endsWith("47")) {
+        					destLoc = Hallway47;
+        				} else if (moveLoc.endsWith("12")) {
+        					destLoc = Hallway12;
+        				} else if (moveLoc.endsWith("45")) {
+        					destLoc = Hallway45;
+        				} else if (moveLoc.endsWith("78")) {
+        					destLoc = Hallway78;
+        				} else if (moveLoc.endsWith("25")) {
+        					destLoc = Hallway25;
+        				} else if (moveLoc.endsWith("58")) {
+        					destLoc = Hallway58;
+        				} else if (moveLoc.endsWith("23")) {
+        					destLoc = Hallway23;
+        				} else if (moveLoc.endsWith("56")) {
+        					destLoc = Hallway56;
+        				} else if (moveLoc.endsWith("89")) {
+        					destLoc = Hallway89;
+        				} else if (moveLoc.endsWith("36")) {
+        					destLoc = Hallway36;
+        				} else if (moveLoc.endsWith("69")) {
+        					destLoc = Hallway69;
+        				}
+  
+        				
+        				
+        			} else { //they move to a room
+        				if (moveLoc.equalsIgnoreCase("Study")) {
+        					destLoc = room_list.get(0);
+        			} 	else if (moveLoc.equalsIgnoreCase("Library")) {
+        					destLoc = room_list.get(1);
+        			}	else if (moveLoc.equalsIgnoreCase("Conservatory")) {
+							destLoc = room_list.get(2);
+        			} 	else if (moveLoc.equalsIgnoreCase("Hall")) {
+							destLoc = room_list.get(3);
+        			} 	else if (moveLoc.equalsIgnoreCase("Billiard Room")) {
+							destLoc = room_list.get(4);
+        			} 	else if (moveLoc.equalsIgnoreCase("Ball Room")) {
+							destLoc = room_list.get(5);
+        			} 	else if (moveLoc.equalsIgnoreCase("Lounge")) {
+							destLoc = room_list.get(6);
+        			} 	else if (moveLoc.equalsIgnoreCase("Dining Room")) {
+							destLoc = room_list.get(7);
+        			} 	else if (moveLoc.equalsIgnoreCase("Kitchen")) {
+							destLoc = room_list.get(8);
         			
-        			// activePlayers.get(currPlayerIndex).updateLocation(destLoc)
-        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +" has been updated to "+ activePlayers.get(currPlayerIndex).getLocation());
         		} 
-        		
-        		
-        		
-        	}
+        				
+        			}
+        			activePlayers.get(currPlayerIndex).updateLocation(destLoc);
+        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +" has been updated to "+ activePlayers.get(currPlayerIndex).getLocation());
+        } else { //do nothing, they don't want to move
         	
+        }
+        	// INSERT SUGGESTION CODE HERE
+        	
+        	}
         }
         
         } 
@@ -310,6 +369,7 @@ public class BoardGame{
         }
         
     }
+  
     
     /** test driver code 
      public static void main(String []args){
