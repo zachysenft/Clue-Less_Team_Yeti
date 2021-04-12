@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Random;
 import java.util.Scanner;
 
+import PlayerMessage.SuggestionOrAccusation;
 
 import java.sql.DriverManager;
 import java.sql.Connection;
@@ -18,10 +19,10 @@ public class BoardGame{
     ArrayList<Player> activePlayers = new ArrayList<Player>();
     int gameID = 0;
     Dictionary<String, String> winCondition = new Hashtable<String, String>();
-    const String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
-    const int [] startingHallways = {47, 78, 69, 36, 23, 12};
-    const String [] rooms = {"Study", "Library", "Conservatory", "Hall", "Billiard Room", "Ballroom", "Lounge", "Dining Room", "Kitchen"};
-    const String [] weapons = {"Revolver", "Dagger", "Lead Pipe", "Rope", "Candlestick", "Wrench"};
+    private static final String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
+    private static final int [] startingHallways = {47, 78, 69, 36, 23, 12};
+    private static final String [] rooms = {"Study", "Library", "Conservatory", "Hall", "Billiard Room", "Ballroom", "Lounge", "Dining Room", "Kitchen"};
+    private static final String [] weapons = {"Revolver", "Dagger", "Lead Pipe", "Rope", "Candlestick", "Wrench"};
 
     
     public void newGame() {
@@ -74,48 +75,87 @@ public class BoardGame{
  
         	
         	//MAKING ACCUSATION
+        	System.out.println("What would you like to do:\n "
+        			+ "Make accusation (Enter 0)\n"
+        			+ "Move somewhere (Enter 1)\n"
+        			+ "Make Suggestion (Enter 2)");
+        	int value = input.nextInt();
         	
-        	System.out.println("Would you like to make an accusation? (yes/no)");
-        	String accAnswer = input.next();
-        	if (accAnswer.equalsIgnoreCase("yes")) {
-        		System.out.println("Enter a character: ");
-        		String accChar = input.next();
-        		System.out.println("Enter a location: ");
-        		String accLocation = input.next();
-        		System.out.println("Enter a weapon");
-        		String accWeapon = input.next();
-        		PlayerMessage accusation = new PlayerMessage.SuggestionOrAccusation(accChar, accLocation, accWeapon, true);
-        		if (1==1) {
-        			//if statement for if the accusation matches what's in the database
-        			activePlayers.get(currPlayerIndex).set
-        			endGame();
-        		} else { //if you were wrong
-        			activePlayers.get(currPlayerIndex).setLostGameFlag();
-        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() + " has lost the game.")
-        			System.out.println("You will now only be able to disprove suggestions.");
-        		}
-        		
-        	}
+        	switch(value) {
         	
-        	//MOVE OPTION
+        		case 0:   	
+		        	//System.out.println("Would you like to make an accusation? (yes/no)");
+		        	//String accAnswer = input.next();
+		        	//if (accAnswer.equalsIgnoreCase("yes")) {
+		        		System.out.println("Enter a character: ");
+		        		String accChar = input.next();
+		        		System.out.println("Enter a location: ");
+		        		String accLocation = input.next();
+		        		System.out.println("Enter a weapon");
+		        		String accWeapon = input.next();
+		        		//PlayerMessage accusation = new PlayerMessage.SuggestionOrAccusation(accChar, accLocation, accWeapon, true);
+		        		//SuggestionOrAccusation accusation = new SuggestionOrAccusation(accChar, accLocation, accWeapon, true);
+		        		if (1==1) {
+		        			//if statement for if the accusation matches what's in the database
+		        			//activePlayers.get(currPlayerIndex).set
+		        			endGame();
+		        		} else { //if you were wrong
+		        			activePlayers.get(currPlayerIndex).setLostGameFlag();
+		        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() + " has lost the game.");
+		        			System.out.println("You will now only be able to disprove suggestions.");
+		        		}
+		        		
+		        	//}
+		        	break;
+		        	
+        		case 1:
         	
-        	if (this.activePlayers.get(currPlayerIndex).getLostGameFlag() == true) {
-        		//do nothing/exit while loop iteration
-        	} else { //if player hasn't lost the game
-        		System.out.println("You are currently in "); // NEED TO UPDATE THIS ONCE ALL ROOMS AND HALLWAYS ARE INSTANTIATED
-        		System.out.println("Would you like to move somewhere? (yes/no)");
-        		String moveAns = input.next();
-        		if (moveAns.equalsIgnoreCase("yes")) {
-        			System.out.println("Where would you like to move?");
-        			String moveLoc = input.next(); // will use name for this... gonna be a little weird with hallways
+		        	//MOVE OPTION
+		        	
+		        	if (this.activePlayers.get(currPlayerIndex).getLostGameFlag() == true) {
+		        		//do nothing/exit while loop iteration
+		        	} else { //if player hasn't lost the game
+		        		System.out.println("You are currently in "); // NEED TO UPDATE THIS ONCE ALL ROOMS AND HALLWAYS ARE INSTANTIATED
+		        		System.out.println("Would you like to move somewhere? (yes/no)");
+		        		String moveAns = input.next();
+		        		if (moveAns.equalsIgnoreCase("yes")) {
+		        			System.out.println("Where would you like to move?");
+		        			String moveLoc = input.next(); // will use name for this... gonna be a little weird with hallways
+		        			
+		        			// activePlayers.get(currPlayerIndex).updateLocation(destLoc)
+		        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +" has been updated to "+ activePlayers.get(currPlayerIndex).getLocation());
+		        		}  		
+		        		
+		        	}
+		        	break;
+		        	
+		        	//Suggestion case
+        		case 2:
+        			System.out.println("Enter a character: ");
+	        		String suggChar = input.next();
+	        		System.out.println("Enter a location: ");
+	        		String suggLocation = input.next();
+	        		System.out.println("Enter a weapon");
+	        		String suggWeapon = input.next();
+	        		
+	        		//SuggestionOrAccusation suggestion = new SuggestionOrAccusation(suggChar, suggLocation, suggWeapon, false);
+	        		
+	        		//check the room a player is in (cannot make suggestion if it is in the same room)
+	        		if (activePlayers.get(currPlayerIndex).getLocation().getLocationName().equals(suggLocation)) {
+	        			System.out.println("You can't make suggestion at this location");
+	        		}
+	        		else {
+	        			String name = activePlayers.get(currPlayerIndex).getPlayerName();
+	        			
+	        			System.out.println(name + " has make suggestion");
+	        			//System.out.println("Suggestion: \n" +
+	        			//		suggestion.print());
+	        		}
+	        			
         			
-        			// activePlayers.get(currPlayerIndex).updateLocation(destLoc)
-        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +" has been updated to "+ activePlayers.get(currPlayerIndex).getLocation());
-        		} 
-        		
-        		
-        		
         	}
+        	
+        	
         	
         }
         
