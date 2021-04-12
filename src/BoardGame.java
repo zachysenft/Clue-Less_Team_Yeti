@@ -3,6 +3,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.Scanner;
+
+
 import java.sql.DriverManager;
 import java.sql.Connection;
 
@@ -48,6 +50,10 @@ public class BoardGame{
         //deal cards to players
         dealCards(cards);
         
+        boolean gameWon = false;
+        int currPlayerIndex = -1; //tracks who's turn it is
+        
+
         //instantiate rooms and rest of hallways - zach
         //instantiate inactive players - Ashley
         //-Dawit and Matt
@@ -55,11 +61,56 @@ public class BoardGame{
         //check if suggestion is disprovable, choose card to show, end turn
         //PowerPoint - abby
         
+        while (gameWon !=true) {
+        	currPlayerIndex++;
+        	currPlayerIndex = currPlayerIndex % activePlayers.size();
+        	currPlayerIndex = checkLostGame(currPlayerIndex);
+        	while (activePlayers.get(currPlayerIndex).getLostGameFlag() == true) { //if the current player lost the game
+        		System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() + "'s turn is skipped because he/she lost the game");
+            	currPlayerIndex++;
+            	currPlayerIndex = currPlayerIndex % activePlayers.size();
+        	}
+        	System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +"'s turn to play!");
+ 
+        	
+        	System.out.println("Would you like to make an accusation? (yes/no)");
+        	String accAnswer = input.next();
+        	if (accAnswer.equalsIgnoreCase("yes")) {
+        		System.out.println("Enter a character: ");
+        		String accChar = input.next();
+        		System.out.println("Enter a location: ");
+        		String accLocation = input.next();
+        		System.out.println("Enter a weapon");
+        		String accWeapon = input.next();
+        		PlayerMessage accusation = new PlayerMessage.SuggestionOrAccusation(accChar, accLocation, accWeapon, true);
+        		if (1==1) {
+        			//if statement for if the accusation matches what's in the database
+        			activePlayers.get(currPlayerIndex).set
+        			endGame();
+        		} else { //if you were wrong
+        			activePlayers.get(currPlayerIndex).setLostGameFlag();
+        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() + " has lost the game.")
+        			System.out.println("You will now only be able to disprove suggestions.");
+        		}
+        		
+        	} 
+        }
         
+        } 
         
+    
+    
+    public int checkLostGame(int currIndex) {
+    	int newCurrIndex = currIndex;
+    	while (this.activePlayers.get(newCurrIndex).getLostGameFlag() == true) {
+    		newCurrIndex = newCurrIndex++;
+    		newCurrIndex = newCurrIndex % this.activePlayers.size();
+    
+    	} 
+    		return newCurrIndex;
     }
     
-    public void endGame() {
+    public static void endGame() {
         
         System.out.println("Game Over!");
         
@@ -124,7 +175,7 @@ public class BoardGame{
    	 for(int i = 0; i < cards.size(); i++) {
    		 
    		 int x = i % activePlayers.size();
-   		 activePlayers(x).playerCards.add(cards(i)));
+   		 activePlayers.get(x).addCard(cards.get(i));
    		 
    		 
    	 }
