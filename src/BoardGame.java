@@ -17,6 +17,7 @@ public class BoardGame{
 
     ArrayList<Player> activePlayers = new ArrayList<Player>();
     ArrayList<Player> inactivePlayers = new ArrayList<Player>();
+    ArrayList<Room> room_list = new ArrayList<Room>();
     int gameID = 0;
     Dictionary<String, String> winCondition = new Hashtable<String, String>();
     const String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
@@ -56,6 +57,26 @@ public class BoardGame{
         
 
         //instantiate rooms and rest of hallways - zach
+        for(int i = 0; i < rooms.length; i++) {
+      	  room_list.add(new Room(i+1, rooms[i]));
+        }
+        
+        Hallway Hallway14 = new Hallway(14, "Hallway 14");
+        Hallway Hallway25 = new Hallway(25, "Hallway 25");
+        Hallway Hallway45 = new Hallway(45, "Hallway 45");
+        Hallway Hallway56 = new Hallway(56, "Hallway 56");
+        Hallway Hallway58 = new Hallway(58, "Hallway 58");
+        Hallway Hallway89 = new Hallway(89, "Hallway 89");
+        if(numPlayers < 6) {
+      	  int x = numPlayers; //4 players means last 2 hallways in array have not been instantiated
+      	  
+      	  for(int i = x; i < 6; i++) {
+      		  Hallway addHallway = new Hallway(startingHallways[i], "Hallway " + startingHallways[i]);
+      	  }
+      	  
+        }
+        
+        
         //instantiate inactive players - Ashley
 	int numInactivePlayers = players.length - numPlayers;
 	
