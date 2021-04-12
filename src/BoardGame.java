@@ -73,6 +73,8 @@ public class BoardGame{
         	System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +"'s turn to play!");
  
         	
+        	//MAKING ACCUSATION
+        	
         	System.out.println("Would you like to make an accusation? (yes/no)");
         	String accAnswer = input.next();
         	if (accAnswer.equalsIgnoreCase("yes")) {
@@ -93,7 +95,28 @@ public class BoardGame{
         			System.out.println("You will now only be able to disprove suggestions.");
         		}
         		
-        	} 
+        	}
+        	
+        	//MOVE OPTION
+        	
+        	if (this.activePlayers.get(currPlayerIndex).getLostGameFlag() == true) {
+        		//do nothing/exit while loop iteration
+        	} else { //if player hasn't lost the game
+        		System.out.println("You are currently in "); // NEED TO UPDATE THIS ONCE ALL ROOMS AND HALLWAYS ARE INSTANTIATED
+        		System.out.println("Would you like to move somewhere? (yes/no)");
+        		String moveAns = input.next();
+        		if (moveAns.equalsIgnoreCase("yes")) {
+        			System.out.println("Where would you like to move?");
+        			String moveLoc = input.next(); // will use name for this... gonna be a little weird with hallways
+        			
+        			// activePlayers.get(currPlayerIndex).updateLocation(destLoc)
+        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +" has been updated to "+ activePlayers.get(currPlayerIndex).getLocation());
+        		} 
+        		
+        		
+        		
+        	}
+        	
         }
         
         } 
