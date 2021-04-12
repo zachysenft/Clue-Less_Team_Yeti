@@ -1,5 +1,4 @@
-
-public class PlayerMessage extends Player {
+public class PlayerMessage {
 
 	//playerID is inherited from Player class
 	int messageID;
