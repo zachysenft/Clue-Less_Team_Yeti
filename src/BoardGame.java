@@ -64,7 +64,7 @@ public class BoardGame{
             Player x = new Player();
             this.addInactivePlayer(x);
             x.setPlayerName(players[i + numPlayers]);
-            x.setLocation(new Hallway(startingHallways[i + numPlayers], "Hallway" + startingHallways[i + numPlayers], true));
+            x.setLocation(new Hallway(startingHallways[i + numPlayers], "Hallway" + startingHallways[i + numPlayers], false));
             
         }
 	
