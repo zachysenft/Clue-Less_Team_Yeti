@@ -16,6 +16,7 @@ import java.sql.*;
 public class BoardGame{
 
     ArrayList<Player> activePlayers = new ArrayList<Player>();
+    ArrayList<Player> inactivePlayers = new ArrayList<Player>();
     int gameID = 0;
     Dictionary<String, String> winCondition = new Hashtable<String, String>();
     const String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
@@ -56,6 +57,17 @@ public class BoardGame{
 
         //instantiate rooms and rest of hallways - zach
         //instantiate inactive players - Ashley
+	int numInactivePlayers = players.length - numPlayers;
+	
+	for (int i = 0; i < numInactivePlayers; i++){
+            
+            Player x = new Player();
+            this.addInactivePlayer(x);
+            x.setPlayerName(players[i + numPlayers]);
+            x.setLocation(new Hallway(startingHallways[i + numPlayers], "Hallway" + startingHallways[i + numPlayers], true));
+            
+        }
+	
         //-Dawit and Matt
         //while game is not won - make accusation (y/n), option to move (y/n), option to make sugg (y/n)
         //check if suggestion is disprovable, choose card to show, end turn
@@ -243,11 +255,18 @@ public class BoardGame{
         return activePlayers.contains(player);
         
     }
-    
+	
+   
     public void addPlayer(Player player){
         
         activePlayers.add(player);
         
+    }
+	
+    public void addInactivePlayer(Player player){
+	    
+	 inactivePlayers.add(player);
+	    
     }
     
     public ArrayList<Player> getActivePlayers(){
