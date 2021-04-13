@@ -125,7 +125,28 @@ public class BoardGame{
         		System.out.println("Enter a weapon");
         		String accWeapon = input.next();
         		PlayerMessage accusation = new PlayerMessage.SuggestionOrAccusation(accChar, accLocation, accWeapon, true);
-        		if (1==1) {
+			
+			String winChar = "";
+			String winLocation = "";
+			String winWeapon = "";
+			
+			try{  
+				Class.forName("com.mysql.jdbc.Driver");  
+				Connection con=DriverManager.getConnection(  
+				"jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");  
+				//here TeamYeti is database name, root is username and teamyeti is password  
+				Statement stmt=con.createStatement();  
+				ResultSet rs=stmt.executeQuery("select Player, Room, Weapon from CLUELESS_SUGGESTIONS where Winning_Flg='T'");
+				rs.next();
+				winChar = rs.getString(1);
+				winLocation = rs.getString(2);
+				winWeapon = rs.getString(3);
+
+				con.close();  
+				}catch(Exception e){ System.out.println(e);}  
+				}  
+			
+        		if (accChar == winChar && accLocation == winLocation && accWeapon == winWeapon) {
         			//if statement for if the accusation matches what's in the database
         			activePlayers.get(currPlayerIndex).set
         			endGame();
