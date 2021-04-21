@@ -1,12 +1,12 @@
 package UI;
 
-import java.util.ArrayList;
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+//import me.alexpanov.net.FreePortFinder;
 
 //import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
 
@@ -17,8 +17,8 @@ import clueless.PlayerMessage;
 import clueless.PlayerMessage.DealCardMessage;
 import clueless.PlayerMessage.OtherMessage;
 import clueless.PlayerMessage.SuggestionOrAccusation;
-import clueless.PlayerMessage.MoveMsg;
 import clueless.PlayerMessage.SuggestionResponse;
+import clueless.PlayerMessage.MoveMsg;
 import clueless.Location;
 import clueless.Location.LocationType;
 
@@ -33,6 +33,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,120 +42,64 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Random;
+
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JTextField;
 
-public class ClientUI extends JFrame implements ActionListener {	
+public class ServerUI extends JFrame implements ActionListener {	
 
 	// Socket Related
-	private static Socket clientSocket;
+//	public static SimpleDateFormat formatter = new SimpleDateFormat("[MM/hh/yy hh:mm a]");
+	public static SimpleDateFormat formatter = new SimpleDateFormat("[hh:mm a]");
+	private static HashMap<String, PrintWriter> connectedClients = new HashMap<>();
+	private static HashMap<String, ObjectOutputStream> connectedPlayers = new HashMap<>();
+	private static HashMap<String, Player> nameToPlayerMap = new HashMap<>();
+	private static HashMap<String, Integer> nameToIdMap = new HashMap<>();
+	private static final int MAX_CONNECTED = 6;
 	private static int PORT;
-	private PrintWriter out;
-	private OutputStream outputStream;
-	private static ObjectOutputStream objectOutputStream;
-	InputStream inputStream;
-
+	private static ServerSocket server;
+	private static volatile boolean exit = false;
+	private static int numPlayers = 1;
+	
+	//public static BoardGame bg = new BoardGame();
 	// JFrame related
-	private static JPanel contentPane;
+	private JPanel contentPane;
 	private JTextArea txtAreaLogs;
-	private static JTextArea playersCard;
-	private JLabel cardLabel;
 	private JButton btnStart;
-	private JButton btnStartGame;
-	private JPanel panelNorth;
-	private JLabel lblChatClient;
-	private JPanel panelNorthSouth;
-	private JPanel panelNorthWest;
-	private JPanel pannelCollection;
-	private JPanel movePanel;
-	private JButton suggBtn;
-	private JComboBox<String> moveBtn;
-	private JButton accusationBtn;
-	private JButton myaccusationBtn;
-	private JLabel lblPort;
-	private JLabel lblName;
-	private JLabel lblNames;
-	private JPanel panelSouth;
-	private JButton btnSend;
-	private JTextField txtMessage;
-	private JTextField txtNickname;
-	private JTextField txtPort;
-	private String clientName;
-	private JComboBox<String> personList; 
-    private JComboBox<String> weaponList; 
-    private JComboBox<String> locationList;
-	
-	
-    private static Map<String, Integer> idToLocName = new HashMap<String, Integer>(){{
-    	
-    	put("Study", 1);
-    	put("Library", 2);
-    	put("Conservatory", 3);
-    	put("Hall", 4);
-    	put("Billiard Room", 5);
-    	put("Ballroom", 6);
-    	put("Lounge", 7);
-    	put("Dining Room", 8);
-    	put("Kitchen", 9);
-    	put("Hallway 12", 12);
-    	put("Hallway 23", 23);
-    	put("Hallway 14", 14);
-    	put("Hallway 25", 25);
-    	put("Hallway 36", 36);
-    	put("Hallway 47", 47);
-    	put("Hallway 45", 45);
-    	put("Hallway 56", 56);
-    	put("Hallway 58", 58);
-    	put("Hallway 69", 69);
-    	put("Hallway 78", 78);
-    	put("Hallway 89", 89);
-    	
-    	// Starting locations
-    	put("ScarletStart",101);
-    	put("MustardStart",102);
-    	put("WhiteStart",103);
-    	put("GreenStart",104);
-    	put("PeacockStart",105);
-    	put("PlumStart",106);
-    	
-    
-    	
-    
-    }};
-	//private static BoardGame game;
-	//private int numPlayers = 0;
-
+	private JLabel lblServer;
+	private static ObjectInputStream myreader = null;
+	private static ObjectOutputStream mywriter = null;
+	public static int num=0;
+	private static BoardGame boardGame;
+	public static ArrayList<Card> cardList;
+	private static ArrayList<Player> players;
+	private static ServerUI frame;
+	private static boolean gameStarted = false;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		//game = new BoardGame();
 		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+			public void run() { 
 				try {
-					ClientUI frame = new ClientUI();
-					Player player = new Player();
+					ServerUI frame = new ServerUI(); 
+					
 					//UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					SwingUtilities.updateComponentTreeUI(frame); 
+					SwingUtilities.updateComponentTreeUI(frame);
 					//Logs
 					System.setOut(new PrintStream(new TextAreaOutput(frame.txtAreaLogs)));
 					frame.setVisible(true);
-					//frame.start();
+				
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -164,100 +110,26 @@ public class ClientUI extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public ClientUI() { 
+	public ServerUI() { 
+		boardGame = new BoardGame();
+		players = new ArrayList<Player>();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(500, 500, 770, 500);
+		setBounds(100, 100, 570, 400);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(10,10,10,10)); //(5, 5, 5, 5));
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 
-		panelNorth = new JPanel();   
-		contentPane.add(panelNorth, BorderLayout.NORTH);
-		panelNorth.setLayout(new BorderLayout(0, 0));
+		lblServer = new JLabel("SERVER");
+		lblServer.setHorizontalAlignment(SwingConstants.CENTER);
+		lblServer.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		contentPane.add(lblServer, BorderLayout.NORTH);
 
-		lblChatClient = new JLabel("PLAYER");
-		lblChatClient.setHorizontalAlignment(SwingConstants.CENTER);
-		lblChatClient.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panelNorth.add(lblChatClient, BorderLayout.NORTH);
-
-		panelNorthSouth = new JPanel();
-		panelNorth.add(panelNorthSouth, BorderLayout.SOUTH);
-		panelNorthSouth.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));		
-		
-		lblName = new JLabel("Nickname");
-		panelNorthSouth.add(lblName);
-		
-		//JLabel lbl = new JLabel("Select one");
-	    //lbl.setVisible(true);
-		
-	 //--------------------------------------
-	//ADDED for TEST 
-	    //pannelCollection = new JPanel(new GridLayout(10, 1, 10, 5));
-		panelNorthWest = new JPanel(new GridLayout(2,0));//(10, 1, 10, 5)); //new JPanel();
-		panelNorth.add(panelNorthWest, BorderLayout.WEST);
-		panelNorthWest.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-		//lblName = new JLabel("Suggestions");
-		//panelNorthWest.add(lblName);
-		String[] person = { "Person", "Colonel Mustard","Mrs. White", "Professor Plum","Mrs. Peacock","Mr. Green","Miss Scarlet"};
-		String[] weapon = {"Weapon", "Dagger", "Rope", "Lead Pipe", "Candlestick", "Revolver", "Wrench"};
-		String[] location = {"Location", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
-	    personList = new JComboBox<String>(person);
-	    weaponList = new JComboBox<String>(weapon);
-	    locationList = new JComboBox<String>(location);
-	    personList.setVisible(true);
-	    panelNorthWest.add(personList);
-	    panelNorthWest.add(weaponList);
-	    panelNorthWest.add(locationList);
-	    suggBtn = new JButton("Suggestion");
-	    panelNorthWest.add(suggBtn);
-	    suggBtn.addActionListener(this);
-	    myaccusationBtn = new JButton("Accuse");
-	    myaccusationBtn.setBounds(20,20,20,20);
-	    panelNorthWest.add(myaccusationBtn);
-	    myaccusationBtn.addActionListener(this);
-	    panelNorth.add(panelNorthWest, BorderLayout.WEST);
-	    
-	    movePanel = new JPanel(new GridLayout(2,0));
-	    String[] move = {"Move", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study", "Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"};
-	    moveBtn = new JComboBox<String>(move);
-	    //panelNorth.add(moveBtn);
-	    accusationBtn = new JButton("Accusation");
-	    movePanel.add(moveBtn);
-	    movePanel.add(accusationBtn);
-	    moveBtn.addActionListener(this);
-	    accusationBtn.addActionListener(this);
-	    panelNorth.add(movePanel); //contentPane.add(movePanel, BorderLayout.EAST);
-	    //pannelCollection.add(movePanel);
-	    //panelNorth.add(pannelCollection, BorderLayout.WEST);// panelNorthWest, BorderLayout.WEST);
-	    
-	    
-	    
-	    
-//---------------------------------------
-	    
-		txtNickname = new JTextField();
-		txtNickname.setColumns(10);
-		panelNorthSouth.add(txtNickname);
-
-		lblPort = new JLabel("Port");
-		panelNorthSouth.add(lblPort);
-
-		txtPort = new JTextField();
-		panelNorthSouth.add(txtPort);
-		txtPort.setColumns(10);
-
-		btnStart = new JButton("JOIN");
-		panelNorthSouth.add(btnStart);
+		btnStart = new JButton("START");
 		btnStart.addActionListener(this);
-		btnStart.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		
-		//Button to start Game ---
-		btnStartGame =  new JButton("START GAME");
-		panelNorthSouth.add(btnStartGame);
-		btnStartGame.addActionListener(this);
-		btnStartGame.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnStartGame.setForeground(Color.BLUE);
+		btnStart.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		contentPane.add(btnStart, BorderLayout.SOUTH);
 
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -266,277 +138,366 @@ public class ClientUI extends JFrame implements ActionListener {
 		txtAreaLogs.setBackground(Color.BLACK);
 		txtAreaLogs.setForeground(Color.WHITE);
 		txtAreaLogs.setLineWrap(true);
-		//-------------------
-		//ArrayList<Card> plCards = ServerUI.plyrsCard();
-		//int index = sui.cardNumIndex();
-		//String plCard = ServerUI.plyrsCard(); //game.getRandomCards(index); //, plCards);
-		playersCard = new JTextArea(5,20);
-		playersCard.setBackground(Color.BLACK);
-		playersCard.setForeground(Color.WHITE);
-		playersCard.setLineWrap(true);
-		playersCard.setText(""); //plCard );
-		//cardLabel = new JLabel("Player card");
-		//JPanel cardPanel = new JPanel();
-		//cardPanel.add(playersCard);
-		//cardPanel.add(cardLabel);
-		
-		JScrollPane scrollPane1 = new JScrollPane();
-		contentPane.add(scrollPane1, BorderLayout.WEST);
-		scrollPane1.setViewportView(playersCard);
-		//----------------
 		scrollPane.setViewportView(txtAreaLogs);
-
-		panelSouth = new JPanel();
-		FlowLayout fl_panelSouth = (FlowLayout) panelSouth.getLayout();
-		fl_panelSouth.setAlignment(FlowLayout.RIGHT);
-		contentPane.add(panelSouth, BorderLayout.SOUTH);
-
-		txtMessage = new JTextField();
-		panelSouth.add(txtMessage);
-		txtMessage.setColumns(50);
-
-		btnSend = new JButton("SEND");
-		btnSend.addActionListener(this);
-		btnSend.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		panelSouth.add(btnSend);
-	}
-	
-	private static void showPane(String info) throws IOException {
-		int result = JOptionPane.showConfirmDialog(contentPane, //showMessageDialog(contentPane, 
-                     info, "Suggestion Response", JOptionPane.YES_NO_OPTION);
-            
-		
-		SuggestionResponse suggResp = new SuggestionResponse();
-		String resp ="";
-		if (JOptionPane.YES_OPTION == result) {
-			resp = "Yes";
-			//select card and send it
-		}		
-		else
-			resp = "No";
-		
-		suggResp.setMessage(resp);
-		objectOutputStream.writeObject(suggResp);
-		
-	}
-	
-	public static void setCards(PlayerMessage msg) {
-		/*
-		String str[] = cards.split(",");
-		int i=0;
-		for (String card: str) {
-			if (i==0) {
-				i++;
-				continue;
-			}
-		   playersCard.append(card + "\n");  //setText(cards); 
-		}
-		*/
-		DealCardMessage cardMsg = (DealCardMessage) msg;
-		ArrayList<Card> c = cardMsg.getCards();
-		
-		if (c.size() > 0) {
-			for (Card card: c) {
-			   playersCard.append(card.getName() + "\n");  //setText(cards); 
-			}
-		} 
-	}
-	private static OtherMessage createOtherMessage(String msg) {
-		OtherMessage otherMsg = new OtherMessage();
-		otherMsg.setMessage(msg);
-		return otherMsg;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnStart) {
-			if(btnStart.getText().equals("JOIN")) {
-				btnStart.setText("LEAVE");
+			if(btnStart.getText().equals("START")) {
+				exit = false;
+				getPort();
 				start();
+				btnStart.setText("STOP");
 			}else {
-				btnStart.setText("JOIN");
-				stop();
-			}
-		}else if(e.getSource() == btnSend) {
-			String message = txtMessage.getText().trim();
-			if(!message.isEmpty()) {
-				//out.println(message);
-		OtherMessage msg = createOtherMessage(message);
-		try {
-			objectOutputStream.writeObject(msg);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-				txtMessage.setText("");
-			}
-		}else if (e.getSource() == suggBtn) {
-			//
-			String player = (String)personList.getSelectedItem().toString();
-			String weapon = (String)weaponList.getSelectedItem().toString();
-			String location = (String)locationList.getSelectedItem().toString();
-			
-			//create Suggestion
-			SuggestionOrAccusation sugg = new SuggestionOrAccusation(player, location, weapon, false);
-			//sugg.setMessageType("suggestion");
-			try {
-				objectOutputStream.writeObject(sugg);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			//out.println("Suggestion on player "+ player + "weapon = "+ weapon + " location= "+location);	
-			//----------------------------
-			//Handle suggestion here
-		} else if (e.getSource() == moveBtn) {
-			//get player name
-			//String location = JOptionPane.showInputDialog("Enter Location");
-			String[] roomArr = {"Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
-			String[] hallwayArr = {"Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"}; 
-			ArrayList<String> room = new ArrayList<>(Arrays.asList(roomArr));
-			ArrayList<String> hallway = new ArrayList<>(Arrays.asList(hallwayArr));
-			
-			MoveMsg move = new MoveMsg();
-			
-			String location = (String)moveBtn.getSelectedItem().toString();
-			String playerName = clientName;
-			LocationType loctype;
-			//String ms = playerName + " has moved to "+ location;
-			//OtherMessage msg = createOtherMessage(ms);
-			if (room.contains(location) == true){
-				loctype = LocationType.ROOM;
-			}
-			else {
-				 loctype = LocationType.HALLWAY;
-			}
-			int locid = idToLocName.get(location);
-			Location loc = new Location (locid, location, loctype);
-			move.setLocation(loc);
-			try {
-				objectOutputStream.writeObject(move);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		} else if (e.getSource() == myaccusationBtn) {
-			String accusation = JOptionPane.showInputDialog("Enter Person, Weapon, location");
-			String [] accus = accusation.split(",");
-			out.println(clientName + "has accused" + accus[0] + "of committing the crime in the " + accus[2] + " with a " + accus[1]);
-			stop();
-		} else if(e.getSource() == btnStartGame) {
-			//String start = "start game";
-			//out.println(start);
-			//btnStartGame.setEnabled(false);
-			DealCardMessage dlCrdMsg = new DealCardMessage();
-			try {
-				objectOutputStream.writeObject(dlCrdMsg);
-				btnStartGame.setEnabled(false);
-			} catch (IOException e1) {
-				System.out.println("Client: Exception in Sending DealCardMessage");
-				e1.printStackTrace();
+				addToLogs("Server stopped...");
+				exit = true;
+				btnStart.setText("START");
 			}
 		}
-		
 		
 		//Refresh UI
 		refreshUIComponents();
 	}
-
+	
 	public void refreshUIComponents() {
-
+		lblServer.setText("SERVER" + (!exit ? ": "+PORT:""));
 	}
 
-	public void start() {  //inside main
-		try {
-			PORT = Integer.parseInt(txtPort.getText().trim());  //default port 5005
-			//final int PORT = 5005;
-			clientName = txtNickname.getText().trim();  //??????
-			clientSocket = new Socket("localhost", PORT);
-			//out = new PrintWriter(clientSocket.getOutputStream(), true);
-			
-			outputStream = clientSocket.getOutputStream();
-			objectOutputStream = new ObjectOutputStream(outputStream);
+	public static void start() {
+		new Thread(new ServerHandler()).start();
+	}
 
-			new Thread(new Listener()).start();
-			//send name
-			//out.println(clientName);  //???
-			
-			OtherMessage om = createOtherMessage(clientName);
-			objectOutputStream.writeObject(om);
+	public static void stop() throws IOException {
+		if (!server.isClosed()) server.close();
+	}
 
-		} catch (Exception err) {
-			addToLogs("[ERROR] "+err.getLocalizedMessage());
+	//private static void broadcastMessage(String message) {
+	private static void broadcastMessage(PlayerMessage msg) throws IOException {
+		/*
+		for (PrintWriter p: connectedClients.values()) {
+			p.println(message);
+		} */
+		for (ObjectOutputStream p: connectedPlayers.values()) {
+			p.writeObject(msg);
 		}
 	}
-
-	public void stop(){
-		if(!clientSocket.isClosed()) {
-			try { System.out.println("Game Ended");
-				clientSocket.close();
-			} catch (IOException e1) {}
-		}
+	
+	private static OtherMessage createOtherMessage(String msg) {
+		OtherMessage otherMsg = new OtherMessage();
+		otherMsg.setMessage(msg);
+		return otherMsg;
 	}
-
-	public static void addToLogs(String message) {
-		System.out.printf("%s %s\n", ServerUI.formatter.format(new Date()), message);
-		//System.out.println("message");
-	}
-
-	private static class Listener implements Runnable {
-		private BufferedReader in;
+	
+	private static void  handleSuggestionAccusation(PlayerMessage msg, String name) throws IOException {
+		SuggestionOrAccusation sugg = (SuggestionOrAccusation) msg;
+		String pl = sugg.getCharacter();
+		String weapon = sugg.getWeapon();
+		String loc = sugg.getLoc();
 		
-		InputStream inputStream; 
-		ObjectInputStream objectInputStream;
+		 //case where it is accusation
+		  if (sugg.getAccusationFlag()) {
+		  	//call function BoarGame
+			//boolean check = boardGame.checkAccusation(Player, room, weapon);
+			//if (!check) {
+				//player.setAccussationflag(false)
+			//}
+		  }
+		  else {  //it is suggestion			
+			Player plyr = nameToPlayerMap.get(name);
+			if (plyr.getLocation().getLocationName().equalsIgnoreCase(loc)) {
+				OtherMessage om = createOtherMessage(name + " suggests that "+ pl + " committed the crime with a "+ weapon + " in the "+ loc);
+				broadcastMessage(om);
+				//Request the other player to show card
+				//should be while loop
+				SuggestionResponse resp = new SuggestionResponse();
+				resp.setMessage("Do you want to disprove "+ name +"'s Suggestion?");
+				int nextPlyr = (nameToIdMap.get(name)) % players.size(); // + 1) % numPlayer; Maping id to name???
+				String nextName = players.get(nextPlyr).getPlayerName();
+				sendMessageToAPlayer(nextName, resp);
+			} 
+			else {
+				
+				String response = "You can not make suggestion at this location";
+				OtherMessage reply = createOtherMessage(response);
+				sendMessageToAPlayer(name, reply);
+			}
+			/*
+			 
+			 */
+		  }
+		 
+	}
+	
+	//Sending players their Cards
+	private static void dealCardsToPlayers() throws IOException {
+		int i = 0;
+		for (ObjectOutputStream p: connectedPlayers.values()) {
+			DealCardMessage dealCard = new DealCardMessage();
+			dealCard.setCards(players.get(i).getPlayerCard());
+			i++;
+			p.writeObject(dealCard);
+		}
+	}
+	
+	private static void  handleMove(PlayerMessage msg, String name) throws IOException {
+		
+		MoveMsg move = (MoveMsg) msg;
+		Location location = move.getLocation();
+		String loc = location.getLocationName();
+		int locId = location.getLocationID();
+		Player plyr = nameToPlayerMap.get(name);
+		
+		boolean isOccupied = false;
+		for (Map.Entry playername : nameToPlayerMap.entrySet()){
+			
+			Player thisplayer = (Player)playername.getValue();
+			/*if(thisplayer.getLocation() == null) {
+				System.out.println(playername + " IS NULL");
+				break;
+			}*/
+			String thisplayerlocation = thisplayer.getLocation().getLocationName();
+			//System.out.println(playername + " " + thisplayerlocation);
+			//String playerlocation = (String)playername.getValue().getLocation();
+			if (loc.equals(thisplayerlocation)) {
+				//System.out.println(playername + " occupies " + thisplayerlocation);
+				isOccupied = true;
+			}
+			
+		}
+		
+		if (plyr.move(locId) == -1) {
+			
+			OtherMessage error = createOtherMessage("You cannot move to " + loc);
+			sendMessageToAPlayer(name, error);
+			
+		}
+		//if (location.getLocationType() == LocationType.HALLWAY && location.isOccupied()) {
+		else if (location.getLocationType() == LocationType.HALLWAY && isOccupied) {
+			OtherMessage error = createOtherMessage (loc + " is occupied. Please select another destination.");
+			sendMessageToAPlayer(name, error);
+			
+		}
+		else {
+			
+			//String loc = plyr.getLocation().getLocationName();
+			OtherMessage ms = createOtherMessage(name + " moved to " + loc);
+			plyr.setLocation(location);
+			//OtherMessage ms = createOtherMessage("Move triggered");
+			broadcastMessage(ms);
+			
+		}
 
+		
+	}
+	
+	private static void sendMessageToAPlayer(String name, PlayerMessage msg) throws IOException {
+		ObjectOutputStream p = connectedPlayers.get(name);
+		p.writeObject(msg);
+	}
+	
+	public static void addToLogs(String message) {
+		System.out.printf("%s %s\n", formatter.format(new Date()), message);
+	}
+
+	private static int getPort() {
+		int port = 5005; //FreePortFinder.findFreeLocalPort();
+		PORT = port;
+		return port;
+	}
+	public static int cardNumIndex() {
+		int val = num;
+		num++;
+		
+		return val;
+				
+	}
+	/*public static String plyrsCard(){
+		
+		
+	} */
+	
+	private static class ServerHandler implements Runnable{
 		@Override
 		public void run() {
 			try {
-				inputStream = clientSocket.getInputStream();
+				server = new ServerSocket(PORT);
+				addToLogs("Server started on port: " + PORT);
+				addToLogs("Now listening for connections...");
+				while(!exit) {
+					if (connectedClients.size() <= MAX_CONNECTED){
+						new Thread(new ClientHandler(server.accept())).start();
+					}
+				}
+			}
+			catch (Exception e) {
+				addToLogs("\nError occured: \n");
+				addToLogs(Arrays.toString(e.getStackTrace()));
+				addToLogs("\nExiting...");
+			}
+		} 
+	}
+	
+	// Start of Client Handler
+	private static class ClientHandler implements Runnable {
+		private Socket socket;
+		private PrintWriter out;
+		
+		private OutputStream outputStream;
+		private ObjectOutputStream objectOutputStream; // = new ObjectOutputStream(outputStream);
+		private ObjectInputStream objectInputStream; //= new ObjectInputStream(inputStream);
+		private InputStream inputStream;             // = socket.getInputStream();
+		private BufferedReader in;
+		private String name;
+		
+		
+		public ClientHandler(Socket socket) {
+			this.socket = socket;
+		}
+		
+		@Override
+		public void run(){  //inside void main
+			addToLogs("Client connected: " + socket.getInetAddress());
+			try {
+				outputStream = socket.getOutputStream();
+				objectOutputStream = new ObjectOutputStream(outputStream);
+				inputStream = socket.getInputStream();
 				objectInputStream = new ObjectInputStream(inputStream);
 
-				//in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				//String read;
-				PlayerMessage plmsg;
+				//in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				//out = new PrintWriter(socket.getOutputStream(), true);
 				for(;;) {
-					//Reading DealCards message
-					plmsg = (PlayerMessage) objectInputStream.readObject();
-					if (plmsg.getMessageType().equalsIgnoreCase("DealCards")) {
-						setCards(plmsg);
+					//name = in.readLine();
+					PlayerMessage pMsg = new PlayerMessage();
+					pMsg = (PlayerMessage) objectInputStream.readObject();
+					if (pMsg.getMessageType().equalsIgnoreCase("Other")) {
+						OtherMessage oMsg = (OtherMessage) pMsg;
+						name = oMsg.getMessage(); 
 					}
-					//Reading Other messages
-					else if (plmsg.getMessageType().equalsIgnoreCase("Other")) {
-						OtherMessage other = (OtherMessage) plmsg;
-						if ((other.getMessage()) != null) {
-							addToLogs(other.getMessage());
-						}
+					if (name == null) {
+						return;
+					}/*
+					synchronized (connectedClients) {
+						if (!name.isEmpty() && !connectedClients.keySet().contains(name)) break;
+						else out.println("INVALIDNAME");
+					}*/
+					synchronized (connectedPlayers) {
+						if (!name.isEmpty() && !connectedPlayers.keySet().contains(name)) break;
+						else out.println("INVALIDNAME");
 					}
-					else if (plmsg.getMessageType().equalsIgnoreCase("SuggestionResponse")) {
-						SuggestionResponse suggResp = (SuggestionResponse) plmsg;
-						String resp = suggResp.getMessage();
-						showPane(resp);
-					}
-					else if (plmsg.getMessageType().equalsIgnoreCase("Move")) {
-						OtherMessage msg = createOtherMessage("MOVING NOW");
-						objectOutputStream.writeObject(msg);
-						
-					}
-					/*
-					read = in.readLine();
-					if (!(read.isEmpty()) && read.contains("CARDS"))  //This is the card players get
-					{
-						//String cardlists = read.replace("CARDS", "");//read.substring(firstSpace + 1);
-						setCards(read);
-					}
-					else if (read != null && !(read.isEmpty())) addToLogs(read); */
 				}
-			} catch (IOException e) {
-				return;
-			} catch (ClassNotFoundException e) {
-				System.out.println("CLIENT: Error in sending PlayerMessage ");
-				e.printStackTrace();				 
+				//out.println("Welcome to Clueless Game, " + name.toUpperCase() + "!");
+				OtherMessage otherMsg = createOtherMessage("Welcome to Clueless Game, " + name.toUpperCase() + "!"); 
+				objectOutputStream.writeObject(otherMsg); 
 				
+				addToLogs(name.toUpperCase() + " has joined.");
+				//broadcastMessage("[SYSTEM] " + name.toUpperCase() + " has joined.");
+				OtherMessage other = createOtherMessage("[SYSTEM] " + name.toUpperCase() + " has joined.");
+				broadcastMessage(other);
+				connectedClients.put(name, out);
+				
+				connectedPlayers.put(name, objectOutputStream);
+				
+				Player player = new Player(name, numPlayers);
+				players.add(player);
+				nameToPlayerMap.put(name, player);  //Add to name-player map
+				nameToIdMap.put(name, numPlayers);
+				//String message;
+				PlayerMessage pMsg;
+				//out.println("You may join the game now...");
+				numPlayers++;
+				
+				/*/--------------------------
+				Object msg = myreader.readObject();
+				while ( (String) msg != null && !exit) {
+					if ( !((String) msg).isEmpty()) {
+						//if (message.toLowerCase().equals("/quit")) break;
+						String response = bg.handleMessage(msg);
+						broadcastMessage(String.format("[%s] %s", name, response));
+				}
+				-----------------------*/
+				//if (numPlayers == 3)
+				//{
+					//bg.dealCards(cards);
+				//	numPlayers= 0;
+					//message = "deal cards";
+				//}
+				//else {
+				//	message = in.readLine();
+				//}
+				
+				//while( (message=in.readLine()) != null && !exit) {
+				  while( (pMsg = (PlayerMessage) objectInputStream.readObject()) != null && !exit) {
+					
+					  String type = pMsg.getMessageType();
+					  if (type.equalsIgnoreCase("SuggestionAccusation")) {
+						  handleSuggestionAccusation(pMsg, name);
+					  }
+					  else if (type.equalsIgnoreCase("DealCards")) {
+						  if (gameStarted) {
+							  OtherMessage oMsg = createOtherMessage("Game has already been Started");
+							  broadcastMessage(oMsg);
+						  }	else {
+							  
+							gameStarted = true;
+							boardGame.handCards(players); //set initial location as well???
+							//broadcastMessage("player0 card "+ players.get(0).getPlayerCard().size());
+							dealCardsToPlayers();
+							}
+					  }else if (type.equalsIgnoreCase("other")) {
+						  OtherMessage oms = (OtherMessage) pMsg;
+						  OtherMessage oMsg = createOtherMessage(name + ": "+ oms.getMessage());
+						  broadcastMessage(oMsg);
+					  } else if(type.equalsIgnoreCase("SuggestionResponse")) {
+						  String resp = "The suggestion is disproved by "+ name;
+						  OtherMessage resMsg = createOtherMessage(resp);
+						  broadcastMessage(resMsg);
+					  } else if (type.equalsIgnoreCase("Move")) {
+						  handleMove(pMsg, name);
+					  }
+					  
+					  /*
+					  if (!message.isEmpty()) {
+						if (message.toLowerCase().equals("/quit")) break;
+						
+						//check if the message is deal card
+						if (message.equalsIgnoreCase("start game"))
+						{
+							if (gameStarted)
+								broadcastMessage("Game has already been Started");
+							else {
+								gameStarted = true;
+								boardGame.handCards(players);
+								//broadcastMessage("player0 card "+ players.get(0).getPlayerCard().size());
+								dealCardsToPlayers();
+							}
+						}
+						
+						else {
+							//String response = bg.handleMessage(message);
+							broadcastMessage(String.format("[%s] %s", name, message));
+						}
+						
+					}    */
+				} 
+			} catch (Exception e) {
+				addToLogs(e.getMessage());
+			} finally {
+				if (name != null) {
+					addToLogs(name + " is leaving");
+					connectedClients.remove(name);
+	connectedPlayers.remove(name);
+					//broadcastMessage(name + " has left");
+	OtherMessage oMsg = createOtherMessage(name + " has left");
+	try {
+		broadcastMessage(oMsg);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		addToLogs(e.getMessage());
+	}
+				}
 			}
 		}
-
 	}
+
 }
