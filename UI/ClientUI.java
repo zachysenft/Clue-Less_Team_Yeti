@@ -123,6 +123,16 @@ public class ClientUI extends JFrame implements ActionListener {
     	put("Hallway 78", 78);
     	put("Hallway 89", 89);
     	
+    	// Starting locations
+    	put("ScarletStart",101);
+    	put("MustardStart",102);
+    	put("WhiteStart",103);
+    	put("GreenStart",104);
+    	put("PeacockStart",105);
+    	put("PlumStart",106);
+    	
+    
+    	
     
     }};
 	//private static BoardGame game;
