@@ -35,6 +35,7 @@ public class BoardGame{
     private final static String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
     private final static int [] startingHallways = {47, 78, 69, 36, 23, 12};
     private final static  String [] rooms = {"Study", "Library", "Conservatory", "Hall", "Billiard Room", "Ballroom", "Lounge", "Dining Room", "Kitchen"};
+    private final static  String [] startingSpots = {"ScarletStart","MustardStart","WhiteStart","GreenStart","PeacockStart","PlumStart"};
     private final static String [] weapons = {"Revolver", "Dagger", "Lead Pipe", "Rope", "Candlestick", "Wrench"};
     private static PlayerMessage.SuggestionOrAccusation suggorAccu;
     private static ArrayList<Card> dealCards = new ArrayList<Card>();
@@ -389,10 +390,12 @@ public class BoardGame{
 	   	  }
 		//Assign initial location. Can be changed later
 		int j = 0;
+		int k = 100; //indices of starting spots
 		for (Player p: players) {
-			Location rm = new Room(j+1, rooms[j], false);
+			Location rm = new Hallway(k+1, startingSpots[j], false);
 			p.setLocation(rm);
 			j++;
+			k++;
 		}
 	}
 	
