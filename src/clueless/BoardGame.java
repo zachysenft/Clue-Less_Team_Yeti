@@ -114,11 +114,6 @@ public class BoardGame{
             
         }
 	
-        //-Dawit and Matt
-        //while game is not won - make accusation (y/n), option to move (y/n), option to make sugg (y/n)
-        //check if suggestion is disprovable, choose card to show, end turn
-        //PowerPoint - abby
-        
         while (gameWon !=true) {
         	currPlayerIndex++;
         	currPlayerIndex = currPlayerIndex % activePlayers.size();
@@ -470,6 +465,38 @@ public class BoardGame{
         }
         
     }
+    
+    public Card disprove(Card person, Card weapon, Card location) {
+   	 
+
+   			
+   	 for(int i = 0; i < playerCards.size(); i++) {
+   				
+   		 if(person.getName() == playerCards.get(i).getName()) {
+   			 
+   			 return playerCards.get(i);
+   					 
+   		 }
+   		 
+   		 else if(weapon.getName() == playerCards.get(i).getName()) {
+   			 
+   			 return playerCards.get(i);
+   			 
+   		 }
+   		 
+   		 else if(location.getName() == playerCards.get(i).getName()) {
+   			 
+   			 return playerCards.get(i);
+   			 
+   		 }
+   			 
+   	 
+   	 }
+   	 
+   	 return null;
+   	 
+    }
+    
   
     
     /** test driver code */
