@@ -430,7 +430,28 @@ public class BoardGame{
 		con.close();  
 		}catch(Exception e){ System.out.println(e);}  
 		}  
+    
+public boolean checkAssucation(String ply, String loc, String wpn) {
+      
+      boolean results = false;
+      try{  
+        Class.forName("com.mysql.cj.jdbc.Driver");  
+        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");   
+        Statement stmt=con.createStatement();  
+        ResultSet rs=stmt.executeQuery(
+           "select Player, Room, Weapon from CLUELESS_SUGGESTIONS WHERE SUGGESTION_ID = 1 AND MADE_BY = 7"); 
         
+        if (rs.getString("Player").equals(ply) 
+              && rs.getString("Room").equals(loc) 
+              && rs.getString("Weapon").equals(wpn)) {
+          results = true;}
+        con.Close();
+        
+        return
+          results;
+      }
+      catch(Exception e){ System.out.println(e);}
+    }
     
     public boolean isPlayerActive(Player player){
         
