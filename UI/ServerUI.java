@@ -198,10 +198,19 @@ public class ServerUI extends JFrame implements ActionListener {
 		 //case where it is accusation
 		  if (sugg.getAccusationFlag()) {
 		  	//call function BoarGame
-			//boolean check = boardGame.checkAccusation(Player, room, weapon);
-			//if (!check) {
-				//player.setAccussationflag(false)
-			//}
+			Player plyr = nameToPlayerMap.get(name);
+			OtherMessage om = createOtherMessage(name + " accuses that "+ pl + " committed the crime with a "+ weapon + " in the "+ loc);
+			broadcastMessage(om);
+			boolean check = boardGame.checkAccusation(Player, room, weapon);
+			if (!check) {
+				plyr.setLostGameFlag();
+				OtherMessage ar = createOtherMessage("The accusation is incorrect." + plyr.getPlayerName() + " loses");
+				broadcastMessage(ar);
+			}
+			else {
+				OtherMessage ar = createOtherMessage("The accusation is correct!" + plyr.getPlayerName() + " wins!");
+				broadcastMessage(ar);
+			}
 		  }
 		  else {  //it is suggestion			
 			Player plyr = nameToPlayerMap.get(name);
