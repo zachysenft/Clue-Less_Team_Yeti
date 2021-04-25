@@ -397,9 +397,25 @@ public class BoardGame{
 		}
 	}
 	
-    
+     public void clearDatabase() {
+   
+   	try {  
+  	 Class.forName("com.mysql.jdbc.Driver");  
+  	 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");  
+  	//here TeamYeti is database name, root is username and teamyeti is password  
+   	Statement stmt=con.createStatement();  
+
+   	stmt.executeUpdate("delete from CLUELESS_SUGGESTIONS");
+
+   	con.close();  
+	  }
+ 	 catch(Exception e){ System.out.println(e);}  
+	}
+	
     public void storeWinCondinDB(){
         
+	clearDatabase();
+	    
         String player = winCondition.get("Player");
         String room = winCondition.get("Room");
         String weapon = winCondition.get("Weapon");
