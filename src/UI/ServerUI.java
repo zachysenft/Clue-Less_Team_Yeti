@@ -230,8 +230,18 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 			OtherMessage ms = createOtherMessage(pName + " moved to " + loc);
 			plyr.setLocation(location);
 			//Set next player turn
-			int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
-			String nextName = players.get(nextPlyr).getPlayerName();
+			//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
+			//String nextName = players.get(nextPlyr).getPlayerName();
+			
+			//check if player has been disabled before setting next Player
+   			int nextPlyr = 0;
+   			boolean disablePlyr = true;
+   			do {
+     				nextPlyr = (nameToIdMap.get(pName)) % players.size();
+    				disablePlyr = players.get(nextPlyr).getLostGameFlag();
+   			} while (disablePlyr = true);
+   			String nextName = players.get(nextPlyr).getPlayerName();
+   
 			ms.setPlayerTurn(nextName);
 			broadcastMessage(ms);			
 		}		
