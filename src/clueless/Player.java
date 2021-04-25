@@ -129,11 +129,28 @@ public class Player {
 	public void addCard(Card card) {
 		this.playerCards.add(card);
 	}
+	
+	//use disprove method not chooseCardToShow or canAnswerSuggestion
+	
+	public Card disprove(String person, String weapon, String location) {
+		
+		for(int i = 0; i < playerCards.size(); i++) {
+			
+			if(playerCards.get(i).getName() == person) {
+				return playerCards.get(i);
+			}
+			else if(playerCards.get(i).getName() == weapon) {
+				return playerCards.get(i);
+			}
+			else if(playerCards.get(i).getName() == location) {
+				return playerCards.get(i);
+			}
+			
+		}
+		
+		return null;
+	}
 
-	//Matt... I developed a schematic of numbering for locations that will work for this algo
-	//Returns where the player location should update to, then another method will update it.
-	//include an if in driver method to retry if returned is 0.
-	//Need to add in conditionals of hallways being occupied
 	
 	//going to use this method in target increment
 		public int [] validDestLocations(Location curLoc, Location destLoc) { //added to show the player the potential locations they can move to
