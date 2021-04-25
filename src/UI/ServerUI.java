@@ -21,6 +21,7 @@ import clueless.PlayerMessage.MoveMsg;
 import clueless.PlayerMessage.OtherMessage;
 import clueless.PlayerMessage.SuggestionOrAccusation;
 import clueless.PlayerMessage.SuggestionResponse;
+import clueless.PlayerMessage.EndTurnMessage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -185,6 +186,15 @@ public class ServerUI extends JFrame implements ActionListener {
 		}
 	}
 	
+	
+private static void  handleEndTurn(EndTurnMessage move, String pName) throws IOException {
+	
+	int nextPlyr = (nameToIdMap.get(pName)) % players.size();
+	String nextName = players.get(nextPlyr).getPlayerName();
+	OtherMessage ms = createOtherMessage(pName + " ended turn. " + nextName + "'s turn.");
+	ms.setPlayerTurn(nextName);
+	broadcastMessage(ms);
+}
 private static void  handleMove(MoveMsg move, String pName) throws IOException {
 		
 		//MoveMsg move = (MoveMsg) msg;
@@ -228,22 +238,16 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 			
 			//String loc = plyr.getLocation().getLocationName();
 			OtherMessage ms = createOtherMessage(pName + " moved to " + loc);
+			broadcastMessage(ms);
 			plyr.setLocation(location);
 			//Set next player turn
-			//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
-			//String nextName = players.get(nextPlyr).getPlayerName();
-			
-			//check if player has been disabled before setting next Player
-   			int nextPlyr = 0;
-   			boolean disablePlyr = true;
-   			do {
-     				nextPlyr = (nameToIdMap.get(pName)) % players.size();
-    				disablePlyr = players.get(nextPlyr).getLostGameFlag();
-   			} while (disablePlyr = true);
-   			String nextName = players.get(nextPlyr).getPlayerName();
-   
-			ms.setPlayerTurn(nextName);
-			broadcastMessage(ms);			
+			if (location.getLocationType() == LocationType.HALLWAY) {
+				//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
+				//String nextName = players.get(nextPlyr).getPlayerName();
+				//ms.setPlayerTurn(nextName);
+				//EndTurnMessage endturn = new EndTurnMessage();
+				//handleEndTurn(endturn, pName);
+			}
 		}		
 	}
 	
@@ -475,7 +479,7 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 							dealCardsToPlayers();
 							}
 					  }
-					  else if (type.equalsIgnoreCase("other")) {
+					  else if (type.equalsIgnoreCase("Other")) {
 						  OtherMessage oms = (OtherMessage) pMsg;
 						  OtherMessage oMsg = createOtherMessage(name + ": "+ oms.getMessage());
 						  oMsg.setPlayerTurn(name);
@@ -489,23 +493,33 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 							  OtherMessage resMsg = createOtherMessage(approvedMsg);
 							  //In case if a suggestion is disproved by a player NOT next to the one
 							  //who make the suggestion
-							  String nxtTurn = getNextTurnAfterSuggestion(); 
-							  resMsg.setPlayerTurn(nxtTurn);
+							  //String nxtTurn = getNextTurnAfterSuggestion(); 
+							  //resMsg.setPlayerTurn(nxtTurn);
 							  broadcastMessage(resMsg);
+							  //EndTurnMessage endturn = new EndTurnMessage();
+							  //handleEndTurn(endturn, name);
 						  } else {  //ask the next player to disprove
 							  if (numPlayersDisproveSugg < (players.size() - 1))
 								  disproveSuggestion(name);
 							  else { //No one diprove suggestion
 								  OtherMessage re = createOtherMessage("No one disproved the Suggestion");
-								  String nxtPlyrTurn = getNextTurnAfterSuggestion();
-								  re.setPlayerTurn(nxtPlyrTurn);
+								  //String nxtPlyrTurn = getNextTurnAfterSuggestion();
+								  //re.setPlayerTurn(nxtPlyrTurn);
 								  broadcastMessage(re);
+								  //EndTurnMessage endturn = new EndTurnMessage();
+								  //handleEndTurn(endturn, name);
 							  }
 						  }   
 					  }
 					  else if(type.equalsIgnoreCase("Move")) {
 						  MoveMsg moveMsg = (MoveMsg) pMsg;
 						  handleMove(moveMsg, name);
+					  }
+					  else if(type.equalsIgnoreCase("End Turn")) {
+						  EndTurnMessage endMsg = (EndTurnMessage) pMsg;
+						  handleEndTurn(endMsg, name);
+						  
+						  
 					  }
 				} 
 			} catch (Exception e) {
