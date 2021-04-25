@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 //import me.alexpanov.net.FreePortFinder;
 
-import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
+//import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
 
 import clueless.BoardGame;
 import clueless.Card;
@@ -556,13 +556,14 @@ public class ServerUI extends JFrame implements ActionListener {
 							  if (card != null) {
 								  //movePlayerToSuggestedRoom();
 								  String approvedMsg =  card.getName();
-								  OtherMessage resMsg = createOtherMessage(approvedMsg);
+								  OtherMessage resMsg = createOtherMessage(approvedMsg + " is incorrect.");
 								  String nxtTurn = getNextTurnAfterSuggestion(); 
 								  resMsg.setPlayerTurn(nxtTurn);
 								  sendMessageToAPlayer(suggestionMaker, resMsg);
 								  OtherMessage notifyAll = createOtherMessage("Suggestion was disproved by " + name);
 								  notifyAll.setPlayerTurn(nxtTurn);
 								  broadcastMessage(notifyAll); //if we need to tell others??
+								  sendMessageToAPlayer(suggestionMaker, resMsg);
 								  
 								  //In case if a suggestion is disproved by a player NOT next to the one
 								  //who make the suggestion
