@@ -20,6 +20,7 @@ import clueless.PlayerMessage.MoveMsg;
 import clueless.PlayerMessage.OtherMessage;
 import clueless.PlayerMessage.SuggestionOrAccusation;
 import clueless.PlayerMessage.SuggestionResponse;
+import clueless.PlayerMessage.EndTurnMessage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -86,8 +87,8 @@ public class ClientUI extends JFrame implements ActionListener {
 	private JPanel movePanel;
 	private static JButton suggBtn;
 	private static JButton moveBtn;
-	
 	private static JButton accusationBtn;
+	private static JButton endBtn;
 	private JLabel lblPort;
 	private JLabel lblName;
 	private JLabel lblNames;
@@ -196,6 +197,9 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		panelNorth.add(panelNorthSouth, BorderLayout.SOUTH);
 		panelNorthSouth.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));		
 		
+	    endBtn = new JButton("End Turn");
+	    endBtn.addActionListener(this);;
+		panelNorthSouth.add(endBtn);
 		lblName = new JLabel("Nickname");
 		panelNorthSouth.add(lblName);
 		
@@ -244,6 +248,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	    panelNorth.add(movePanel, BorderLayout.EAST); //contentPane.add(movePanel, BorderLayout.EAST);
 	    //pannelCollection.add(movePanel);
 	    //panelNorth.add(pannelCollection, BorderLayout.WEST);// panelNorthWest, BorderLayout.WEST);
+	    
 	    
 		txtNickname = new JTextField();
 		txtNickname.setColumns(10);
@@ -381,6 +386,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+			suggBtn.setEnabled(false);
 		} 
 		
 		else if (e.getSource() == moveBtn) {
@@ -426,6 +432,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			moveBtn.setEnabled(false);
 		} 
 		
 		else if (e.getSource() == accusationBtn) {
@@ -457,7 +464,17 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				System.out.println("Client: Exception in Sending DealCardMessage");
 				e1.printStackTrace();
 			}
-		}	
+		}
+		
+		else if(e.getSource() == endBtn) {
+			
+			EndTurnMessage endTurnMsg = new EndTurnMessage();
+			try {
+				objectOutputStream.writeObject(endTurnMsg);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
 		
 		//Refresh UI
 		refreshUIComponents();
@@ -510,13 +527,15 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			if (!suggBtn.isEnabled()) {suggBtn.setEnabled(true);}
 			if (!moveBtn.isEnabled())  {moveBtn.setEnabled(true);}
 			if (!accusationBtn.isEnabled()) { accusationBtn.setEnabled(true);}
+			if (!endBtn.isEnabled()) { endBtn.setEnabled(true);}
 			
 		} else {
 			if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
 			if (suggBtn.isEnabled()) {suggBtn.setEnabled(false);}
 			if (moveBtn.isEnabled())  {moveBtn.setEnabled(false);}
 			if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
-			if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);}	
+			if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);}
+			if (endBtn.isEnabled()) {endBtn.setEnabled(false);}
 		}
 	}
 	
@@ -559,10 +578,19 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 						SuggestionResponse suggResp = (SuggestionResponse) plmsg;
 						String resp = suggResp.getMessage();
 						turn = suggResp.getPlayerTurn();
-						if (turn != null)
-							turnOnOffButtons();
+						//if (turn != null)
+						//	turnOnOffButtons();
 						showPane(resp);
 						
+					}
+					else if (plmsg.getMessageType().equalsIgnoreCase("End Turn")) {
+						EndTurnMessage other = (EndTurnMessage) plmsg;
+						if ((other.getMessage()) != null) {
+							turn = other.getPlayerTurn();
+							addToLogs(other.getMessage());
+							if (turn != null)
+								turnOnOffButtons();
+						}
 					}
 				}
 			} catch (IOException e) {
