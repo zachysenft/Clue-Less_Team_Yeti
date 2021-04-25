@@ -238,6 +238,15 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 			
 			//String loc = plyr.getLocation().getLocationName();
 			OtherMessage ms = createOtherMessage(pName + " moved to " + loc);
+			int nextPlyr = 0;
+   			boolean disablePlyr = true;
+   			do {
+     				nextPlyr = (nameToIdMap.get(pName)) % players.size();
+    				disablePlyr = players.get(nextPlyr).getLostGameFlag();
+   			} while (disablePlyr = true);
+   			String nextName = players.get(nextPlyr).getPlayerName();
+
+			ms.setPlayerTurn(nextName);
 			broadcastMessage(ms);
 			plyr.setLocation(location);
 			//Set next player turn
