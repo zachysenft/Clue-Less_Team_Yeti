@@ -17,11 +17,12 @@ import clueless.Location.LocationType;
 import clueless.Player;
 import clueless.PlayerMessage;
 import clueless.PlayerMessage.DealCardMessage;
+import clueless.PlayerMessage.EndTurnMessage;
 import clueless.PlayerMessage.MoveMsg;
 import clueless.PlayerMessage.OtherMessage;
 import clueless.PlayerMessage.SuggestionOrAccusation;
 import clueless.PlayerMessage.SuggestionResponse;
-import clueless.PlayerMessage.EndTurnMessage;
+import clueless.Suggestions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -73,7 +74,7 @@ public class ServerUI extends JFrame implements ActionListener {
 	private static int numPlayers = 1; //also players ID
 	private static String suggestionMaker;  //Name of player who made last Suggestion
 	private static int numPlayersDisproveSugg = 0; //number of players who got chance to disprove suggestion
-	
+	private static SuggestionOrAccusation currentSuggestion; //last suggestion
 	//public static BoardGame bg = new BoardGame();
 	// JFrame related
 	private JPanel contentPane;
@@ -186,16 +187,16 @@ public class ServerUI extends JFrame implements ActionListener {
 		}
 	}
 	
+	private static void  handleEndTurn(EndTurnMessage move, String pName) throws IOException {
+		
+		int nextPlyr = (nameToIdMap.get(pName)) % players.size();
+		String nextName = players.get(nextPlyr).getPlayerName();
+		OtherMessage ms = createOtherMessage(pName + " ended turn. " + nextName + "'s turn.");
+		ms.setPlayerTurn(nextName);
+		broadcastMessage(ms);
+	}
 	
-private static void  handleEndTurn(EndTurnMessage move, String pName) throws IOException {
-	
-	int nextPlyr = (nameToIdMap.get(pName)) % players.size();
-	String nextName = players.get(nextPlyr).getPlayerName();
-	OtherMessage ms = createOtherMessage(pName + " ended turn. " + nextName + "'s turn.");
-	ms.setPlayerTurn(nextName);
-	broadcastMessage(ms);
-}
-private static void  handleMove(MoveMsg move, String pName) throws IOException {
+	private static void  handleMove(MoveMsg move, String pName) throws IOException {
 		
 		//MoveMsg move = (MoveMsg) msg;
 		Location location = move.getLocation();
@@ -238,26 +239,37 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 			
 			//String loc = plyr.getLocation().getLocationName();
 			OtherMessage ms = createOtherMessage(pName + " moved to " + loc);
-			int nextPlyr = 0;
-   			boolean disablePlyr = true;
-   			do {
-     				nextPlyr = (nameToIdMap.get(pName)) % players.size();
-    				disablePlyr = players.get(nextPlyr).getLostGameFlag();
-   			} while (disablePlyr = true);
-   			String nextName = players.get(nextPlyr).getPlayerName();
-
-			ms.setPlayerTurn(nextName);
-			broadcastMessage(ms);
 			plyr.setLocation(location);
 			//Set next player turn
+			//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
+			//String nextName = players.get(nextPlyr).getPlayerName();
+			
 			if (location.getLocationType() == LocationType.HALLWAY) {
-				//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
-				//String nextName = players.get(nextPlyr).getPlayerName();
-				//ms.setPlayerTurn(nextName);
-				//EndTurnMessage endturn = new EndTurnMessage();
-				//handleEndTurn(endturn, pName);
+	   			String nextName = nextTurn(pName);
+				ms.setPlayerTurn(nextName);
+				broadcastMessage(ms);
 			}
-		}		
+			else {
+				ms.setPlayerTurn(pName); //player still have turn
+				broadcastMessage(ms);
+			}
+		}	
+	}
+	
+	private static String nextTurn(String plyrName) {
+		int nextPlyr = 0;
+		int count = 0;  //To keep the loop from going to infinity (Should Not happen though)
+		
+		//check if player has been disabled before setting next Player
+		boolean disablePlyr = true;
+		do {
+			nextPlyr = (nameToIdMap.get(plyrName)) % players.size();
+			disablePlyr = players.get(nextPlyr).getLostGameFlag();
+			plyrName = players.get(nextPlyr).getPlayerName();
+			count++;
+		} while (disablePlyr == true && count < players.size()-1);
+		String nextName = players.get(nextPlyr).getPlayerName();
+		return nextName;
 	}
 	
 	private static OtherMessage createOtherMessage(String msg) {
@@ -273,45 +285,66 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 		String loc = sugg.getLoc();
 		
 		//Next player to disprove suggestion
-		int nextPlyr = (nameToIdMap.get(name)) % players.size(); // + 1) % numPlayer; Maping id to name???
-		String nextName = players.get(nextPlyr).getPlayerName();
+		//int nextPlyr = (nameToIdMap.get(name)) % players.size(); // + 1) % numPlayer; Maping id to name???
+		//players.get(nextPlyr).getPlayerName();
 		
 		 //case where it is accusation
 		  if (sugg.getAccusationFlag()) {
 			  
-			  Player plyr = nameToPlayerMap.get(name);
-				OtherMessage om = createOtherMessage(name + " accuses that "+ pl + " committed the crime with a "+ weapon + " in the "+ loc);
-				broadcastMessage(om);
-				boolean check = boardGame.checkAcussation(pl, loc, weapon);
-				if (!check) {
-					plyr.setLostGameFlag();
-					OtherMessage ar = createOtherMessage("The accusation is incorrect." + plyr.getPlayerName() + " loses");
-					broadcastMessage(ar);
-				}
-				else {
-					OtherMessage ar = createOtherMessage("The accusation is correct!" + plyr.getPlayerName() + " wins!");
-					broadcastMessage(ar);
-					
-				}
-		  }
+			Player plyr = nameToPlayerMap.get(name);
+			OtherMessage om = createOtherMessage(name + " accuses that "+ pl + " committed the crime with a "+ weapon + " in the "+ loc);
+			broadcastMessage(om);
+			boolean check = boardGame.checkAcussation(pl, loc, weapon);
+			if (!check) {
+				plyr.setLostGameFlag();
+				OtherMessage ar = createOtherMessage("The accusation is incorrect." + plyr.getPlayerName() + " loses");
+				String nextName = nextTurn(name);
+				ar.setPlayerTurn(nextName);
+				broadcastMessage(ar);
+			}
+			else {
+				OtherMessage ar = createOtherMessage("The accusation is correct!" + plyr.getPlayerName() + " wins!");
+				ar.setPlayerTurn("GAME OVER"); 
+				broadcastMessage(ar);		
+			}
+		  }	
+		  
 		  else {  //it is suggestion			
 			Player plyr = nameToPlayerMap.get(name);
 			suggestionMaker = name;    //Save this name if we have to pass it for disproving suggestion
-			if (plyr.getLocation().getLocationName().equalsIgnoreCase(loc)) {
-				OtherMessage om = createOtherMessage("suggestion made on "+ pl + " with "+ weapon + " on "+ loc);
-				broadcastMessage(om);
-				//Request the other player to show card
-				//should be while loop
-				SuggestionResponse resp = new SuggestionResponse();
-				resp.setMessage("Do you want to disprove "+ name +"'s Suggestion?");
+			currentSuggestion = sugg;  //Save this Suggestion as the last suggestion
+			numPlayersDisproveSugg = 0;
+			//check if a player's last suggestion was at this location
+			if (plyr.getPlayerPrevSuggLocation() == null ||
+					!(plyr.getPlayerPrevSuggLocation().equalsIgnoreCase(plyr.getLocation().getLocationName())) ) {
 				
-				resp.setPlayerTurn(nextName);
-				numPlayersDisproveSugg++;
-				sendMessageToAPlayer(nextName, resp);
-			} 
-			else {
+				if (plyr.getLocation().getLocationName().equalsIgnoreCase(loc)) {
+					OtherMessage om = createOtherMessage("suggestion made on "+ pl + " with "+ weapon + " on "+ loc);
+					plyr.setPlayerPrevSuggLocation(plyr.getLocation().getLocationName()); 
+					broadcastMessage(om);
 					
-				String response = "You can not make suggestion at this location";
+					//Request the other player to show card
+					//should be while loop
+					SuggestionResponse resp = new SuggestionResponse();
+					resp.setMessage("Do you want to disprove "+ name +"'s Suggestion?");
+					
+					//Next player to disprove suggestion
+					int nextPlyr = (nameToIdMap.get(name)) % players.size(); // + 1) % numPlayer; Maping id to name???
+					String nextName = players.get(nextPlyr).getPlayerName();
+					resp.setPlayerTurn(nextName);
+					numPlayersDisproveSugg++;
+					sendMessageToAPlayer(nextName, resp);
+				} 
+				else {
+						
+					String response = "You can not make suggestion at this location";
+					OtherMessage reply = createOtherMessage(response);
+					reply.setPlayerTurn(name);
+					sendMessageToAPlayer(name, reply);
+				}
+			}
+			else {
+				String response = "You Already made Suggestion at this Location";
 				OtherMessage reply = createOtherMessage(response);
 				reply.setPlayerTurn(name);
 				sendMessageToAPlayer(name, reply);
@@ -330,12 +363,30 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 		
 	}
 	
+	private static Card getSuggDisproveCard(String pName) { 
+		Player player = nameToPlayerMap.get(pName);
+		Card person = new Card(currentSuggestion.getCharacter(), "Person");
+		Card weapon = new Card (currentSuggestion.getWeapon(), "Weapon");
+		Card loc = new Card(currentSuggestion.getLoc(), "room");
+		Card c = player.disprove(person, weapon, loc);
+		return c;
+	}
+	
 	private static String getNextTurnAfterSuggestion() {
 		int nextPlyr = (nameToIdMap.get(suggestionMaker)) % players.size(); // + 1) % numPlayer; Maping id to name???
 		String nextName = players.get(nextPlyr).getPlayerName();
 		return nextName;
 		
 	}
+	
+	private static void movePlayerToSuggestedRoom() {
+		String plyrName = suggestionMaker; // currentSuggestion.getCharacter(); //should be player's name
+		Player plyr = nameToPlayerMap.get(plyrName);
+		Location newLocation = new Location(BoardGame.getLocationID(currentSuggestion.getLoc()),
+				currentSuggestion.getLoc(), currentSuggestion.getLocationType());
+		plyr.setLocation(newLocation);
+	}
+	
 	//Sending players their Cards
 	private static void dealCardsToPlayers() throws IOException {
 		int i = 0;
@@ -344,6 +395,7 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 			dealCard = new DealCardMessage();
 			dealCard.setPlayerTurn(players.get(0).getPlayerName());
 			dealCard.setCards(players.get(i).getPlayerCard());
+			dealCard.setStartLocation(players.get(i).getLocation());
 			i++;
 			p.writeObject(dealCard);
 		}
@@ -447,6 +499,8 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 				//out.println("Welcome to Clueless Game, " + name.toUpperCase() + "!");
 				OtherMessage otherMsg = createOtherMessage("Welcome to Clueless Game, " + name.toUpperCase() + "!"); 
 				objectOutputStream.writeObject(otherMsg); 
+				OtherMessage idMsg = createOtherMessage("id "+ numPlayers);
+				objectOutputStream.writeObject(idMsg);
 				
 				addToLogs(name.toUpperCase() + " has joined.");
 				//broadcastMessage("[SYSTEM] " + name.toUpperCase() + " has joined.");
@@ -488,7 +542,7 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 							dealCardsToPlayers();
 							}
 					  }
-					  else if (type.equalsIgnoreCase("Other")) {
+					  else if (type.equalsIgnoreCase("other")) {
 						  OtherMessage oms = (OtherMessage) pMsg;
 						  OtherMessage oMsg = createOtherMessage(name + ": "+ oms.getMessage());
 						  oMsg.setPlayerTurn(name);
@@ -498,24 +552,48 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 						  SuggestionResponse suggResponse = (SuggestionResponse) pMsg;
 						  String resp = suggResponse.getMessage();
 						  if (resp.equalsIgnoreCase("yes")) {
-							  String approvedMsg =  "The suggestion is disproved by "+ name;
-							  OtherMessage resMsg = createOtherMessage(approvedMsg);
-							  //In case if a suggestion is disproved by a player NOT next to the one
-							  //who make the suggestion
-							  //String nxtTurn = getNextTurnAfterSuggestion(); 
-							  //resMsg.setPlayerTurn(nxtTurn);
-							  broadcastMessage(resMsg);
-							  //EndTurnMessage endturn = new EndTurnMessage();
-							  //handleEndTurn(endturn, name);
+							  Card card = getSuggDisproveCard(name);
+							  if (card != null) {
+								  //movePlayerToSuggestedRoom();
+								  String approvedMsg =  card.getName();
+								  OtherMessage resMsg = createOtherMessage(approvedMsg);
+								  String nxtTurn = getNextTurnAfterSuggestion(); 
+								  resMsg.setPlayerTurn(nxtTurn);
+								  sendMessageToAPlayer(suggestionMaker, resMsg);
+								  OtherMessage notifyAll = createOtherMessage("Suggestion was disproved by " + name);
+								  notifyAll.setPlayerTurn(nxtTurn);
+								  broadcastMessage(notifyAll); //if we need to tell others??
+								  
+								  //In case if a suggestion is disproved by a player NOT next to the one
+								  //who make the suggestion
+								  //String nxtTurn = getNextTurnAfterSuggestion(); 
+								  //resMsg.setPlayerTurn(nxtTurn);
+								  //broadcastMessage(resMsg);
+								  //EndTurnMessage endturn = new EndTurnMessage();
+								  //handleEndTurn(endturn, name);
+								  
+							  } else {
+								  String errorMsg =  "You don't have a card to disprove Suggestion ";
+								  OtherMessage erMsg = createOtherMessage(errorMsg);
+								  //String nxtTurn = getNextTurnAfterSuggestion(); 
+								  //erMsg.setPlayerTurn(nxtTurn);
+								  sendMessageToAPlayer(name, erMsg);
+								  //erMsg.setMessage(name + " Can not disprove Suggestion");
+								  //broadcastMessage(erMsg);
+								  if (numPlayersDisproveSugg < (players.size() - 1))
+									  disproveSuggestion(name);
+							  }					  
+							  
 						  } else {  //ask the next player to disprove
 							  if (numPlayersDisproveSugg < (players.size() - 1))
 								  disproveSuggestion(name);
 							  else { //No one diprove suggestion
 								  OtherMessage re = createOtherMessage("No one disproved the Suggestion");
-								  //String nxtPlyrTurn = getNextTurnAfterSuggestion();
-								  //re.setPlayerTurn(nxtPlyrTurn);
+								  String nxtPlyrTurn = getNextTurnAfterSuggestion();
+								  re.setPlayerTurn(nxtPlyrTurn);
 								  broadcastMessage(re);
-								  //EndTurnMessage endturn = new EndTurnMessage();
+								  
+								//EndTurnMessage endturn = new EndTurnMessage();
 								  //handleEndTurn(endturn, name);
 							  }
 						  }   
@@ -524,11 +602,10 @@ private static void  handleMove(MoveMsg move, String pName) throws IOException {
 						  MoveMsg moveMsg = (MoveMsg) pMsg;
 						  handleMove(moveMsg, name);
 					  }
+					  
 					  else if(type.equalsIgnoreCase("End Turn")) {
 						  EndTurnMessage endMsg = (EndTurnMessage) pMsg;
-						  handleEndTurn(endMsg, name);
-						  
-						  
+						  handleEndTurn(endMsg, name);  
 					  }
 				} 
 			} catch (Exception e) {

@@ -17,16 +17,20 @@ public class Player {
 	private Location location;
 	private int locationID;
 	private ArrayList<Card> playerCards;
-	int index;
+	private int index;
+	private String previousSuggLocation;
 
 	public Player(String name, int id) {
 		this.playerName = name;
 		this.playerID = id;
-		playerCards = new ArrayList<Card>();
+		this.playerCards = new ArrayList<Card>();
+		this.LostGameFlag = false;
 	}
 	
 	public Player() {
 		//default constructor
+		this.playerCards = new ArrayList<Card>();
+		this.LostGameFlag = false;
 	}
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
@@ -68,7 +72,15 @@ public class Player {
 	public Location getLocation() {
 		return this.location;
 	}
-
+	
+	public void setPlayerPrevSuggLocation(String suggLoc) {
+		this.previousSuggLocation = suggLoc;
+	}
+	
+	public String getPlayerPrevSuggLocation() {
+		return this.previousSuggLocation;
+	}
+	
 	public String printPlayer() {
 		return "Player: " + this.playerName + "\nID: " + this.playerID + "\nOrder Number: " + this.orderNum;
 	}
@@ -77,16 +89,15 @@ public class Player {
 		for (int i = 0; i<this.playerCards.size();i++) {
 			if (this.playerCards.get(i).getName().equalsIgnoreCase(cardName)) {
 				return this.playerCards.get(i);
-			} 
-		
+			} 	
 	}
-		System.out.println("You don't have a card with that name");
+		//System.out.println("You don't have a card with that name");
 		return null;
 	}
 
 	public void setLostGameFlag() {
 		this.LostGameFlag = true;
-		System.out.println(this.playerName + " has lost the game.");
+		//System.out.println(this.playerName + " has lost the game.");
 	}
 
 	public boolean getLostGameFlag() {
@@ -181,6 +192,30 @@ public class Player {
 	}
 	
 	
+	 public Card disprove(Card person, Card weapon, Card location) {
+			
+	   	 for(int i = 0; i < this.playerCards.size(); i++) {
+	   				
+	   		 if(person.getName().equalsIgnoreCase(this.playerCards.get(i).getName())) {
+	   			 
+	   			 return this.playerCards.get(i);   					 
+	   		 }
+	   		 
+	   		 if(weapon.getName().equalsIgnoreCase(this.playerCards.get(i).getName())) {
+	   			 
+	   			 return this.playerCards.get(i);	 
+	   		 } 
+	   		 if(location.getName().equalsIgnoreCase(this.playerCards.get(i).getName())) {
+	   			 
+	   			 return this.playerCards.get(i); 
+	   		 } 
+	   	 }
+	   	 
+	   	 return null;
+	   	 
+	    }
+	
+	 
 	public int move(int destLoc) {
 		
 		if(this.location.getLocationID() == 1) {

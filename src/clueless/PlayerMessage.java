@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import clueless.Location.LocationType;
+
 public class PlayerMessage implements Serializable{
 
 	private static final long serialVersionUID = 1;
@@ -46,6 +48,7 @@ public class PlayerMessage implements Serializable{
 		String character;
 		String loc; 
 		String weapon;
+		LocationType locType;
 		boolean AccusationFlag;
 		
 		public SuggestionOrAccusation(String character, String loc, String weapon, boolean AccusationFlag) { 
@@ -73,6 +76,12 @@ public class PlayerMessage implements Serializable{
 			}
 		}
 		
+		public void setLocationType(LocationType type) {
+			this.locType = type;
+		}
+		public LocationType getLocationType() {
+			return this.locType;
+		}
 		public void setCharacter(String character) {
 			this.character = character;
 		}
@@ -94,7 +103,7 @@ public class PlayerMessage implements Serializable{
 		}
 
 		public String getLoc() {
-			return loc;
+			return this.loc;
 		}
 
 		public boolean getAccusationFlag() {
@@ -156,9 +165,7 @@ public class PlayerMessage implements Serializable{
 
 		public void setLocation(Location location) {
 			this.location = location;
-		}
-		
-		
+		}	
 	}
 	
 	public static class DealCardMessage extends PlayerMessage {
@@ -166,6 +173,7 @@ public class PlayerMessage implements Serializable{
 		private static final long serialVersionUID = 5;
 		private ArrayList<Card> cards; 
 		private String message;
+		Location startLocation;
 		
 		public DealCardMessage() {
 			cards = new ArrayList<Card>();
@@ -188,6 +196,13 @@ public class PlayerMessage implements Serializable{
 		public String getMessage() {
 			return this.message;
 		}
+		
+		public void setStartLocation(Location loc) {
+			this.startLocation = loc;
+		}
+		public Location getStartLocation() {
+			return this.startLocation;
+		}
 	}
 	
 	public static class OtherMessage extends PlayerMessage {
@@ -209,7 +224,7 @@ public class PlayerMessage implements Serializable{
 		}
 	}
 	
-public static class EndTurnMessage extends PlayerMessage {
+	public static class EndTurnMessage extends PlayerMessage {
 		
 		private static final long serialVersionUID = 7;
 		
@@ -227,7 +242,5 @@ public static class EndTurnMessage extends PlayerMessage {
 			return this.message;
 		}
 	}
-	
-	
 	
 }

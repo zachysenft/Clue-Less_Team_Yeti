@@ -16,11 +16,11 @@ import clueless.Location.LocationType;
 import clueless.Player;
 import clueless.PlayerMessage;
 import clueless.PlayerMessage.DealCardMessage;
+import clueless.PlayerMessage.EndTurnMessage;
 import clueless.PlayerMessage.MoveMsg;
 import clueless.PlayerMessage.OtherMessage;
 import clueless.PlayerMessage.SuggestionOrAccusation;
 import clueless.PlayerMessage.SuggestionResponse;
-import clueless.PlayerMessage.EndTurnMessage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,8 +70,8 @@ public class ClientUI extends JFrame implements ActionListener {
 	
 	private static String turn;
 	private static boolean gameEnded = false;
-	//Map of Location to id
-	private static HashMap<String, Integer> locationIDMap = new HashMap<>();
+	private static boolean canMakeSuggestion = true;
+	
 	// JFrame related
 	private static JPanel contentPane;
 	private JTextArea txtAreaLogs;
@@ -109,6 +109,7 @@ public class ClientUI extends JFrame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
+    /*   * Moved to BoardGame class **
 private static Map<String, Integer> idToLocName = new HashMap<String, Integer>(){{
     	
     	put("Study", 1);
@@ -145,16 +146,10 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
     	
     
     }};
+    */
+    
+    
 	public static void main(String[] args) {
-		locationIDMap.put("Study", 1);
-		locationIDMap.put("Library", 2);
-		locationIDMap.put("Conservatory", 3);
-		locationIDMap.put("Hall", 4);
-		locationIDMap.put("Billiard Room", 5);
-		locationIDMap.put("Ballroom", 6);
-		locationIDMap.put("Lounge", 7);
-		locationIDMap.put("Dining Room", 8);
-		locationIDMap.put("Kitchen", 9);
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -197,8 +192,8 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		panelNorth.add(panelNorthSouth, BorderLayout.SOUTH);
 		panelNorthSouth.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));		
 		
-	    endBtn = new JButton("End Turn");
-	    endBtn.addActionListener(this);;
+		endBtn = new JButton("End Turn");
+		endBtn.addActionListener(this);
 		panelNorthSouth.add(endBtn);
 		lblName = new JLabel("Nickname");
 		panelNorthSouth.add(lblName);
@@ -216,7 +211,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		//panelNorthWest.add(lblName);
 		String[] person = { "Person", "Colonel Mustard","Mrs. White", "Professor Plum","Mrs. Peacock","Mr. Green","Miss Scarlet"};
 		String[] weapon = {"Weapon", "Dagger", "Rope", "Lead Pipe", "Candlestick", "Revolver", "Wrench"};
-		String[] location = {"Location", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
+		String[] location = {"Location", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study", "Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"};
 	    personList = new JComboBox<String>(person);
 	    weaponList = new JComboBox<String>(weapon);
 	    locationList = new JComboBox<String>(location);
@@ -248,7 +243,6 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	    panelNorth.add(movePanel, BorderLayout.EAST); //contentPane.add(movePanel, BorderLayout.EAST);
 	    //pannelCollection.add(movePanel);
 	    //panelNorth.add(pannelCollection, BorderLayout.WEST);// panelNorthWest, BorderLayout.WEST);
-	    
 	    
 		txtNickname = new JTextField();
 		txtNickname.setColumns(10);
@@ -324,7 +318,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		String resp ="";
 		if (JOptionPane.YES_OPTION == result) {
 			resp = "Yes";
-			//select card and send it
+			//select card and send it maybe
 		}		
 		else
 			resp = "No";
@@ -336,12 +330,13 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	public static void setCards(PlayerMessage msg) {
 		DealCardMessage cardMsg = (DealCardMessage) msg;
 		ArrayList<Card> c = cardMsg.getCards();
-		
 		if (c.size() > 0) {
 			for (Card card: c) {
 			   playersCard.append(card.getName() + "\n");  //setText(cards); 
 			}
 		} 
+		Location loc = cardMsg.getStartLocation();
+		//player.setLocation(loc);
 	}
 	private static OtherMessage createOtherMessage(String msg) {
 		OtherMessage otherMsg = new OtherMessage();
@@ -380,13 +375,19 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			
 			//create Suggestion
 			SuggestionOrAccusation sugg = new SuggestionOrAccusation(player, location, weapon, false);
-			//sugg.setMessageType("suggestion");
+			
+			//set location type (Hall or room)
+			if (location.toLowerCase().contains("hall"))
+				sugg.setLocationType(LocationType.HALLWAY);
+			else
+				sugg.setLocationType(LocationType.ROOM);
+			
 			try {
 				objectOutputStream.writeObject(sugg);
+				canMakeSuggestion = false;
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			suggBtn.setEnabled(false);
 		} 
 		
 		else if (e.getSource() == moveBtn) {
@@ -404,42 +405,41 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			}  */
 			//get player name
 			//String location = JOptionPane.showInputDialog("Enter Location");
-			String[] roomArr = {"Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
-			String[] hallwayArr = {"Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"}; 
-			ArrayList<String> room = new ArrayList<>(Arrays.asList(roomArr));
-			ArrayList<String> hallway = new ArrayList<>(Arrays.asList(hallwayArr));
+			//String[] roomArr = {"Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
+			//String[] hallwayArr = {"Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"}; 
+			//ArrayList<String> room = new ArrayList<>(Arrays.asList(roomArr));
+			//ArrayList<String> hallway = new ArrayList<>(Arrays.asList(hallwayArr));
 			
 			
 			
-			String location = (String)moveLocation.getSelectedItem().toString();
+			String location = moveLocation.getSelectedItem().toString();
 			String playerName = clientName;
 			LocationType loctype;
 			//String ms = playerName + " has moved to "+ location;
 			//OtherMessage msg = createOtherMessage(ms);
-			if (room.contains(location) == true){
+			//if (room.contains(location) == true){
+			//	loctype = LocationType.ROOM;
+			//}
+			if (location.toLowerCase().contains("hall")) 
+				loctype = LocationType.HALLWAY;
+			else {
+				 //loctype = LocationType.HALLWAY;
 				loctype = LocationType.ROOM;
 			}
-			else {
-				 loctype = LocationType.HALLWAY;
-			}
-			int locid = idToLocName.get(location);
+			int locid = BoardGame.getLocationID(location);
 			Location loc = new Location (locid, location, loctype);
 			MoveMsg move = new MoveMsg(loc);
 			//move.setLocation(loc);
 			try {
 				objectOutputStream.writeObject(move);
+				canMakeSuggestion = true;
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			moveBtn.setEnabled(false);
 		} 
 		
 		else if (e.getSource() == accusationBtn) {
-			//String accusation = JOptionPane.showInputDialog("Enter Person, Weapon, location");
-			//String [] accus = accusation.split(",");
-			//out.println(clientName + "has accused" + accus[0] + "of committing the crime in the " + accus[2] + " with a " + accus[1]);
-			//stop();
 			String player = (String)personList.getSelectedItem().toString();
 			String weapon = (String)weaponList.getSelectedItem().toString();
 			String location = (String)locationList.getSelectedItem().toString();
@@ -464,7 +464,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				System.out.println("Client: Exception in Sending DealCardMessage");
 				e1.printStackTrace();
 			}
-		}
+		}	
 		
 		else if(e.getSource() == endBtn) {
 			
@@ -524,7 +524,9 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	public static void turnOnOffButtons() {
 		if (clientName.equalsIgnoreCase(turn)) {
 			if (!btnSend.isEnabled()) {btnSend.setEnabled(true);}
-			if (!suggBtn.isEnabled()) {suggBtn.setEnabled(true);}
+			if (canMakeSuggestion) {
+				if (!suggBtn.isEnabled()) {suggBtn.setEnabled(true);}
+			}
 			if (!moveBtn.isEnabled())  {moveBtn.setEnabled(true);}
 			if (!accusationBtn.isEnabled()) { accusationBtn.setEnabled(true);}
 			if (!endBtn.isEnabled()) { endBtn.setEnabled(true);}
@@ -534,7 +536,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			if (suggBtn.isEnabled()) {suggBtn.setEnabled(false);}
 			if (moveBtn.isEnabled())  {moveBtn.setEnabled(false);}
 			if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
-			if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);}
+			if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);}	
 			if (endBtn.isEnabled()) {endBtn.setEnabled(false);}
 		}
 	}
@@ -568,20 +570,29 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 					else if (plmsg.getMessageType().equalsIgnoreCase("Other")) {
 						OtherMessage other = (OtherMessage) plmsg;
 						if ((other.getMessage()) != null) {
-							turn = other.getPlayerTurn();
-							addToLogs(other.getMessage());
-							if (turn != null)
-								turnOnOffButtons();
+							String otherMsg = other.getMessage();
+							
+							if (otherMsg.contains("id")) { //this should happen only once
+								String id = otherMsg.substring(3);
+								int plyrID = Integer.parseInt(id);
+								//player.setPlayerID(plyrID);
+								//player.setPlayerName(clientName);
+							}
+							else {
+								turn = other.getPlayerTurn();
+								addToLogs(otherMsg);
+								if (turn != null)
+									turnOnOffButtons();
+								}
 						}
 					}
 					else if (plmsg.getMessageType().equalsIgnoreCase("SuggestionResponse")) {
 						SuggestionResponse suggResp = (SuggestionResponse) plmsg;
 						String resp = suggResp.getMessage();
 						turn = suggResp.getPlayerTurn();
-						//if (turn != null)
-						//	turnOnOffButtons();
-						showPane(resp);
-						
+						if (turn != null)
+							turnOnOffButtons();
+						showPane(resp);	
 					}
 					else if (plmsg.getMessageType().equalsIgnoreCase("End Turn")) {
 						EndTurnMessage other = (EndTurnMessage) plmsg;

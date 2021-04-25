@@ -4,7 +4,9 @@ package clueless;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -32,13 +34,45 @@ public class BoardGame{
     ArrayList<Room> room_list = new ArrayList<Room>();
     int gameID = 0;
     Dictionary<String, String> winCondition = new Hashtable<String, String>();
-    private final static String [] players = {"Miss Scarlet", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
+    private final static String [] players = {"Colonel Mustard", "Mrs. White", "Professor Plum", " Mrs. Peacock","Mr. Green", "Miss Scarlet"};
     private final static int [] startingHallways = {47, 78, 69, 36, 23, 12};
-    private final static  String [] rooms = {"Study", "Library", "Conservatory", "Hall", "Billiard Room", "Ballroom", "Lounge", "Dining Room", "Kitchen"};
-    private final static String [] weapons = {"Revolver", "Dagger", "Lead Pipe", "Rope", "Candlestick", "Wrench"};
+    private final static  String [] rooms = {"Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
+    private final static String [] weapons = {"Dagger", "Rope", "Lead Pipe","Candlestick","Revolver", "Wrench"};
     private static PlayerMessage.SuggestionOrAccusation suggorAccu;
     private static ArrayList<Card> dealCards = new ArrayList<Card>();
     private static boolean flag = true;
+    
+    private static Map<String, Integer> locationNameToIDMap = new HashMap<String, Integer>(){{	
+    	put("Study", 1);
+    	put("Library", 2);
+    	put("Conservatory", 3);
+    	put("Hall", 4);
+    	put("Billiard Room", 5);
+    	put("Ballroom", 6);
+    	put("Lounge", 7);
+    	put("Dining Room", 8);
+    	put("Kitchen", 9);
+    	put("Hallway 12", 12);
+    	put("Hallway 23", 23);
+    	put("Hallway 14", 14);
+    	put("Hallway 25", 25);
+    	put("Hallway 36", 36);
+    	put("Hallway 47", 47);
+    	put("Hallway 45", 45);
+    	put("Hallway 56", 56);
+    	put("Hallway 58", 58);
+    	put("Hallway 69", 69);
+    	put("Hallway 78", 78);
+    	put("Hallway 89", 89);
+    	
+    	// Starting locations
+    	put("ScarletStart",101);
+    	put("MustardStart",102);
+    	put("WhiteStart",103);
+    	put("GreenStart",104);
+    	put("PeacockStart",105);
+    	put("PlumStart",106);
+    }};
     
     public BoardGame() {
 		ArrayList<Card> arr =  generateWinCondition();
@@ -289,6 +323,9 @@ public class BoardGame{
     		return newCurrIndex;
     }
     
+    public static int getLocationID(String locationName) {
+    	return locationNameToIDMap.get(locationName);
+    }
     public static void endGame() {
         
         System.out.println("Game Over!");
@@ -348,14 +385,14 @@ public class BoardGame{
         	Card singleCard = myVar.createCard();
         	dealCards.add(singleCard);
         }
-
         dealCards.remove(rndPlayer);
-        dealCards.remove(rndRoom + 11);
-        dealCards.remove(rndWeapon + 4);
-      
-        shuffle(0,5);     //shffle person
-        shuffle(6,10);   //shuffle weapon
-        shuffle(11, 18); //shuffle room
+        dealCards.remove(rndWeapon + 5);
+        dealCards.remove(rndRoom + 10);
+     
+        //shuffle(0,5);     //shffle person
+        //shuffle(6,10);   //shuffle weapon
+        //shuffle(11, 18); //shuffle room
+
         return dealCards;
         
     }
@@ -397,25 +434,24 @@ public class BoardGame{
 		}
 	}
 	
-     public void clearDatabase() {
-   
-   	try {  
-  	 Class.forName("com.mysql.jdbc.Driver");  
-  	 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");  
-  	//here TeamYeti is database name, root is username and teamyeti is password  
-   	Statement stmt=con.createStatement();  
+	public void clearDatabase() {	   
+	   	try {  
+	  	 Class.forName("com.mysql.jdbc.Driver");  
+	  	 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");  
+	  	//here TeamYeti is database name, root is username and teamyeti is password  
+	   	Statement stmt=con.createStatement();  
 
-   	stmt.executeUpdate("delete from CLUELESS_SUGGESTIONS");
+	   	stmt.executeUpdate("delete from CLUELESS_SUGGESTIONS");
 
-   	con.close();  
-	  }
- 	 catch(Exception e){ System.out.println(e);}  
+	   	con.close();  
+		  }
+	 	 catch(Exception e){ System.out.println(e);}  
 	}
-	
+    
     public void storeWinCondinDB(){
         
-	clearDatabase();
-	    
+    	//clearDatabase();
+    	
         String player = winCondition.get("Player");
         String room = winCondition.get("Room");
         String weapon = winCondition.get("Weapon");
@@ -431,7 +467,10 @@ public class BoardGame{
 		System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3) + "  "+ rs.getString(4) + "  " + rs.getInt(5)  + "  " + rs.getString(6)  + "  " + rs.getString(7) );*/
         
         String sql = "insert into CLUELESS_SUGGESTIONS (Suggestion_ID, Player, Room, Weapon, Made_By, Winning_flg, Is_Accusation) values (?, ?, ?, ?, ?, ?, ?)";
-		PreparedStatement stmt1 = con.prepareStatement(sql);
+		String clearTable = "DELETE FROM CLUELESS_SUGGESTIONS";
+		PreparedStatement clrStmt = con.prepareStatement(clearTable);
+		clrStmt.executeUpdate();
+        PreparedStatement stmt1 = con.prepareStatement(sql);
 		stmt1.setInt(1, 1);
 		stmt1.setString(2, player);
 		stmt1.setString(3, room);
@@ -442,7 +481,7 @@ public class BoardGame{
 		stmt1.executeUpdate();
 
 		con.close();  
-		}catch(Exception e){ System.out.println(e);}  
+		}catch(Exception e){ System.out.println("Error while inserting to the DB \n" + e);}  
 		}  
         
     
@@ -479,18 +518,19 @@ public class BoardGame{
         try{  
           Class.forName("com.mysql.cj.jdbc.Driver");  
           Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");   
-          Statement stmt=con.createStatement();  
+          Statement stmt=con.createStatement();         
+          
           ResultSet rs=stmt.executeQuery(
-             "select Player, Room, Weapon from CLUELESS_SUGGESTIONS WHERE SUGGESTION_ID = 1 AND MADE_BY = 7"); 
+             "select Player, Room, Weapon from CLUELESS_SUGGESTIONS WHERE SUGGESTION_ID = 1 AND MADE_BY = 7");    
+          rs.next();
+          if (rs.getString("Player").equalsIgnoreCase(ply) 
+                && rs.getString("Room").equalsIgnoreCase(loc) 
+                && rs.getString("Weapon").equalsIgnoreCase(wpn)) {
+        	  results = true;
+        	  }
+          	con.close();
           
-          if (rs.getString("Player").equals(ply) 
-                && rs.getString("Room").equals(loc) 
-                && rs.getString("Weapon").equals(wpn)) {
-            results = true;}
-          con.close();
-          
-          return
-            results;
+          	//return results;
         }
         catch(Exception e){ System.out.println(e);}
         
