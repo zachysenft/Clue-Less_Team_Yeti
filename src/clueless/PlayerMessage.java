@@ -141,6 +141,10 @@ public class PlayerMessage implements Serializable{
 	//class for telling players where they have moved to
 		private Location location;
 		
+		public MoveMsg() {
+			this.setMessageType("Move");
+		}
+		
 		public MoveMsg(Location location) {
 			setLocation(location);
 			this.setMessageType("Move");
@@ -204,5 +208,26 @@ public class PlayerMessage implements Serializable{
 			return this.message;
 		}
 	}
+	
+public static class EndTurnMessage extends PlayerMessage {
+		
+		private static final long serialVersionUID = 7;
+		
+		private String message;
+		
+		public EndTurnMessage() {
+			this.setMessageType("End Turn");
+		}
+		
+		public void setMessage(String msg) {
+			this.message = msg;
+		}
+		
+		public String getMessage() {
+			return this.message;
+		}
+	}
+	
+	
 	
 }
