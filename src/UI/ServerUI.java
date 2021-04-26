@@ -323,15 +323,15 @@ public class ServerUI extends JFrame implements ActionListener {
 					plyr.setPlayerPrevSuggLocation(plyr.getLocation().getLocationName()); 
 					// move suggested char to location here
 					// should in theory set the location to the player who's making the suggestion's location
-//					for (int i = 0; i<boardGame.getActivePlayers().size();i++) {
-//						if (boardGame.getActivePlayers().get(i).getCharacterName().equalsIgnoreCase(pl)) {
-//							// if the active player's character name matches the character in the suggestion
-//							MoveMsg moveMsg = new MoveMsg(plyr.getLocation());
-//							handleMove(moveMsg,boardGame.getActivePlayers().get(i).getPlayerName());
-//							//boardGame.getActivePlayers().get(i).setLocation(plyr.getLocation());;
-//							
-//						}
-//					}
+					for (Map.Entry playername: nameToPlayerMap.entrySet()){
+						Player thisplayer = (Player) playername.getValue();
+						if (thisplayer.getCharacterName().equalsIgnoreCase(pl)) {
+							thisplayer.setLocation(plyr.getLocation());
+							OtherMessage ms = createOtherMessage(thisplayer.getPlayerName() + " has been moved to " + plyr.getLocation().getLocationName());
+							broadcastMessage(ms);
+						}
+					}
+
 					broadcastMessage(om);
 					
 					//Request the other player to show card
