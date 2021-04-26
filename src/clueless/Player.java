@@ -11,6 +11,7 @@ public class Player {
 
 	int playerID;
 	String playerName;
+	String characterName; //created to track the name of the character
 	boolean activeFlag;
 	boolean LostGameFlag;
 	int orderNum;
@@ -394,10 +395,64 @@ public class Player {
 			}
 			return -1;
 		}
+		//adding locations for starting squares
+		if(this.location.getLocationID() == 101) {
+			//In starting spot for scarlet, need hallway 47
+			if(destLoc == 47 ) {
+				return destLoc;
+			}
+			return -1;
+		}
+		
+		if(this.location.getLocationID() == 102) {
+			//In starting spot for mustard, need hallway 78
+			if(destLoc == 78) {
+				return destLoc;
+			}
+			return -1;
+		}
+		
+		if(this.location.getLocationID() == 103) {
+			//In starting spot for white, need hallway 69
+			if(destLoc == 69) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(this.location.getLocationID() == 104) {
+			//In starting spot for green, need hallway 36
+			if(destLoc == 36) {
+				return destLoc;
+			}
+			return -1;
+		}
+		
+		if(this.location.getLocationID() == 105) {
+			//In starting spot for peacock, need hallway 23
+			if(destLoc == 23) {
+				return destLoc;
+			}
+			return -1;
+		}
+		if(this.location.getLocationID() == 106) {
+			//In starting spot for plum, need hallway 23
+			if(destLoc == 12) {
+				return destLoc;
+			}
+			return -1;
+		}
 		
 		
 		return -1;
 		
+	}
+
+	public String getCharacterName() {
+		return characterName;
+	}
+
+	public void setCharacterName(String characterName) {
+		this.characterName = characterName;
 	}
 
 
