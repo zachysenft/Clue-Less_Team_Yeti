@@ -36,6 +36,8 @@ public class BoardGame{
     Dictionary<String, String> winCondition = new Hashtable<String, String>();
     private final static String [] players = {"Colonel Mustard", "Mrs. White", "Professor Plum", " Mrs. Peacock","Mr. Green", "Miss Scarlet"};
     private final static int [] startingHallways = {47, 78, 69, 36, 23, 12};
+    private final static  String [] startingSpots = {"ScarletStart","MustardStart","WhiteStart","GreenStart","PeacockStart","PlumStart"};
+    private final static String [] assignedCharactersOrder = {"Miss Scarlet", "Colonel Mustard","Mrs. White","Mr. Green","Mrs. Peacock","Professor Plum"}; //assigns to players
     private final static  String [] rooms = {"Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
     private final static String [] weapons = {"Dagger", "Rope", "Lead Pipe","Candlestick","Revolver", "Wrench"};
     private static PlayerMessage.SuggestionOrAccusation suggorAccu;
@@ -427,10 +429,14 @@ public class BoardGame{
 	   	  }
 		//Assign initial location. Can be changed later
 		int j = 0;
+		int k = 100; //indices of starting spots
 		for (Player p: players) {
-			Location rm = new Room(j+1, rooms[j], false);
+			Location rm = new Hallway(k+1, startingSpots[j], false);
+			String playerCharacter = assignedCharactersOrder[j];
+			p.setCharacterName(playerCharacter);
 			p.setLocation(rm);
 			j++;
+			k++;
 		}
 	}
 	
