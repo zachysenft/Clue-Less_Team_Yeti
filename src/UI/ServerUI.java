@@ -321,6 +321,15 @@ public class ServerUI extends JFrame implements ActionListener {
 				if (plyr.getLocation().getLocationName().equalsIgnoreCase(loc)) {
 					OtherMessage om = createOtherMessage("suggestion made on "+ pl + " with "+ weapon + " on "+ loc);
 					plyr.setPlayerPrevSuggLocation(plyr.getLocation().getLocationName()); 
+					// move suggested char to location here
+					// should in theory set the location to the player who's making the suggestion's location
+//					for (int i = 0; i<boardGame.getActivePlayers().size();i++) {
+//						if (boardGame.getActivePlayers().get(i).getCharacterName().equalsIgnoreCase(pl)) {
+//							// if the active player's character name matches the character in the suggestion
+//							boardGame.getActivePlayers().get(i).setLocation(plyr.getLocation());;
+//							
+//						}
+//					}
 					broadcastMessage(om);
 					
 					//Request the other player to show card
