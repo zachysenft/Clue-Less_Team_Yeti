@@ -326,7 +326,9 @@ public class ServerUI extends JFrame implements ActionListener {
 //					for (int i = 0; i<boardGame.getActivePlayers().size();i++) {
 //						if (boardGame.getActivePlayers().get(i).getCharacterName().equalsIgnoreCase(pl)) {
 //							// if the active player's character name matches the character in the suggestion
-//							boardGame.getActivePlayers().get(i).setLocation(plyr.getLocation());;
+//							MoveMsg moveMsg = new MoveMsg(plyr.getLocation());
+//							handleMove(moveMsg,boardGame.getActivePlayers().get(i).getPlayerName());
+//							//boardGame.getActivePlayers().get(i).setLocation(plyr.getLocation());;
 //							
 //						}
 //					}
