@@ -17,6 +17,7 @@ import clueless.Location.LocationType;
 import clueless.Player;
 import clueless.PlayerMessage;
 import clueless.PlayerMessage.DealCardMessage;
+import clueless.PlayerMessage.EndGameMessage;
 import clueless.PlayerMessage.EndTurnMessage;
 import clueless.PlayerMessage.MoveMsg;
 import clueless.PlayerMessage.OtherMessage;
@@ -189,8 +190,8 @@ public class ServerUI extends JFrame implements ActionListener {
 	
 	private static void  handleEndTurn(EndTurnMessage move, String pName) throws IOException {
 		
-		int nextPlyr = (nameToIdMap.get(pName)) % players.size();
-		String nextName = players.get(nextPlyr).getPlayerName();
+		//int nextPlyr = (nameToIdMap.get(pName)) % players.size();
+		String nextName = nextTurn(pName); //players.get(nextPlyr).getPlayerName();
 		OtherMessage ms = createOtherMessage(pName + " ended turn. " + nextName + "'s turn.");
 		ms.setPlayerTurn(nextName);
 		broadcastMessage(ms);
@@ -243,7 +244,8 @@ public class ServerUI extends JFrame implements ActionListener {
 			//Set next player turn
 			//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
 			//String nextName = players.get(nextPlyr).getPlayerName();
-			
+			broadcastMessage(ms);
+			/*
 			if (location.getLocationType() == LocationType.HALLWAY) {
 	   			String nextName = nextTurn(pName);
 				ms.setPlayerTurn(nextName);
@@ -252,7 +254,7 @@ public class ServerUI extends JFrame implements ActionListener {
 			else {
 				ms.setPlayerTurn(pName); //player still have turn
 				broadcastMessage(ms);
-			}
+			}*/
 		}	
 	}
 	
@@ -301,6 +303,11 @@ public class ServerUI extends JFrame implements ActionListener {
 				String nextName = nextTurn(name);
 				ar.setPlayerTurn(nextName);
 				broadcastMessage(ar);
+				//send message for End of the Game
+				EndGameMessage egm = new EndGameMessage();
+				egm.setMessage("You lose");
+				sendMessageToAPlayer(name, egm);
+				
 			}
 			else {
 				OtherMessage ar = createOtherMessage("The accusation is correct!" + plyr.getPlayerName() + " wins!");
@@ -569,22 +576,14 @@ public class ServerUI extends JFrame implements ActionListener {
 								  //movePlayerToSuggestedRoom();
 								  String approvedMsg =  card.getName();
 								  OtherMessage resMsg = createOtherMessage(approvedMsg + " is incorrect.");
-								  String nxtTurn = getNextTurnAfterSuggestion(); 
-								  resMsg.setPlayerTurn(nxtTurn);
-								  sendMessageToAPlayer(suggestionMaker, resMsg);
-								  OtherMessage notifyAll = createOtherMessage("Suggestion was disproved by " + name);
-								  notifyAll.setPlayerTurn(nxtTurn);
-								  broadcastMessage(notifyAll); //if we need to tell others??
-								  sendMessageToAPlayer(suggestionMaker, resMsg);
-								  
-								  //In case if a suggestion is disproved by a player NOT next to the one
-								  //who make the suggestion
 								  //String nxtTurn = getNextTurnAfterSuggestion(); 
 								  //resMsg.setPlayerTurn(nxtTurn);
-								  //broadcastMessage(resMsg);
-								  //EndTurnMessage endturn = new EndTurnMessage();
-								  //handleEndTurn(endturn, name);
-								  
+								  //sendMessageToAPlayer(suggestionMaker, resMsg);
+								  OtherMessage notifyAll = createOtherMessage("Suggestion was disproved by " + name);
+								  //notifyAll.setPlayerTurn(nxtTurn);
+								  broadcastMessage(notifyAll); //if we need to tell others??
+								  sendMessageToAPlayer(suggestionMaker, resMsg);
+								 								  
 							  } else {
 								  String errorMsg =  "You don't have a card to disprove Suggestion ";
 								  OtherMessage erMsg = createOtherMessage(errorMsg);

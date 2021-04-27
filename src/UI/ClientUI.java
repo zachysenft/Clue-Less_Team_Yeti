@@ -211,7 +211,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		//panelNorthWest.add(lblName);
 		String[] person = { "Person", "Colonel Mustard","Mrs. White", "Professor Plum","Mrs. Peacock","Mr. Green","Miss Scarlet"};
 		String[] weapon = {"Weapon", "Dagger", "Rope", "Lead Pipe", "Candlestick", "Revolver", "Wrench"};
-		String[] location = {"Location", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study", "Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"};
+		String[] location = {"Location", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
 	    personList = new JComboBox<String>(person);
 	    weaponList = new JComboBox<String>(weapon);
 	    locationList = new JComboBox<String>(location);
@@ -388,6 +388,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+			suggBtn.setEnabled(false);
 		} 
 		
 		else if (e.getSource() == moveBtn) {
@@ -437,6 +438,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			moveBtn.setEnabled(false);
 		} 
 		
 		else if (e.getSource() == accusationBtn) {
@@ -522,22 +524,24 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	}
 
 	public static void turnOnOffButtons() {
-		if (clientName.equalsIgnoreCase(turn)) {
-			if (!btnSend.isEnabled()) {btnSend.setEnabled(true);}
-			if (canMakeSuggestion) {
-				if (!suggBtn.isEnabled()) {suggBtn.setEnabled(true);}
+		if (!gameEnded) {
+			if (clientName.equalsIgnoreCase(turn)) {
+				if (!btnSend.isEnabled()) {btnSend.setEnabled(true);}
+				if (canMakeSuggestion) {
+					if (!suggBtn.isEnabled()) {suggBtn.setEnabled(true);}
+				}
+				if (!moveBtn.isEnabled())  {moveBtn.setEnabled(true);}
+				if (!accusationBtn.isEnabled()) { accusationBtn.setEnabled(true);}
+				if (!endBtn.isEnabled()) { endBtn.setEnabled(true);}
+				
+			} else {
+				if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
+				if (suggBtn.isEnabled()) {suggBtn.setEnabled(false);}
+				if (moveBtn.isEnabled())  {moveBtn.setEnabled(false);}
+				if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
+				if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);}	
+				if (endBtn.isEnabled()) {endBtn.setEnabled(false);}
 			}
-			if (!moveBtn.isEnabled())  {moveBtn.setEnabled(true);}
-			if (!accusationBtn.isEnabled()) { accusationBtn.setEnabled(true);}
-			if (!endBtn.isEnabled()) { endBtn.setEnabled(true);}
-			
-		} else {
-			if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
-			if (suggBtn.isEnabled()) {suggBtn.setEnabled(false);}
-			if (moveBtn.isEnabled())  {moveBtn.setEnabled(false);}
-			if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
-			if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);}	
-			if (endBtn.isEnabled()) {endBtn.setEnabled(false);}
 		}
 	}
 	
@@ -603,6 +607,11 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 							if (turn != null)
 								turnOnOffButtons();
 						}
+					}
+					else if (plmsg.getMessageType().equalsIgnoreCase("End Game")) {
+						turn="other";
+						turnOnOffButtons();	
+						gameEnded = true;
 					}
 				}
 			} catch (IOException e) {

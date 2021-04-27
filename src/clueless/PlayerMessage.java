@@ -251,4 +251,23 @@ public class PlayerMessage implements Serializable{
 		}
 	}
 	
+	public static class EndGameMessage extends PlayerMessage {
+		
+		private static final long serialVersionUID = 8;
+		
+		private String message;
+		
+		public EndGameMessage() {
+			this.setMessageType("End Game");
+		}
+		
+		public void setMessage(String msg) {
+			this.message = msg;
+		}
+		
+		public String getMessage() {
+			return this.message;
+		}
+	}
+	
 }
