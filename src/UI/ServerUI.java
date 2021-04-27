@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 //import me.alexpanov.net.FreePortFinder;
 
-//import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
+import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
 
 import clueless.BoardGame;
 import clueless.Card;
@@ -407,6 +407,7 @@ public class ServerUI extends JFrame implements ActionListener {
 			dealCard.setPlayerTurn(players.get(0).getPlayerName());
 			dealCard.setCards(players.get(i).getPlayerCard());
 			dealCard.setStartLocation(players.get(i).getLocation());
+			dealCard.setPlayerCharName(players.get(i).getCharacterName());
 			i++;
 			p.writeObject(dealCard);
 		}

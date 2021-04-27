@@ -421,16 +421,16 @@ public class BoardGame{
    	  }
 	} 
    	 
-	public void handCards(ArrayList<Player> players) {
+	public void handCards(ArrayList<Player> player) {
 		for(int i = 0; i < dealCards.size(); i++) {
 	   		 
-	   		 int x = i % players.size();
-	   		 players.get(x).addCard(dealCards.get(i));	 
+	   		 int x = i % player.size();
+	   		 player.get(x).addCard(dealCards.get(i));	 
 	   	  }
 		//Assign initial location. Can be changed later
 		int j = 0;
 		int k = 100; //indices of starting spots
-		for (Player p: players) {
+		for (Player p: player) {
 			Location rm = new Hallway(k+1, startingSpots[j], false);
 			String playerCharacter = assignedCharactersOrder[j];
 			p.setCharacterName(playerCharacter);

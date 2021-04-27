@@ -174,6 +174,7 @@ public class PlayerMessage implements Serializable{
 		private ArrayList<Card> cards; 
 		private String message;
 		Location startLocation;
+		String playerCharName;
 		
 		public DealCardMessage() {
 			cards = new ArrayList<Card>();
@@ -202,6 +203,13 @@ public class PlayerMessage implements Serializable{
 		}
 		public Location getStartLocation() {
 			return this.startLocation;
+		}
+		
+		public void setPlayerCharName(String name) {
+			this.playerCharName = name;
+		}
+		public String getPlayerCharName() {
+			return this.playerCharName;
 		}
 	}
 	

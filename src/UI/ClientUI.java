@@ -80,7 +80,7 @@ public class ClientUI extends JFrame implements ActionListener {
 	private JButton btnStart;
 	private static JButton btnStartGame;
 	private JPanel panelNorth;
-	private JLabel lblChatClient;
+	private static JLabel lblChatClient;
 	private JPanel panelNorthSouth;
 	private JPanel panelNorthWest;
 	private JPanel pannelCollection;
@@ -562,6 +562,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 					if (plmsg.getMessageType().equalsIgnoreCase("DealCards")) {
 						DealCardMessage dcards = (DealCardMessage) plmsg;
 						setCards(plmsg);
+						lblChatClient.setText(clientName + "("+dcards.getPlayerCharName()+")");
 						turn = dcards.getPlayerTurn(); 
 						if (turn != null)
 							turnOnOffButtons();									
