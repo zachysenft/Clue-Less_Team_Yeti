@@ -439,6 +439,9 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				e1.printStackTrace();
 			}
 			moveBtn.setEnabled(false);
+			if (loctype == LocationType.HALLWAY) {
+				suggBtn.setEnabled(false);
+			}
 		} 
 		
 		else if (e.getSource() == accusationBtn) {
