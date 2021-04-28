@@ -74,6 +74,11 @@ public class Player {
 		return this.location;
 	}
 	
+	public void clearLocation() {
+   		this.location = null;
+  		this.locationID = null;
+ 	}
+	
 	public void setPlayerPrevSuggLocation(String suggLoc) {
 		this.previousSuggLocation = suggLoc;
 	}
