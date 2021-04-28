@@ -74,11 +74,6 @@ public class Player {
 		return this.location;
 	}
 	
-	public void clearLocation() {
-   		this.location = null;
-  		this.locationID = null;
- 	}
-	
 	public void setPlayerPrevSuggLocation(String suggLoc) {
 		this.previousSuggLocation = suggLoc;
 	}
@@ -103,6 +98,8 @@ public class Player {
 
 	public void setLostGameFlag() {
 		this.LostGameFlag = true;
+		this.location = null;
+  		this.locationID = null;
 		//System.out.println(this.playerName + " has lost the game.");
 	}
 
