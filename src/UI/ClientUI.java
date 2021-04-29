@@ -533,6 +533,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				if (!moveBtn.isEnabled())  {moveBtn.setEnabled(true);}
 				if (!accusationBtn.isEnabled()) { accusationBtn.setEnabled(true);}
 				if (!endBtn.isEnabled()) { endBtn.setEnabled(true);}
+				if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
 				
 			} else {
 				if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
@@ -546,7 +547,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	}
 	
 	private static class Listener implements Runnable {
-		private BufferedReader in;
+		//private BufferedReader in;
 		
 		InputStream inputStream; 
 		ObjectInputStream objectInputStream;
