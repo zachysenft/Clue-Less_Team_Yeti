@@ -546,7 +546,14 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);}	
 				if (endBtn.isEnabled()) {endBtn.setEnabled(false);}
 			}
-		}
+		} else {
+    			if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
+    			if (suggBtn.isEnabled()) {suggBtn.setEnabled(false);}
+    			if (moveBtn.isEnabled())  {moveBtn.setEnabled(false);}
+   		 	if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
+   			if (accusationBtn.isEnabled()) {accusationBtn.setEnabled(false);} 
+   			if (endBtn.isEnabled()) {endBtn.setEnabled(false);}
+   		}
 	}
 	
 	private static class Listener implements Runnable {
