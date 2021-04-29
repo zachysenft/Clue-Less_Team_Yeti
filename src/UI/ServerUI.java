@@ -330,6 +330,9 @@ public class ServerUI extends JFrame implements ActionListener {
 					plyr.setPlayerPrevSuggLocation(plyr.getLocation().getLocationName()); 
 					// move suggested char to location here
 					// should in theory set the location to the player who's making the suggestion's location
+					if (plyr.getCharacterName().equalsIgnoreCase(pl)) {
+						// do nothing, character is already in the room of the player
+					} else { //if an active player's character needs to be moved
 					for (Map.Entry playername: nameToPlayerMap.entrySet()){
 						Player thisplayer = (Player) playername.getValue();
 						if (thisplayer.getCharacterName().equalsIgnoreCase(pl)) {
@@ -338,6 +341,7 @@ public class ServerUI extends JFrame implements ActionListener {
 							broadcastMessage(ms);
 						}
 					}
+				}
 
 					broadcastMessage(om);
 					
