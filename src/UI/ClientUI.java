@@ -248,12 +248,12 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		txtNickname.setColumns(10);
 		panelNorthSouth.add(txtNickname);
 
-		lblPort = new JLabel("Port");
+		/*lblPort = new JLabel("Port");
 		panelNorthSouth.add(lblPort);
 
 		txtPort = new JTextField();
 		panelNorthSouth.add(txtPort);
-		txtPort.setColumns(10);
+		txtPort.setColumns(10);*/
 
 		btnStart = new JButton("JOIN");
 		panelNorthSouth.add(btnStart);
@@ -491,8 +491,8 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 
 	public void start() {  //inside main
 		try {
-			PORT = Integer.parseInt(txtPort.getText().trim());  //default port 5005
-			//final int PORT = 5005;
+			//PORT = Integer.parseInt(txtPort.getText().trim());  //default port 5005
+			final int PORT = 5005;
 			clientName = txtNickname.getText().trim();  //??????
 			clientSocket = new Socket("localhost", PORT);
 			//out = new PrintWriter(clientSocket.getOutputStream(), true);
