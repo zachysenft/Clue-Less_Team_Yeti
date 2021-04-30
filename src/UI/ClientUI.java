@@ -195,6 +195,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		endBtn = new JButton("End Turn");
 		endBtn.addActionListener(this);
 		panelNorthSouth.add(endBtn);
+		endBtn.setEnabled(false);
 		lblName = new JLabel("Nickname");
 		panelNorthSouth.add(lblName);
 		
@@ -222,8 +223,10 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	    suggBtn = new JButton("Suggestion");
 	    panelNorthWest.add(suggBtn);
 	    suggBtn.addActionListener(this);
+	    suggBtn.setEnabled(false);
 	    accusationBtn = new JButton("Accuse");
 	    accusationBtn.setBounds(20,20,20,20);
+	    accusationBtn.setEnabled(false);
 	    panelNorthWest.add(accusationBtn);
 	    accusationBtn.addActionListener(this);
 	    panelNorth.add(panelNorthWest, BorderLayout.WEST);
@@ -239,6 +242,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	    movePanel.add(moveBtn);
 	   
 	    moveBtn.addActionListener(this);
+            moveBtn.setEnabled(false);
 	    
 	    panelNorth.add(movePanel, BorderLayout.EAST); //contentPane.add(movePanel, BorderLayout.EAST);
 	    //pannelCollection.add(movePanel);
@@ -264,6 +268,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		btnStartGame =  new JButton("START GAME");
 		panelNorthSouth.add(btnStartGame);
 		btnStartGame.addActionListener(this);
+		btnStartGame.setEnabled(false);
 		btnStartGame.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnStartGame.setForeground(Color.BLUE);
 
@@ -347,6 +352,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnStart) {
+			btnStartGame.setEnabled(true);
 			if(btnStart.getText().equals("JOIN")) {
 				btnStart.setText("LEAVE");
 				start();
@@ -461,6 +467,10 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			//String start = "start game";
 			//out.println(start);
 			//btnStartGame.setEnabled(false);
+			moveBtn.setEnabled(true);
+			suggBtn.setEnabled(true);
+			accusationBtn.setEnabled(true);
+			endBtn.setEnabled(true);
 			DealCardMessage dlCrdMsg = new DealCardMessage();
 			try {
 				objectOutputStream.writeObject(dlCrdMsg);
