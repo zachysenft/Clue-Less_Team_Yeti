@@ -21,6 +21,7 @@ public class GUI {
                 createAndShowGUI(); 
             }
         });
+        
     }
 
     private static void createAndShowGUI() {
@@ -33,6 +34,11 @@ public class GUI {
         f.setVisible(true);
     } 
 }
+
+	
+//Somehow make all players in all rooms and just set visible or invisible based on movements
+	
+
 
     class MyPanel extends JPanel {
    	 
@@ -63,14 +69,23 @@ public class GUI {
         
         //Drawing all the rooms
         g.drawRect(x, y, roomSize, roomSize); //120 by 120 rectangle offset x 10 and y 25 to begin
+        g.drawString("Study", 50, 50);
         g.drawRect(x, y+180, roomSize, roomSize);
+        g.drawString("Library", 50, 230);
         g.drawRect(x, y+360, roomSize, roomSize);
+        g.drawString("Conservatory", 30, 410);
         g.drawRect(x+180, y, roomSize, roomSize);
+        g.drawString("Hall",240, 50);
         g.drawRect(x+180, y+180, roomSize, roomSize);
+        g.drawString("Billiard Room", 215, 230);
         g.drawRect(x+180, y+360, roomSize, roomSize);
+        g.drawString("Dining Room", 395, 230);
         g.drawRect(x+360, y, roomSize, roomSize);
+        g.drawString("Lounge", 410, 50);
         g.drawRect(x+360, y+180, roomSize, roomSize);
+        g.drawString("Ballroom", 225, 410);
         g.drawRect(x+360, y+360, roomSize, roomSize);
+        g.drawString("Kitchen", 410, 410);
         
         //Drawing all the hallways
         g.drawRect(x+roomSize/2 - 15, y+roomSize, hallsizeX, hallsizeY);
@@ -87,6 +102,12 @@ public class GUI {
         g.drawRect(x+roomSize+180, y+180+roomSize/2 - 15, hallsizeY, hallsizeX);
         g.drawRect(x+roomSize, y+360+roomSize/2 - 15, hallsizeY, hallsizeX);
         g.drawRect(x+roomSize+180, y+360+roomSize/2 - 15, hallsizeY, hallsizeX);
+        
+        //Placing the players (dots)
+        g.setColor(Color.blue);
+        g.fillOval(100, 50, 20, 20);
+        g.setColor(Color.pink);
+        g.fillOval(100, 250, 20, 20);
         
     }  
 } 
