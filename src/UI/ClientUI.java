@@ -232,7 +232,10 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	    panelNorth.add(panelNorthWest, BorderLayout.WEST);
 	    
 	    movePanel = new JPanel(new GridLayout(2,0));
-	    String[] move = {"Move", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study", "Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"};
+	    String[] move = {"Move", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study",
+	    		"Study-Hall Hallway", "Hall-Lounge Hallway", "Study-Library Hallway","Hall-Billiard Hallway",
+	    		"Lounge-Dining Hallway","Library-Billiard Hallway","Billiard-Dining Hallway","Library-Conservatory Hallway",
+	    		"Billiard-Ballroom Hallway","Dining-Kitchen Hallway","Conservatory-Ballroom Hallway","Ballroom-Kitchen Hallway"};
 	    moveLocation = new JComboBox<String>(move); //More locations ???
 	    moveLocation.setVisible(true);
 	    movePanel.add(moveLocation);
@@ -383,7 +386,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			SuggestionOrAccusation sugg = new SuggestionOrAccusation(player, location, weapon, false);
 			
 			//set location type (Hall or room)
-			if (location.toLowerCase().contains("hall"))
+			if (location.toLowerCase().contains("hallway"))
 				sugg.setLocationType(LocationType.HALLWAY);
 			else
 				sugg.setLocationType(LocationType.ROOM);
@@ -427,7 +430,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			//if (room.contains(location) == true){
 			//	loctype = LocationType.ROOM;
 			//}
-			if (location.toLowerCase().contains("hall")) 
+			if (location.toLowerCase().contains("hallway")) 
 				loctype = LocationType.HALLWAY;
 			else {
 				 //loctype = LocationType.HALLWAY;
