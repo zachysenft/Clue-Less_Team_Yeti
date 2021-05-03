@@ -54,19 +54,33 @@ public class BoardGame{
     	put("Lounge", 7);
     	put("Dining Room", 8);
     	put("Kitchen", 9);
-    	put("Hallway 12", 12);
-    	put("Hallway 23", 23);
-    	put("Hallway 14", 14);
-    	put("Hallway 25", 25);
-    	put("Hallway 36", 36);
-    	put("Hallway 47", 47);
-    	put("Hallway 45", 45);
-    	put("Hallway 56", 56);
-    	put("Hallway 58", 58);
-    	put("Hallway 69", 69);
-    	put("Hallway 78", 78);
-    	put("Hallway 89", 89);
+//    	put("Hallway 12", 12);
+//    	put("Hallway 23", 23);
+//    	put("Hallway 14", 14);
+//    	put("Hallway 25", 25);
+//    	put("Hallway 36", 36);
+//    	put("Hallway 47", 47);
+//    	put("Hallway 45", 45);
+//    	put("Hallway 56", 56);
+//    	put("Hallway 58", 58);
+//    	put("Hallway 69", 69);
+//    	put("Hallway 78", 78);
+//    	put("Hallway 89", 89);
     	
+    	put("Study-Library Hallway", 12);
+    	put("Library-Conservatory Hallway", 23);
+    	put("Study-Hall Hallway", 14);
+    	put("Library-Billiard Hallway", 25);
+    	put("Conservatory-Ballroom Hallway", 36);
+    	put("Hall-Lounge Hallway", 47);
+    	put("Hall-Billiard Hallway", 45);
+    	put("Billiard-Ballroom Hallway", 56);
+    	put("Billiard-Dining Hallway", 58);
+    	put("Ballroom-Kitchen Hallway", 69);
+    	put("Lounge-Dining Hallway", 78);
+    	put("Dining-Kitchen Hallway", 89);
+    	
+ 
     	// Starting locations
     	put("ScarletStart",101);
     	put("MustardStart",102);

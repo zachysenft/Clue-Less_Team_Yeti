@@ -195,6 +195,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		endBtn = new JButton("End Turn");
 		endBtn.addActionListener(this);
 		panelNorthSouth.add(endBtn);
+		endBtn.setEnabled(false);
 		lblName = new JLabel("Nickname");
 		panelNorthSouth.add(lblName);
 		
@@ -222,14 +223,19 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	    suggBtn = new JButton("Suggestion");
 	    panelNorthWest.add(suggBtn);
 	    suggBtn.addActionListener(this);
+	    suggBtn.setEnabled(false);
 	    accusationBtn = new JButton("Accuse");
 	    accusationBtn.setBounds(20,20,20,20);
+	    accusationBtn.setEnabled(false);
 	    panelNorthWest.add(accusationBtn);
 	    accusationBtn.addActionListener(this);
 	    panelNorth.add(panelNorthWest, BorderLayout.WEST);
 	    
 	    movePanel = new JPanel(new GridLayout(2,0));
-	    String[] move = {"Move", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study", "Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"};
+	    String[] move = {"Move", "Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study",
+	    		"Study-Hall Hallway", "Hall-Lounge Hallway", "Study-Library Hallway","Hall-Billiard Hallway",
+	    		"Lounge-Dining Hallway","Library-Billiard Hallway","Billiard-Dining Hallway","Library-Conservatory Hallway",
+	    		"Billiard-Ballroom Hallway","Dining-Kitchen Hallway","Conservatory-Ballroom Hallway","Ballroom-Kitchen Hallway"};
 	    moveLocation = new JComboBox<String>(move); //More locations ???
 	    moveLocation.setVisible(true);
 	    movePanel.add(moveLocation);
@@ -239,6 +245,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	    movePanel.add(moveBtn);
 	   
 	    moveBtn.addActionListener(this);
+            moveBtn.setEnabled(false);
 	    
 	    panelNorth.add(movePanel, BorderLayout.EAST); //contentPane.add(movePanel, BorderLayout.EAST);
 	    //pannelCollection.add(movePanel);
@@ -248,12 +255,12 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		txtNickname.setColumns(10);
 		panelNorthSouth.add(txtNickname);
 
-		lblPort = new JLabel("Port");
+		/*lblPort = new JLabel("Port");
 		panelNorthSouth.add(lblPort);
 
 		txtPort = new JTextField();
 		panelNorthSouth.add(txtPort);
-		txtPort.setColumns(10);
+		txtPort.setColumns(10);*/
 
 		btnStart = new JButton("JOIN");
 		panelNorthSouth.add(btnStart);
@@ -264,6 +271,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		btnStartGame =  new JButton("START GAME");
 		panelNorthSouth.add(btnStartGame);
 		btnStartGame.addActionListener(this);
+		btnStartGame.setEnabled(false);
 		btnStartGame.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnStartGame.setForeground(Color.BLUE);
 
@@ -347,6 +355,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnStart) {
+			btnStartGame.setEnabled(true);
 			if(btnStart.getText().equals("JOIN")) {
 				btnStart.setText("LEAVE");
 				start();
@@ -377,7 +386,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			SuggestionOrAccusation sugg = new SuggestionOrAccusation(player, location, weapon, false);
 			
 			//set location type (Hall or room)
-			if (location.toLowerCase().contains("hall"))
+			if (location.toLowerCase().contains("hallway"))
 				sugg.setLocationType(LocationType.HALLWAY);
 			else
 				sugg.setLocationType(LocationType.ROOM);
@@ -421,7 +430,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			//if (room.contains(location) == true){
 			//	loctype = LocationType.ROOM;
 			//}
-			if (location.toLowerCase().contains("hall")) 
+			if (location.toLowerCase().contains("hallway")) 
 				loctype = LocationType.HALLWAY;
 			else {
 				 //loctype = LocationType.HALLWAY;
@@ -461,6 +470,10 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			//String start = "start game";
 			//out.println(start);
 			//btnStartGame.setEnabled(false);
+			moveBtn.setEnabled(true);
+			suggBtn.setEnabled(true);
+			accusationBtn.setEnabled(true);
+			endBtn.setEnabled(true);
 			DealCardMessage dlCrdMsg = new DealCardMessage();
 			try {
 				objectOutputStream.writeObject(dlCrdMsg);
@@ -491,8 +504,8 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 
 	public void start() {  //inside main
 		try {
-			PORT = Integer.parseInt(txtPort.getText().trim());  //default port 5005
-			//final int PORT = 5005;
+			//PORT = Integer.parseInt(txtPort.getText().trim());  //default port 5005
+			final int PORT = 5005;
 			clientName = txtNickname.getText().trim();  //??????
 			clientSocket = new Socket("localhost", PORT);
 			//out = new PrintWriter(clientSocket.getOutputStream(), true);

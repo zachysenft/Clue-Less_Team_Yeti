@@ -73,6 +73,7 @@ public class ServerUI extends JFrame implements ActionListener {
 	private static ServerSocket server;
 	private static volatile boolean exit = false;
 	private static int numPlayers = 1; //also players ID
+	private static int numInactivePlayers = 1; //number of players who have the lost game flag = true
 	private static String suggestionMaker;  //Name of player who made last Suggestion
 	private static int numPlayersDisproveSugg = 0; //number of players who got chance to disprove suggestion
 	private static SuggestionOrAccusation currentSuggestion; //last suggestion
@@ -299,14 +300,21 @@ public class ServerUI extends JFrame implements ActionListener {
 			boolean check = boardGame.checkAcussation(pl, loc, weapon);
 			if (!check) {
 				plyr.setLostGameFlag();
+				numInactivePlayers++;
 				OtherMessage ar = createOtherMessage("The accusation is incorrect." + plyr.getPlayerName() + " loses");
-				String nextName = nextTurn(name);
-				ar.setPlayerTurn(nextName);
+// 				String nextName = nextTurn(name);
+// 				ar.setPlayerTurn(nextName);
 				broadcastMessage(ar);
 				//send message for End of the Game
 				EndGameMessage egm = new EndGameMessage();
 				egm.setMessage("You lose");
 				sendMessageToAPlayer(name, egm);
+				String nextName = nextTurn(name);
+				ar.setPlayerTurn(nextName);
+				if (numPlayers - numInactivePlayers == 1) {
+					OtherMessage win =  createOtherMessage("GAME OVER! " + nextName + " wins!");
+					broadcastMessage(win);
+				}
 				
 			}
 			else {
