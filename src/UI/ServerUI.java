@@ -216,7 +216,7 @@ public class ServerUI extends JFrame implements ActionListener {
 			String thisplayerlocation = thisplayer.getLocation().getLocationName();
 			//System.out.println(playername + " " + thisplayerlocation);
 			//String playerlocation = (String)playername.getValue().getLocation();
-			if (loc.equalsIgnoreCase(thisplayerlocation)) {
+			if (loc.equalsIgnoreCase(thisplayerlocation) && thisplayer.getLostGameFlag()==false) {
 				//System.out.println(playername + " occupies " + thisplayerlocation);
 				isOccupied = true;
 			}			

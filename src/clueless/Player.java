@@ -98,8 +98,8 @@ public class Player {
 
 	public void setLostGameFlag() {
 		this.LostGameFlag = true;
-		this.location = null;
-  		this.locationID = 0;
+		//this.location = null;
+  		//this.locationID = 0;
 		//System.out.println(this.playerName + " has lost the game.");
 	}
 
