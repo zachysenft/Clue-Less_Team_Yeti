@@ -302,18 +302,19 @@ public class ServerUI extends JFrame implements ActionListener {
 				plyr.setLostGameFlag();
 				numInactivePlayers++;
 				OtherMessage ar = createOtherMessage("The accusation is incorrect." + plyr.getPlayerName() + " loses");
-// 				String nextName = nextTurn(name);
-// 				ar.setPlayerTurn(nextName);
+			String nextName = nextTurn(name);
+ 				ar.setPlayerTurn(nextName);
 				broadcastMessage(ar);
 				//send message for End of the Game
 				EndGameMessage egm = new EndGameMessage();
 				egm.setMessage("You lose");
 				sendMessageToAPlayer(name, egm);
-				String nextName = nextTurn(name);
-				ar.setPlayerTurn(nextName);
+				//String nextName = nextTurn(name);
+				//ar.setPlayerTurn(nextName);
 				if (numPlayers - numInactivePlayers == 1) {
 					OtherMessage win =  createOtherMessage("GAME OVER! " + nextName + " wins!");
 					broadcastMessage(win);
+					
 				}
 				
 			}
