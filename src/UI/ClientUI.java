@@ -601,6 +601,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 						if ((other.getMessage()) != null) {
 							String otherMsg = other.getMessage();
 							
+
 							if (otherMsg.contains("You can not make suggestion")) { //this should happen only once
 								//String id = otherMsg.substring(3);
 								//int plyrID = Integer.parseInt(id);
@@ -612,6 +613,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 								}
 
 								
+
 							else {
 								turn = other.getPlayerTurn();
 								addToLogs(otherMsg);
