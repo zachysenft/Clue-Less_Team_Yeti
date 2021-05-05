@@ -607,6 +607,9 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 								//player.setPlayerID(plyrID);
 								//player.setPlayerName(clientName);
 							}
+							//else if (otherMsg.equals("You can not make suggestion at this location")) {
+         						//	suggBtn.setEnabled(true);
+       							//}
 							else {
 								turn = other.getPlayerTurn();
 								addToLogs(otherMsg);
