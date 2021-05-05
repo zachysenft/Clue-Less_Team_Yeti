@@ -397,7 +397,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			//suggBtn.setEnabled(false);
+			suggBtn.setEnabled(false);
 		} 
 		
 		else if (e.getSource() == moveBtn) {
