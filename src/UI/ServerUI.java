@@ -195,7 +195,11 @@ public class ServerUI extends JFrame implements ActionListener {
 		String nextName = nextTurn(pName); //players.get(nextPlyr).getPlayerName();
 		OtherMessage ms = createOtherMessage(pName + " ended turn. " + nextName + "'s turn.");
 		ms.setPlayerTurn(nextName);
+		//EndTurnMessage etm = new EndTurnMessage();
+		//etm.setPlayerTurn(nextName);
 		broadcastMessage(ms);
+		//broadcastMessage(etm);
+		
 	}
 	
 	private static void  handleMove(MoveMsg move, String pName) throws IOException {
@@ -362,7 +366,7 @@ public class ServerUI extends JFrame implements ActionListener {
 					//Next player to disprove suggestion
 					int nextPlyr = (nameToIdMap.get(name)) % players.size(); // + 1) % numPlayer; Maping id to name???
 					String nextName = players.get(nextPlyr).getPlayerName();
-					resp.setPlayerTurn(nextName);
+					//resp.setPlayerTurn(nextName);
 					numPlayersDisproveSugg++;
 					sendMessageToAPlayer(nextName, resp);
 				} 
@@ -388,7 +392,7 @@ public class ServerUI extends JFrame implements ActionListener {
 		int nextPlyr = (nameToIdMap.get(playerName)) % players.size(); // + 1) % numPlayer; Maping id to name???
 		String nextName = players.get(nextPlyr).getPlayerName();
 		resp.setMessage("Do you want to disprove "+ suggestionMaker +"'s Suggestion?");
-		resp.setPlayerTurn(nextName); 
+		//resp.setPlayerTurn(nextName); 
 		numPlayersDisproveSugg++;
 		sendMessageToAPlayer(nextName, resp);
 		

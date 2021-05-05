@@ -601,12 +601,17 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 						if ((other.getMessage()) != null) {
 							String otherMsg = other.getMessage();
 							
-							if (otherMsg.contains("id")) { //this should happen only once
-								String id = otherMsg.substring(3);
-								int plyrID = Integer.parseInt(id);
-								//player.setPlayerID(plyrID);
-								//player.setPlayerName(clientName);
-							}
+							if (otherMsg.contains("You can not make suggestion")) { //this should happen only once
+								//String id = otherMsg.substring(3);
+								//int plyrID = Integer.parseInt(id);
+								canMakeSuggestion = true;
+								turn = other.getPlayerTurn();
+								addToLogs(otherMsg);
+								if (turn != null)
+									turnOnOffButtons();
+								}
+
+								
 							else {
 								turn = other.getPlayerTurn();
 								addToLogs(otherMsg);
