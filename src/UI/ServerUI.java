@@ -59,6 +59,10 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import java.awt.Color;
 
+import UI.GUI;
+import UI.GUI.DrawCanvas;
+import UI.Token;
+
 public class ServerUI extends JFrame implements ActionListener {	
 
 	// Socket Related
@@ -91,6 +95,7 @@ public class ServerUI extends JFrame implements ActionListener {
 	private static ArrayList<Player> players;
 	private static ServerUI frame;
 	private static boolean gameStarted = false;
+	private static GUI gui;
 	/**
 	 * Launch the application.
 	 */
@@ -99,7 +104,7 @@ public class ServerUI extends JFrame implements ActionListener {
 			public void run() { 
 				try {
 					ServerUI frame = new ServerUI(); 
-					
+					gui = new GUI();
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 					SwingUtilities.updateComponentTreeUI(frame);
 					//Logs
@@ -205,6 +210,7 @@ public class ServerUI extends JFrame implements ActionListener {
 		String loc = location.getLocationName();
 		int locId = location.getLocationID();
 		Player plyr = nameToPlayerMap.get(pName);
+		String charName = plyr.getCharacterName();
 		
 		boolean isOccupied = false;
 		for (Map.Entry playername : nameToPlayerMap.entrySet()){
@@ -242,12 +248,403 @@ public class ServerUI extends JFrame implements ActionListener {
 			//String loc = plyr.getLocation().getLocationName();
 			OtherMessage ms = createOtherMessage(pName + " moved to " + loc);
 			plyr.setLocation(location);
+			if (charName.equals("Miss Scarlet")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer1(), 20, 60);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer1(), 20, 240);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer1(), 20, 420);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer1(), 200, 60);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer1(), 200, 240);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer1(), 200, 420);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer1(), 380, 60);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer1(), 380, 240);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer1(), 380, 420);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer1(), 150, 75);
+				}
+				 if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer1(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer1(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer1(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer1(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer1(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer1(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer1(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer1(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer1(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer1(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer1(), 330, 435);
+				}
+			}
+			else if (charName.equals("Colonel Mustard")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer2(), 60, 60);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer2(), 60, 240);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer2(), 60, 420);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer2(), 240, 60);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer2(), 240, 240);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer2(), 240, 420);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer2(), 420, 60);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer2(), 420, 240);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer2(), 420, 420);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer2(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer2(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer2(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer2(), 240, 165);
+				}
+				 if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer2(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer2(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer2(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer2(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer2(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer2(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer2(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer2(), 330, 435);
+				}
+			}
+			else if (charName.equals("Mrs. White")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer3(), 100, 60);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer3(), 100, 240);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer3(), 100, 420);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer3(), 280, 60);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer3(), 280, 240);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer3(), 280, 420);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer3(), 460, 60);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer3(), 460, 240);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer3(), 460, 420);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer3(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer3(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer3(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer3(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer3(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer3(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer3(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer3(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer3(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer3(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer3(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer3(), 330, 435);
+				}
+			}
+			else if (charName.equals("Mr. Green")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer4(), 20, 100);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer4(), 20, 280);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer4(), 20, 460);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer4(), 200, 100);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer4(), 200, 280);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer4(), 200, 460);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer4(), 380, 100);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer4(), 380, 280);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer4(), 380, 460);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer4(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer4(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer4(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer4(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer4(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer4(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer4(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer4(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer4(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer4(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer4(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer4(), 330, 435);
+				}
+			}
+			else if (charName.equals("Mrs. Peacock")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer5(), 60, 100);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer5(), 60, 280);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer5(), 60, 460);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer5(), 240, 100);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer5(), 240, 280);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer5(), 240, 460);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer5(), 420, 100);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer5(), 420, 280);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer5(), 420, 460);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer5(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer5(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer5(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer5(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer5(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer5(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer5(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer5(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer5(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer5(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer5(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer5(), 330, 435);
+				}
+			}
+			else if (charName.equals("Professor Plum")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer6(), 100, 100);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer6(), 100, 280);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer6(), 100, 460);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer6(), 280, 100);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer6(), 280, 280);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer6(), 280, 460);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer6(), 460, 100);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer6(), 460, 280);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer6(), 460, 460);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer6(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer6(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer6(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer6(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer6(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer6(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer6(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer6(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer6(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer6(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer6(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer6(), 330, 435);
+				}
+			}
 			//Set next player turn
 			//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
 			//String nextName = players.get(nextPlyr).getPlayerName();
 			broadcastMessage(ms);
 			MoveMsg mvdPlyr = new MoveMsg();
 			mvdPlyr.setMessage(plyr.getCharacterName() + ":"+ loc);
+			
 			broadcastMessage(mvdPlyr);
 			/*
 			if (location.getLocationType() == LocationType.HALLWAY) {
@@ -303,6 +700,24 @@ public class ServerUI extends JFrame implements ActionListener {
 			boolean check = boardGame.checkAcussation(pl, loc, weapon);
 			if (!check) {
 				plyr.setLostGameFlag();
+				if (charName.equals("Miss Scarlet")) {
+					gui.move(gui.getPlayer1(), 330, 35);
+				}
+				else if (charName.equals("Colonel Mustard")) {
+					gui.move(gui.getPlayer2(), 460, 165);
+				}
+				else if (charName.equals("Mrs. White")) {
+					gui.move(gui.getPlayer3(), 330, 475);
+				}
+				else if (charName.equals("Mr. Green")) {
+					gui.move(gui.getPlayer4(), 150, 475);
+				}
+				else if (charName.equals("Mrs. Peacock")) {
+					gui.move(gui.getPlayer5(), 20, 345);
+				}
+				else if (charName.equals("Professor Plum")) {
+					gui.move(gui.getPlayer6(),20, 165);
+				}
 				numInactivePlayers++;
 				OtherMessage ar = createOtherMessage("The accusation is incorrect." + plyr.getPlayerName() + " loses");
 // 				String nextName = nextTurn(name);
@@ -347,6 +762,397 @@ public class ServerUI extends JFrame implements ActionListener {
 						Player thisplayer = (Player) playername.getValue();
 						if (thisplayer.getCharacterName().equalsIgnoreCase(pl)) {
 							thisplayer.setLocation(plyr.getLocation());
+							String charName = thisplayer.getCharacterName();
+							if (charName.equals("Miss Scarlet")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer1(), 20, 60);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer1(), 20, 240);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer1(), 20, 420);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer1(), 200, 60);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer1(), 200, 240);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer1(), 200, 420);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer1(), 380, 60);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer1(), 380, 240);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer1(), 380, 420);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer1(), 150, 75);
+				}
+				 if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer1(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer1(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer1(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer1(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer1(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer1(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer1(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer1(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer1(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer1(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer1(), 330, 435);
+				}
+			}
+			else if (charName.equals("Colonel Mustard")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer2(), 60, 60);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer2(), 60, 240);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer2(), 60, 420);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer2(), 240, 60);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer2(), 240, 240);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer2(), 240, 420);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer2(), 420, 60);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer2(), 420, 240);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer2(), 420, 420);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer2(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer2(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer2(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer2(), 240, 165);
+				}
+				 if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer2(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer2(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer2(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer2(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer2(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer2(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer2(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer2(), 330, 435);
+				}
+			}
+			else if (charName.equals("Mrs. White")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer3(), 100, 60);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer3(), 100, 240);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer3(), 100, 420);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer3(), 280, 60);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer3(), 280, 240);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer3(), 280, 420);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer3(), 460, 60);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer3(), 460, 240);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer3(), 460, 420);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer3(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer3(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer3(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer3(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer3(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer3(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer3(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer3(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer3(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer3(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer3(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer3(), 330, 435);
+				}
+			}
+			else if (charName.equals("Mr. Green")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer4(), 20, 100);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer4(), 20, 280);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer4(), 20, 460);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer4(), 200, 100);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer4(), 200, 280);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer4(), 200, 460);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer4(), 380, 100);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer4(), 380, 280);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer4(), 380, 460);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer4(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer4(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer4(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer4(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer4(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer4(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer4(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer4(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer4(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer4(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer4(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer4(), 330, 435);
+				}
+			}
+			else if (charName.equals("Mrs. Peacock")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer5(), 60, 100);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer5(), 60, 280);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer5(), 60, 460);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer5(), 240, 100);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer5(), 240, 280);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer5(), 240, 460);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer5(), 420, 100);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer5(), 420, 280);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer5(), 420, 460);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer5(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer5(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer5(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer5(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer5(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer5(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer5(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer5(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer5(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer5(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer5(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer5(), 330, 435);
+				}
+			}
+			else if (charName.equals("Professor Plum")) {
+				if (loc.equals( "Study")) {
+					gui.move(gui.getPlayer6(), 100, 100);
+				}
+				else if (loc.equals( "Library")) {
+					gui.move(gui.getPlayer6(), 100, 280);
+				}
+				else if (loc.equals( "Conservatory")) {
+					gui.move(gui.getPlayer6(), 100, 460);
+				}
+				else if (loc.equals( "Hall")) {
+					gui.move(gui.getPlayer6(), 280, 100);
+				}
+				else if (loc.equals( "Billiard Room")) {
+					gui.move(gui.getPlayer6(), 280, 280);
+				}
+				else if (loc.equals( "Ballroom")) {
+					gui.move(gui.getPlayer6(), 280, 460);
+				}
+				else if (loc.equals( "Lounge")) {
+					gui.move(gui.getPlayer6(), 460, 100);
+				}
+				else if (loc.equals( "Dining Room")) {
+					gui.move(gui.getPlayer6(), 460, 280);
+				}
+				else if (loc.equals( "Kitchen")) {
+					gui.move(gui.getPlayer6(), 460, 460);
+				}
+				else if (loc.equals( "Study-Hall Hallway")) {
+					gui.move(gui.getPlayer6(), 150, 75);
+				}
+				else if (loc.equals( "Hall-Lounge Hallway")) {
+					gui.move(gui.getPlayer6(), 330, 75);
+				}
+				else if (loc.equals( "Study-Library Hallway")) {
+					gui.move(gui.getPlayer6(), 60, 165);
+				}
+				else if (loc.equals( "Hall-Billiard Hallway")) {
+					gui.move(gui.getPlayer6(), 240, 165);
+				}
+				else if (loc.equals( "Lounge-Dining Hallway")) {
+					gui.move(gui.getPlayer6(), 420, 165);
+				}
+				else if (loc.equals( "Library-Billiard Hallway")) {
+					gui.move(gui.getPlayer6(), 150, 255);
+				}
+				else if (loc.equals( "Billiard-Dining Hallway")) {
+					gui.move(gui.getPlayer6(), 330, 255);
+				}
+				else if (loc.equals( "Library-Conservatory Hallway")) {
+					gui.move(gui.getPlayer6(), 60, 345);
+				}
+				else if (loc.equals( "Billiard-Ballroom Hallway")) {
+					gui.move(gui.getPlayer6(), 240, 345);
+				}
+				else if (loc.equals( "Dining-Kitchen Hallway")) {
+					gui.move(gui.getPlayer6(), 420, 345);
+				}
+				else if (loc.equals( "Conservatory-Ballroom Hallway")) {
+					gui.move(gui.getPlayer6(), 150, 435);
+				}
+				else if (loc.equals( "Ballroom-Kitchen Hallway")) {
+					gui.move(gui.getPlayer6(), 330, 435);
+				}
+			}
 							OtherMessage ms = createOtherMessage(thisplayer.getPlayerName() + " has been moved to " + plyr.getLocation().getLocationName());
 							broadcastMessage(ms);
 						}
