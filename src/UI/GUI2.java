@@ -16,15 +16,23 @@ public class GUI2 {
 		
 		JFrame f = new JFrame("Example Test");
 		JButton study = new JButton("Study");
-		//study.setFont(new Font("Arial", Font.BOLD, 10));
+		study.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton hall = new JButton("Hall");
+		hall.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton lounge = new JButton("Lounge");
+		lounge.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton library = new JButton("Library");
+		library.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton billiard = new JButton("Billiard Room");
+		billiard.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton dining = new JButton("Dining Room");
+		dining.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton conservatory = new JButton("Conservatory");
+		conservatory.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton ballroom = new JButton("Ballroom");
+		ballroom.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton kitchen = new JButton("Kitchen");
+		kitchen.setFont(new Font("Arial", Font.BOLD, 10));
 		JButton sl = new JButton("12");
 		JButton sh = new JButton("14");
 		JButton lc = new JButton("23");
@@ -37,6 +45,19 @@ public class GUI2 {
 		JButton hl = new JButton("47");
 		JButton ld = new JButton("78");
 		JButton dk = new JButton("89");
+		
+		JButton hallway12 = new JButton();
+		JButton hallway23 = new JButton();
+		JButton hallway14 = new JButton();
+		JButton hallway25 = new JButton();
+		JButton hallway36 = new JButton();
+		JButton hallway45 = new JButton();
+		JButton hallway56 = new JButton();
+		JButton hallway47 = new JButton();
+		JButton hallway58 = new JButton();
+		JButton hallway69 = new JButton();
+		JButton hallway78 = new JButton();
+		JButton hallway89 = new JButton();
 		
 		//Player buttons in the study
 		JButton studymustard = new JButton("");
@@ -251,6 +272,20 @@ public class GUI2 {
 		hl.setBounds(250, 50, 75, 25);
 		ld.setBounds(350, 100, 25, 75);
 		dk.setBounds(350, 250, 25, 75);
+		
+		//Creating all hallway occupied by player buttons - setting them in place
+		hallway12.setBounds(35, 138, 10, 10);
+		hallway23.setBounds(35, 288, 10, 10);
+		hallway45.setBounds(185, 138, 10, 10);
+		hallway56.setBounds(185, 288, 10, 10);
+		hallway78.setBounds(335, 138, 10, 10);
+		hallway89.setBounds(335, 288, 10, 10);
+		hallway14.setBounds(138, 35, 10, 10);
+		hallway25.setBounds(138, 185, 10, 10);
+		hallway36.setBounds(138, 288, 10, 10);
+		hallway47.setBounds(288, 35, 10, 10);
+		hallway58.setBounds(288, 185, 10, 10);
+		hallway69.setBounds(288, 335, 10, 10);
 				
 		
 		//Adding rooms
@@ -333,6 +368,20 @@ public class GUI2 {
 		f.add(billiardpeacock);
 		f.add(billiardgreen);
 		f.add(billiardscarlet);
+		
+		//add hallway buttons for players
+		f.add(hallway12);
+		f.add(hallway23);
+		f.add(hallway45);
+		f.add(hallway56);
+		f.add(hallway78);
+		f.add(hallway89);
+		f.add(hallway14);
+		f.add(hallway25);
+		f.add(hallway36);
+		f.add(hallway47);
+		f.add(hallway69);
+		f.add(hallway58);
 		
 		f.setSize(450, 475);
 		
