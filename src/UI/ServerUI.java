@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 //import me.alexpanov.net.FreePortFinder;
 
-import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
+//import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
 
 import clueless.BoardGame;
 import clueless.Card;
@@ -48,7 +48,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+//import java.util.Random;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -67,7 +67,7 @@ public class ServerUI extends JFrame implements ActionListener {
 	// Socket Related
 //	public static SimpleDateFormat formatter = new SimpleDateFormat("[MM/hh/yy hh:mm a]");
 	public static SimpleDateFormat formatter = new SimpleDateFormat("[hh:mm a]");
-	private static HashMap<String, PrintWriter> connectedClients = new HashMap<>();
+	//private static HashMap<String, PrintWriter> connectedClients = new HashMap<>();
 	private static HashMap<String, ObjectOutputStream> connectedPlayers = new HashMap<>();
 	private static HashMap<String, Player> nameToPlayerMap = new HashMap<>();
 	private static HashMap<String, Integer> nameToIdMap = new HashMap<>();
@@ -86,13 +86,13 @@ public class ServerUI extends JFrame implements ActionListener {
 	private JTextArea txtAreaLogs;
 	private JButton btnStart;
 	private JLabel lblServer;
-	private static ObjectInputStream myreader = null;
-	private static ObjectOutputStream mywriter = null;
+	//private static ObjectInputStream myreader = null;
+	//private static ObjectOutputStream mywriter = null;
 	public static int num=0;
 	private static BoardGame boardGame;
 	public static ArrayList<Card> cardList;
 	private static ArrayList<Player> players;
-	private static ServerUI frame;
+	//private static ServerUI frame;
 	private static boolean gameStarted = false;
 	/**
 	 * Launch the application.
@@ -185,10 +185,6 @@ public class ServerUI extends JFrame implements ActionListener {
 
 	//private static void broadcastMessage(String message) {
 	private static void broadcastMessage(PlayerMessage msg) throws IOException {
-		/*
-		for (PrintWriter p: connectedClients.values()) {
-			p.println(message);
-		} */
 		for (ObjectOutputStream p: connectedPlayers.values()) {
 			p.writeObject(msg);
 		}
@@ -196,8 +192,7 @@ public class ServerUI extends JFrame implements ActionListener {
 	
 	private static void  handleEndTurn(EndTurnMessage move, String pName) throws IOException {
 		
-		//int nextPlyr = (nameToIdMap.get(pName)) % players.size();
-		String nextName = nextTurn(pName); //players.get(nextPlyr).getPlayerName();
+		String nextName = nextTurn(pName); 
 		OtherMessage ms = createOtherMessage(pName + " ended turn. " + nextName + "'s turn.");
 		ms.setPlayerTurn(nextName);
 		//EndTurnMessage etm = new EndTurnMessage();
@@ -219,15 +214,8 @@ public class ServerUI extends JFrame implements ActionListener {
 		for (Map.Entry playername : nameToPlayerMap.entrySet()){
 			
 			Player thisplayer = (Player)playername.getValue();
-			/*if(thisplayer.getLocation() == null) {
-				System.out.println(playername + " IS NULL");
-				break;
-			}*/
 			String thisplayerlocation = thisplayer.getLocation().getLocationName();
-			//System.out.println(playername + " " + thisplayerlocation);
-			//String playerlocation = (String)playername.getValue().getLocation();
 			if (loc.equalsIgnoreCase(thisplayerlocation) && thisplayer.getLostGameFlag()==false) {
-				//System.out.println(playername + " occupies " + thisplayerlocation);
 				isOccupied = true;
 			}			
 		}
@@ -239,7 +227,7 @@ public class ServerUI extends JFrame implements ActionListener {
 			sendMessageToAPlayer(pName, error);
 			
 		}
-		//if (location.getLocationType() == LocationType.HALLWAY && location.isOccupied()) {
+		
 		else if (location.getLocationType() == LocationType.HALLWAY && isOccupied) {
 			OtherMessage error = createOtherMessage (loc + " is occupied. Please select another destination.");
 			error.setPlayerTurn(pName);
@@ -247,17 +235,13 @@ public class ServerUI extends JFrame implements ActionListener {
 			
 		}
 		else {
-			
-			//String loc = plyr.getLocation().getLocationName();
 			OtherMessage ms = createOtherMessage(pName + " moved to " + loc);
 			plyr.setLocation(location);
-			//Set next player turn
-			//int nextPlyr = (nameToIdMap.get(pName)) % players.size(); // + 1) % numPlayer; Maping id to name???
-			//String nextName = players.get(nextPlyr).getPlayerName();
 			broadcastMessage(ms);
 			
 			String charName = plyr.getCharacterName();
-
+			gui.move(charName, loc);
+			/*
 			if (charName.equals("Miss Scarlet")) {
 				if (loc.equals( "Study")) {
 					gui.move(gui.getPlayer1(), 20, 60);
@@ -649,18 +633,7 @@ public class ServerUI extends JFrame implements ActionListener {
 				}
 			}
 			
-			
-			
-			/*
-			if (location.getLocationType() == LocationType.HALLWAY) {
-	   			String nextName = nextTurn(pName);
-				ms.setPlayerTurn(nextName);
-				broadcastMessage(ms);
-			}
-			else {
-				ms.setPlayerTurn(pName); //player still have turn
-				broadcastMessage(ms);
-			}*/
+			*/
 		}	
 	}
 	
@@ -692,10 +665,6 @@ public class ServerUI extends JFrame implements ActionListener {
 		String weapon = sugg.getWeapon();
 		String loc = sugg.getLoc();
 		
-		//Next player to disprove suggestion
-		//int nextPlyr = (nameToIdMap.get(name)) % players.size(); // + 1) % numPlayer; Maping id to name???
-		//players.get(nextPlyr).getPlayerName();
-		
 		 //case where it is accusation
 		  if (sugg.getAccusationFlag()) {
 			  
@@ -706,7 +675,8 @@ public class ServerUI extends JFrame implements ActionListener {
 			String charName = plyr.getCharacterName();
 			if (!check) {
 				plyr.setLostGameFlag();
-	
+				
+				//Move player to the start location
 				if (charName.equals("Miss Scarlet")) {
 					gui.move(gui.getPlayer1(), 330, 35);
 				}
@@ -735,12 +705,10 @@ public class ServerUI extends JFrame implements ActionListener {
 				EndGameMessage egm = new EndGameMessage();
 				egm.setMessage("You lose");
 				sendMessageToAPlayer(name, egm);
-				//String nextName = nextTurn(name);
-				//ar.setPlayerTurn(nextName);
+				//if one player left, that player wins by default
 				if (numPlayers - numInactivePlayers == 1) {
 					OtherMessage win =  createOtherMessage("GAME OVER! " + nextName + " wins!");
-					broadcastMessage(win);
-					
+					broadcastMessage(win);			
 				}
 				
 			}
@@ -775,6 +743,9 @@ public class ServerUI extends JFrame implements ActionListener {
 							OtherMessage ms = createOtherMessage(thisplayer.getPlayerName() + " has been moved to " + plyr.getLocation().getLocationName());
 							broadcastMessage(ms);
 							String charName = thisplayer.getCharacterName();
+							gui.move(charName, loc);
+							
+							/*
 							
 							if (charName.equals("Miss Scarlet")) {
 							if (loc.equals( "Study")) {
@@ -803,7 +774,8 @@ public class ServerUI extends JFrame implements ActionListener {
 							}
 							else if (loc.equals( "Kitchen")) {
 								gui.move(gui.getPlayer1(), 380, 420);
-							}
+							}			
+							
 							else if (loc.equals( "Study-Hall Hallway")) {
 								gui.move(gui.getPlayer1(), 150, 75);
 							}
@@ -1165,7 +1137,7 @@ public class ServerUI extends JFrame implements ActionListener {
 							else if (loc.equals( "Ballroom-Kitchen Hallway")) {
 								gui.move(gui.getPlayer6(), 330, 435);
 							}
-						}
+						}*/
 						}
 					}
 				}
@@ -1203,7 +1175,7 @@ public class ServerUI extends JFrame implements ActionListener {
 	
 	private static void disproveSuggestion(String playerName) throws IOException {
 		SuggestionResponse resp = new SuggestionResponse();
-		int nextPlyr = (nameToIdMap.get(playerName)) % players.size(); // + 1) % numPlayer; Maping id to name???
+		int nextPlyr = (nameToIdMap.get(playerName)) % players.size(); 
 		String nextName = players.get(nextPlyr).getPlayerName();
 		resp.setMessage("Do you want to disprove "+ suggestionMaker +"'s Suggestion?");
 		//resp.setPlayerTurn(nextName); 
@@ -1222,12 +1194,12 @@ public class ServerUI extends JFrame implements ActionListener {
 	}
 	
 	private static String getNextTurnAfterSuggestion() {
-		int nextPlyr = (nameToIdMap.get(suggestionMaker)) % players.size(); // + 1) % numPlayer; Maping id to name???
+		int nextPlyr = (nameToIdMap.get(suggestionMaker)) % players.size(); 
 		String nextName = players.get(nextPlyr).getPlayerName();
 		return nextName;
 		
 	}
-	
+	/*
 	private static void movePlayerToSuggestedRoom() {
 		String plyrName = suggestionMaker; // currentSuggestion.getCharacter(); //should be player's name
 		Player plyr = nameToPlayerMap.get(plyrName);
@@ -1235,18 +1207,17 @@ public class ServerUI extends JFrame implements ActionListener {
 				currentSuggestion.getLoc(), currentSuggestion.getLocationType());
 		plyr.setLocation(newLocation);
 	}
-	
+	*/
 	//Sending players their Cards
 	private static void dealCardsToPlayers() throws IOException {
-		int i = 0;
-		DealCardMessage dealCard;
-		for (ObjectOutputStream p: connectedPlayers.values()) {
+		DealCardMessage dealCard; 
+		for (Player player: players) {
 			dealCard = new DealCardMessage();
 			dealCard.setPlayerTurn(players.get(0).getPlayerName());
-			dealCard.setCards(players.get(i).getPlayerCard());
-			dealCard.setStartLocation(players.get(i).getLocation());
-			dealCard.setPlayerCharName(players.get(i).getCharacterName());
-			i++;
+			dealCard.setCards(player.getPlayerCard());
+			dealCard.setStartLocation(player.getLocation());
+			dealCard.setPlayerCharName(player.getCharacterName());
+			ObjectOutputStream p = connectedPlayers.get(player.getPlayerName());
 			p.writeObject(dealCard);
 		}
 	}
@@ -1272,10 +1243,6 @@ public class ServerUI extends JFrame implements ActionListener {
 		return val;
 				
 	}
-	/*public static String plyrsCard(){
-		
-		
-	} */
 	
 	private static class ServerHandler implements Runnable{
 		@Override
@@ -1285,7 +1252,8 @@ public class ServerUI extends JFrame implements ActionListener {
 				addToLogs("Server started on port: " + PORT);
 				addToLogs("Now listening for connections...");
 				while(!exit) {
-					if (connectedClients.size() <= MAX_CONNECTED){
+					//if (connectedClients.size() <= MAX_CONNECTED){
+					if (connectedPlayers.size() <= MAX_CONNECTED){
 						new Thread(new ClientHandler(server.accept())).start();
 					}
 				}
@@ -1307,7 +1275,7 @@ public class ServerUI extends JFrame implements ActionListener {
 		private ObjectOutputStream objectOutputStream; // = new ObjectOutputStream(outputStream);
 		private ObjectInputStream objectInputStream; //= new ObjectInputStream(inputStream);
 		private InputStream inputStream;             // = socket.getInputStream();
-		private BufferedReader in;
+		//private BufferedReader in;
 		private String name;
 		
 		
@@ -1316,7 +1284,7 @@ public class ServerUI extends JFrame implements ActionListener {
 		}
 		
 		@Override
-		public void run(){  //inside void main
+		public void run(){  
 			addToLogs("Client connected: " + socket.getInetAddress());
 			try {
 				outputStream = socket.getOutputStream();
@@ -1324,10 +1292,7 @@ public class ServerUI extends JFrame implements ActionListener {
 				inputStream = socket.getInputStream();
 				objectInputStream = new ObjectInputStream(inputStream);
 
-				//in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				//out = new PrintWriter(socket.getOutputStream(), true);
 				for(;;) {
-					//name = in.readLine();
 					PlayerMessage pMsg = new PlayerMessage();
 					pMsg = (PlayerMessage) objectInputStream.readObject();
 					if (pMsg.getMessageType().equalsIgnoreCase("Other")) {
@@ -1336,27 +1301,22 @@ public class ServerUI extends JFrame implements ActionListener {
 					}
 					if (name == null) {
 						return;
-					}/*
-					synchronized (connectedClients) {
-						if (!name.isEmpty() && !connectedClients.keySet().contains(name)) break;
-						else out.println("INVALIDNAME");
-					}*/
+					}
+					
 					synchronized (connectedPlayers) {
 						if (!name.isEmpty() && !connectedPlayers.keySet().contains(name)) break;
 						else out.println("INVALIDNAME");
 					}
 				}
-				//out.println("Welcome to Clueless Game, " + name.toUpperCase() + "!");
 				OtherMessage otherMsg = createOtherMessage("Welcome to Clueless Game, " + name.toUpperCase() + "!"); 
 				objectOutputStream.writeObject(otherMsg); 
-				OtherMessage idMsg = createOtherMessage("id "+ numPlayers);
-				objectOutputStream.writeObject(idMsg);
+				//OtherMessage idMsg = createOtherMessage("id "+ numPlayers);
+				//objectOutputStream.writeObject(idMsg);
 				
 				addToLogs(name.toUpperCase() + " has joined.");
-				//broadcastMessage("[SYSTEM] " + name.toUpperCase() + " has joined.");
 				OtherMessage other = createOtherMessage("[SYSTEM] " + name.toUpperCase() + " has joined.");
 				broadcastMessage(other);
-				connectedClients.put(name, out);
+				//connectedClients.put(name, out);
 				
 				connectedPlayers.put(name, objectOutputStream);
 				
@@ -1456,7 +1416,7 @@ public class ServerUI extends JFrame implements ActionListener {
 			} finally {
 				if (name != null) {
 					addToLogs(name + " is leaving");
-					connectedClients.remove(name);
+					//connectedClients.remove(name);
 					connectedPlayers.remove(name);
 					//broadcastMessage(name + " has left");
 					OtherMessage oMsg = createOtherMessage(name + " has left");

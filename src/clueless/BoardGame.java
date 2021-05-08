@@ -119,7 +119,7 @@ public class BoardGame{
         ArrayList<Card> cards = generateWinCondition();
         storeWinCondinDB();
         //deal cards to players
-        dealCards(cards);
+        //dealCards(cards);
         
         boolean gameWon = false;
         int currPlayerIndex = -1; //tracks who's turn it is
@@ -425,7 +425,7 @@ public class BoardGame{
             dealCards.set(i,temp);
         }	
 	}
-
+/*
 	public void dealCards(ArrayList<Card> cards) { 
    	 
    	 for(int i = 0; i < cards.size(); i++) {
@@ -434,6 +434,7 @@ public class BoardGame{
    		 activePlayers.get(x).addCard(cards.get(i));	 
    	  }
 	} 
+	*/
    	 
 	public void handCards(ArrayList<Player> player) {
 		for(int i = 0; i < dealCards.size(); i++) {

@@ -153,8 +153,8 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					ClientUI frame = new ClientUI();
+				try { 
+					ClientUI frame = new ClientUI(); 
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 					SwingUtilities.updateComponentTreeUI(frame); 
 					//Logs

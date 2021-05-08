@@ -55,8 +55,91 @@ public class GUI extends JPanel {
 	private Token player4;
 	private Token player5;
 	private Token player6;
+	private int studyHallHallwayX = 150, studyHallHallwayY = 75, hallLoungeHallwayX = 330, hallLoungeHallwayY = 75,
+			studyLibraryHallwayX = 60, studyLibraryHallwayY = 165, hallBilliardHallwayX = 240, hallBilliardHallwayY = 165,
+			loungeDiningHallwayX = 420, loungeDiningHallwayY = 165, libraryBilliardHallwayX = 150, libraryBilliardHallwayY = 255,
+		    billiardDiningHallwayX = 330, billiardDiningHallwayY = 255, libraryConservatoryHallwayX = 60, libraryConservatoryHallwayY = 345,
+		    billiardBallroomHallwayX = 240, billiardBallroomHallwayY = 345, diningKitchenHallwayX = 420, diningKitchenHallwayY = 345,
+		    conservatoryBallroomHallwayX = 150, conservatoryBallroomHallwayY = 435, ballroomKitchenHallwayX = 330, ballroomKitchenHallwayY = 435; 
 	
-
+	/*
+	private Map<String, Integer> scarlet = new HashMap<String, Integer>(){{
+		put("StudyX", 20);	put("StudyY", 60); put("LibraryX", 20);	put("LibraryY", 240); put("ConservatoryX", 20);put("ConservatoryY", 420);
+		put("HallX", 200);  put("HallY", 60); put("Billiard RoomX", 200); put("Billiard RoomY", 240); put("BallroomX", 200); put("BallroomY", 420);
+		put("LoungeX", 380); put("LoungeY", 60);  put("Dining RoomX", 380); put("Dining RoomY", 240); put("KitchenX", 380); put("KitchenY", 420);
+		put("Study-Hall HallwayX", 150); put("Study-Hall HallwayY", 75); put("Hall-Lounge HallwayX", 330); put("Hall-Lounge HallwayY", 75);
+		put("Study-Library HallwayX", 60);  put("Study-Library HallwayY", 165); put("Hall-Billiard HallwayX", 240); put("Hall-Billiard HallwayY", 165);
+		put("Lounge-Dining HallwayX", 420); put("Lounge-Dining HallwayY", 165); put("Library-Billiard HallwayX", 150); put("Library-Billiard HallwayY", 255);
+		put("Billiard-Dining HallwayX", 330); put("Billiard-Dining HallwayY", 255);
+		put( "Library-Conservatory HallwayX",60); put( "Library-Conservatory HallwayY",345); put("Billiard-Ballroom HallwayX", 240); put("Billiard-Ballroom HallwayY", 345);
+		put("Dining-Kitchen HallwayX", 420); put("Dining-Kitchen HallwayY", 345); put("Conservatory-Ballroom HallwayX", 150); put("Conservatory-Ballroom HallwayY", 435);
+		put("Ballroom-Kitchen HallwayX", 330);  put("Ballroom-Kitchen HallwayY", 435); 
+				
+	}};
+	private Map<String, Integer> mustard = new HashMap<String, Integer>(){{
+		put("StudyX", 60);	put("StudyY", 60); put("LibraryX", 60);	put("LibraryY", 240); put("ConservatoryX", 60);put("ConservatoryY", 420);
+		put("HallX", 240);  put("HallY", 60); put("Billiard RoomX", 240); put("Billiard RoomY", 240); put("BallroomX", 240); put("BallroomY", 420);
+		put("LoungeX", 420); put("LoungeY", 60);  put("Dining RoomX", 420); put("Dining RoomY", 240); put("KitchenX", 420); put("KitchenY", 420);
+		put("Study-Hall HallwayX", 150); put("Study-Hall HallwayY", 75); put("Hall-Lounge HallwayX", 330); put("Hall-Lounge HallwayY", 75);
+		put("Study-Library HallwayX", 60);  put("Study-Library HallwayY", 165); put("Hall-Billiard HallwayX", 240); put("Hall-Billiard HallwayY", 165);
+		put("Lounge-Dining HallwayX", 420); put("Lounge-Dining HallwayY", 165); put("Library-Billiard HallwayX", 150); put("Library-Billiard HallwayY", 255);
+		put("Billiard-Dining HallwayX", 330); put("Billiard-Dining HallwayY", 255);
+		put( "Library-Conservatory HallwayX",60); put( "Library-Conservatory HallwayY",345); put("Billiard-Ballroom HallwayX", 240); put("Billiard-Ballroom HallwayY", 345);
+		put("Dining-Kitchen HallwayX", 420); put("Dining-Kitchen HallwayY", 345); put("Conservatory-Ballroom HallwayX", 150); put("Conservatory-Ballroom HallwayY", 435);
+		put("Ballroom-Kitchen HallwayX", 330);  put("Ballroom-Kitchen HallwayY", 435); 
+				
+	}};
+	private Map<String, Integer> white = new HashMap<String, Integer>(){{
+		put("StudyX", 20);	put("StudyY", 60); put("LibraryX", 20);	put("LibraryY", 240); put("ConservatoryX", 20);put("ConservatoryY", 420);
+		put("HallX", 200);  put("HallY", 60); put("Billiard RoomX", 200); put("Billiard RoomY", 240); put("BallroomX", 200); put("BallroomY", 420);
+		put("LoungeX", 380); put("LoungeY", 60);  put("Dining RoomX", 380); put("Dining RoomY", 240); put("KitchenX", 380); put("KitchenY", 420);
+		put("Study-Hall HallwayX", 150); put("Study-Hall HallwayY", 75); put("Hall-Lounge HallwayX", 330); put("Hall-Lounge HallwayY", 75);
+		put("Study-Library HallwayX", 60);  put("Study-Library HallwayY", 165); put("Hall-Billiard HallwayX", 240); put("Hall-Billiard HallwayY", 165);
+		put("Lounge-Dining HallwayX", 420); put("Lounge-Dining HallwayY", 165); put("Library-Billiard HallwayX", 150); put("Library-Billiard HallwayY", 255);
+		put( "Library-Conservatory HallwayX",60); put( "Library-Conservatory HallwayY",345); put("Billiard-Ballroom HallwayX", 240); put("Billiard-Ballroom HallwayY", 345);
+		put("Dining-Kitchen HallwayX", 420); put("Dining-Kitchen HallwayX", 345); put("Conservatory-Ballroom HallwayX", 150); put("Conservatory-Ballroom HallwayY", 435);
+		put("Ballroom-Kitchen HallwayX", 330);  put("Ballroom-Kitchen HallwayY", 435); 
+				
+	}};
+	private Map<String, Integer> green = new HashMap<String, Integer>(){{
+		put("StudyX", 20);	put("StudyY", 60); put("LibraryX", 20);	put("LibraryY", 240); put("ConservatoryX", 20);put("ConservatoryY", 420);
+		put("HallX", 200);  put("HallY", 60); put("Billiard RoomX", 200); put("Billiard RoomY", 240); put("BallroomX", 200); put("BallroomY", 420);
+		put("LoungeX", 380); put("LoungeY", 60);  put("Dining RoomX", 380); put("Dining RoomY", 240); put("KitchenX", 380); put("KitchenY", 420);
+		put("Study-Hall HallwayX", 150); put("Study-Hall HallwayY", 75); put("Hall-Lounge HallwayX", 330); put("Hall-Lounge HallwayY", 75);
+		put("Study-Library HallwayX", 60);  put("Study-Library HallwayY", 165); put("Hall-Billiard HallwayX", 240); put("Hall-Billiard HallwayY", 165);
+		put("Lounge-Dining HallwayX", 420); put("Lounge-Dining HallwayY", 165); put("Library-Billiard HallwayX", 150); put("Library-Billiard HallwayY", 255);
+		put( "Library-Conservatory HallwayX",60); put( "Library-Conservatory HallwayY",345); put("Billiard-Ballroom HallwayX", 240); put("Billiard-Ballroom HallwayY", 345);
+		put("Dining-Kitchen HallwayX", 420); put("Dining-Kitchen HallwayX", 345); put("Conservatory-Ballroom HallwayX", 150); put("Conservatory-Ballroom HallwayY", 435);
+		put("Ballroom-Kitchen HallwayX", 330);  put("Ballroom-Kitchen HallwayY", 435); 
+				
+	}};
+	private Map<String, Integer> peacock = new HashMap<String, Integer>(){{
+		put("StudyX", 20);	put("StudyY", 60); put("LibraryX", 20);	put("LibraryY", 240); put("ConservatoryX", 20);put("ConservatoryY", 420);
+		put("HallX", 200);  put("HallY", 60); put("Billiard RoomX", 200); put("Billiard RoomY", 240); put("BallroomX", 200); put("BallroomY", 420);
+		put("LoungeX", 380); put("LoungeY", 60);  put("Dining RoomX", 380); put("Dining RoomY", 240); put("KitchenX", 380); put("KitchenY", 420);
+		put("Study-Hall HallwayX", 150); put("Study-Hall HallwayY", 75); put("Hall-Lounge HallwayX", 330); put("Hall-Lounge HallwayY", 75);
+		put("Study-Library HallwayX", 60);  put("Study-Library HallwayY", 165); put("Hall-Billiard HallwayX", 240); put("Hall-Billiard HallwayY", 165);
+		put("Lounge-Dining HallwayX", 420); put("Lounge-Dining HallwayY", 165); put("Library-Billiard HallwayX", 150); put("Library-Billiard HallwayY", 255);
+		put("Billiard-Dining HallwayX", 330); put("Billiard-Dining HallwayY", 255);
+		put( "Library-Conservatory HallwayX",60); put( "Library-Conservatory HallwayY",345); put("Billiard-Ballroom HallwayX", 240); put("Billiard-Ballroom HallwayY", 345);
+		put("Dining-Kitchen HallwayX", 420); put("Dining-Kitchen HallwayY", 345); put("Conservatory-Ballroom HallwayX", 150); put("Conservatory-Ballroom HallwayY", 435);
+		put("Ballroom-Kitchen HallwayX", 330);  put("Ballroom-Kitchen HallwayY", 435); 
+				
+	}};
+	private Map<String, Integer> plum = new HashMap<String, Integer>(){{
+		put("StudyX", 20);	put("StudyY", 60); put("LibraryX", 20);	put("LibraryY", 240); put("ConservatoryX", 20);put("ConservatoryY", 420);
+		put("HallX", 200);  put("HallY", 60); put("Billiard RoomX", 200); put("Billiard RoomY", 240); put("BallroomX", 200); put("BallroomY", 420);
+		put("LoungeX", 380); put("LoungeY", 60);  put("Dining RoomX", 380); put("Dining RoomY", 240); put("KitchenX", 380); put("KitchenY", 420);
+		put("Study-Hall HallwayX", 150); put("Study-Hall HallwayY", 75); put("Hall-Lounge HallwayX", 330); put("Hall-Lounge HallwayY", 75);
+		put("Study-Library HallwayX", 60);  put("Study-Library HallwayY", 165); put("Hall-Billiard HallwayX", 240); put("Hall-Billiard HallwayY", 165);
+		put("Lounge-Dining HallwayX", 420); put("Lounge-Dining HallwayY", 165); put("Library-Billiard HallwayX", 150); put("Library-Billiard HallwayY", 255);
+		put("Billiard-Dining Hallway", )
+		put( "Library-Conservatory HallwayX",60); put( "Library-Conservatory HallwayY",345); put("Billiard-Ballroom HallwayX", 240); put("Billiard-Ballroom HallwayY", 345);
+		put("Dining-Kitchen HallwayX", 420); put("Dining-Kitchen HallwayY", 345); put("Conservatory-Ballroom HallwayX", 150); put("Conservatory-Ballroom HallwayY", 435);
+		put("Ballroom-Kitchen HallwayX", 330);  put("Ballroom-Kitchen HallwayY", 435); 
+				
+	}};
+*/
 	public GUI () {
 		
 		player1 = new Token (330, 35, 20, 20, Color.RED);
@@ -101,6 +184,163 @@ public class GUI extends JPanel {
 	
 	public Token getPlayer6() {
 		return player6;
+	}
+	
+	public void move (String charName, String loc) {
+		Token player = null;
+		int newx = 0, newy = 0;
+		
+		 if (charName.equals("Miss Scarlet")) {
+			player = player1;
+			if (loc.equals( "Study")) { newx = 20; newy = 60;}
+			else if (loc.equals( "Library")) { newx = 20; newy = 240;}
+			else if (loc.equals( "Conservatory")) { newx = 20; newy = 420;}
+			else if (loc.equals( "Hall")) { newx = 200; newy = 60;}
+			else if (loc.equals( "Billiard Room")) {newx = 200; newy = 240;}
+			else if (loc.equals( "Ballroom")) {newx = 200; newy = 420;}
+			else if (loc.equals( "Lounge")) { newx = 380; newy = 60;}
+			else if (loc.equals( "Dining Room")) { newx = 380; newy = 240;}
+			else if (loc.equals( "Kitchen")) { newx = 380; newy = 420;}			
+			else if (loc.equals( "Study-Hall Hallway")) { newx = 150; newy = 75;}
+			else if (loc.equals( "Hall-Lounge Hallway")) {newx = 330; newy = 75;}
+			else if (loc.equals( "Study-Library Hallway")) { newx = 60; newy = 165;}
+			else if (loc.equals( "Hall-Billiard Hallway")) {newx = 240; newy = 165;}
+			else if (loc.equals( "Lounge-Dining Hallway")) { newx = 420; newy = 165;}
+			else if (loc.equals( "Library-Billiard Hallway")) {newx = 150; newy = 255;}
+			else if (loc.equals( "Billiard-Dining Hallway")) {newx = 330; newy = 255;}
+			else if (loc.equals( "Library-Conservatory Hallway")) {newx = 60; newy = 345;}
+			else if (loc.equals( "Billiard-Ballroom Hallway")) {newx = 240; newy = 345;}
+			else if (loc.equals( "Dining-Kitchen Hallway")) { newx =420; newy = 345;}
+			else if (loc.equals( "Conservatory-Ballroom Hallway")) {newx = 150; newy = 435;}
+			else if (loc.equals( "Ballroom-Kitchen Hallway")) {newx = 330; newy = 435;}
+		}
+		else if (charName.equals("Colonel Mustard")) {
+			player = player2;
+			if (loc.equals( "Study"))  { newx = 60; newy = 60;}
+			else if (loc.equals( "Library")) { newx = 60; newy = 240;}
+			else if (loc.equals( "Conservatory")) {newx = 60; newy = 420;}
+			else if (loc.equals( "Hall")) {newx = 240; newy = 60;}
+			else if (loc.equals( "Billiard Room")) { newx = 240; newy = 240;}
+			else if (loc.equals( "Ballroom")) {newx = 240; newy = 420;}
+			else if (loc.equals( "Lounge")) {newx = 420; newy = 60;}
+			else if (loc.equals( "Dining Room")) {newx = 420; newy = 240;}
+			else if (loc.equals( "Kitchen")) {newx = 420; newy = 420;}
+			else if (loc.equals( "Study-Hall Hallway")) {newx = 150; newy = 75;}
+			else if (loc.equals( "Hall-Lounge Hallway")) {newx = 330; newy = 75;}
+			else if (loc.equals( "Study-Library Hallway")) {newx = 60; newy = 165;}
+			else if (loc.equals( "Hall-Billiard Hallway")) {newx = 240; newy = 165;}
+			else if (loc.equals( "Lounge-Dining Hallway")) {newx = 420; newy = 165;}
+			else if (loc.equals( "Library-Billiard Hallway")) {newx = 150; newy = 255;}
+			else if (loc.equals( "Billiard-Dining Hallway")) {newx = 330; newy = 255;}
+			else if (loc.equals( "Library-Conservatory Hallway")) {newx = 60; newy = 345;}
+			else if (loc.equals( "Billiard-Ballroom Hallway")) {newx = 240; newy = 345;}
+			else if (loc.equals( "Dining-Kitchen Hallway")) {newx = 420; newy = 435;}
+			else if (loc.equals( "Conservatory-Ballroom Hallway")) {newx = 150; newy = 435;}
+			else if (loc.equals( "Ballroom-Kitchen Hallway")) {newx = 330; newy = 435;}
+		}
+		else if (charName.equals("Mrs. White")) {
+			player = player3;
+			
+			if (loc.equals( "Study")) {newx = 100; newy = 60;}
+			else if (loc.equals( "Library")) {newx = 100; newy = 240;}
+			else if (loc.equals( "Conservatory")) {newx = 100; newy = 420;}
+			else if (loc.equals( "Hall")) {newx = 280; newy = 60;}
+			else if (loc.equals( "Billiard Room")) {newx = 280; newy = 240;}
+			else if (loc.equals( "Ballroom")) {newx = 280; newy = 420;}
+			else if (loc.equals( "Lounge")) { newx = 460; newy = 60;}
+			else if (loc.equals( "Dining Room")) {newx = 460; newy = 240;}
+			else if (loc.equals( "Kitchen")) {newx = 460; newy = 420;}
+			else if (loc.equals( "Study-Hall Hallway")) { newx = 150; newy = 75;}
+			else if (loc.equals( "Hall-Lounge Hallway")) {newx = 330; newy = 75;}
+			else if (loc.equals( "Study-Library Hallway")) { newx = 60; newy = 165;}
+			else if (loc.equals( "Hall-Billiard Hallway")) { newx = 240; newy = 165;}
+			else if (loc.equals( "Lounge-Dining Hallway")) { newx = 420; newy = 165;}
+			else if (loc.equals( "Library-Billiard Hallway")) { newx = 150; newy = 255;}
+			else if (loc.equals( "Billiard-Dining Hallway")) {newx = 330; newy = 255;}
+			else if (loc.equals( "Library-Conservatory Hallway")) {newx = 60; newy = 345;}
+			else if (loc.equals( "Billiard-Ballroom Hallway")) { newx = 240; newy = 345;}
+			else if (loc.equals( "Dining-Kitchen Hallway")) { newx = 420; newy = 345;}
+			else if (loc.equals( "Conservatory-Ballroom Hallway")) {newx = 150; newy = 435;}
+			else if (loc.equals( "Ballroom-Kitchen Hallway")) { newx = 330; newy = 435;}
+		}
+		else if (charName.equals("Mr. Green")) {
+			player = player4;
+			if (loc.equals( "Study")) { newx = 20; newy = 100;}
+			else if (loc.equals( "Library")) { newx = 20; newy = 280;}
+			else if (loc.equals( "Conservatory")) { newx = 20; newy = 460;}
+			else if (loc.equals( "Hall")) { newx = 200; newy = 100;}
+			else if (loc.equals( "Billiard Room")) { newx = 200; newy = 280;}
+			else if (loc.equals( "Ballroom")) { newx = 200; newy = 460;}
+			else if (loc.equals( "Lounge")) { newx = 380; newy = 100;}
+			else if (loc.equals( "Dining Room")) { newx = 380; newy = 280;}
+			else if (loc.equals( "Kitchen")) { newx = 380; newy = 460;}
+			else if (loc.equals( "Study-Hall Hallway")) {newx = 150; newy = 75;}
+			else if (loc.equals( "Hall-Lounge Hallway")) { newx = 330; newy = 75;}
+			else if (loc.equals( "Study-Library Hallway")) { newx = 60; newy = 165;}
+			else if (loc.equals( "Hall-Billiard Hallway")) { newx = 240; newy = 165;}
+			else if (loc.equals( "Lounge-Dining Hallway")) { newx = 420; newy = 165;}
+			else if (loc.equals( "Library-Billiard Hallway")) { newx = 150; newy = 255;}
+			else if (loc.equals( "Billiard-Dining Hallway")) { newx = 330; newy = 255;}
+			else if (loc.equals( "Library-Conservatory Hallway")) { newx = 60; newy = 345;}
+			else if (loc.equals( "Billiard-Ballroom Hallway")) { newx = 240; newy = 345;}
+			else if (loc.equals( "Dining-Kitchen Hallway")) { newx = 420; newy = 345;}
+			else if (loc.equals( "Conservatory-Ballroom Hallway")) { newx = 150; newy = 435;}
+			else if (loc.equals( "Ballroom-Kitchen Hallway")) { newx = 330; newy = 435;}
+		}
+		else if (charName.equals("Mrs. Peacock")) {
+			player = player5;
+			if (loc.equals( "Study")) { newx = 60; newy = 100;}
+			else if (loc.equals( "Library")) { newx = 60; newy = 280;}
+			else if (loc.equals( "Conservatory")) { newx = 60; newy = 460;}
+			else if (loc.equals( "Hall")) { newx = 240; newy = 100;}
+			else if (loc.equals( "Billiard Room")) { newx = 240; newy = 280;}
+			else if (loc.equals( "Ballroom")) { newx = 240; newy = 460;}
+			else if (loc.equals( "Lounge")) { newx = 420; newy = 100;}
+			else if (loc.equals( "Dining Room")) { newx = 420; newy = 280;}
+			else if (loc.equals( "Kitchen")) { newx = 420; newy = 460;}
+			else if (loc.equals( "Study-Hall Hallway")) { newx = 150; newy = 75;}
+			else if (loc.equals( "Hall-Lounge Hallway")) { newx = 330; newy = 75;}
+			else if (loc.equals( "Study-Library Hallway")) { newx = 60; newy = 165;}
+			else if (loc.equals( "Hall-Billiard Hallway")) { newx = 240; newy = 165;}
+			else if (loc.equals( "Lounge-Dining Hallway")) { newx = 420; newy = 165;}
+			else if (loc.equals( "Library-Billiard Hallway")) { newx = 150; newy = 255;}
+			else if (loc.equals( "Billiard-Dining Hallway")) { newx = 330; newy = 255;}
+			else if (loc.equals( "Library-Conservatory Hallway")) { newx = 60; newy = 345;}
+			else if (loc.equals( "Billiard-Ballroom Hallway")) { newx = 240; newy = 345;}
+			else if (loc.equals( "Dining-Kitchen Hallway")) { newx = 420; newy = 345;}
+			else if (loc.equals( "Conservatory-Ballroom Hallway")) { newx = 150; newy = 435;}
+			else if (loc.equals( "Ballroom-Kitchen Hallway")) { newx = 330; newy = 435;}
+		}
+		else if (charName.equals("Professor Plum")) {
+			player = player6;
+			if (loc.equals( "Study")) { newx = 100; newy = 100;}
+			else if (loc.equals( "Library")) { newx = 100; newy = 280;}
+			else if (loc.equals( "Conservatory")) { newx = 100; newy = 460;}
+			else if (loc.equals( "Hall")) { newx = 280; newy = 100;}
+			else if (loc.equals( "Billiard Room")) { newx = 280; newy = 280;}
+			else if (loc.equals( "Ballroom")) { newx = 280; newy = 460;}
+			else if (loc.equals( "Lounge")) { newx = 460; newy = 100;}
+			else if (loc.equals( "Dining Room")) { newx = 460; newy = 280;}
+			else if (loc.equals( "Kitchen")) { newx = 460; newy = 460;}
+			else if (loc.equals( "Study-Hall Hallway")) { newx = 150; newy = 75;}
+			else if (loc.equals( "Hall-Lounge Hallway")) { newx = 330; newy = 75;}
+			else if (loc.equals( "Study-Library Hallway")) { newx = 60; newy = 165;}
+			else if (loc.equals( "Hall-Billiard Hallway")) { newx = 240; newy = 165;}
+			else if (loc.equals( "Lounge-Dining Hallway")) { newx = 420; newy = 165;}
+			else if (loc.equals( "Library-Billiard Hallway")) { newx = 150; newy = 255;}
+			else if (loc.equals( "Billiard-Dining Hallway")) { newx = 330; newy = 255;}
+			else if (loc.equals( "Library-Conservatory Hallway")) { newx = 60; newy = 345;}
+			else if (loc.equals( "Billiard-Ballroom Hallway")) { newx = 240; newy = 345;}
+			else if (loc.equals( "Dining-Kitchen Hallway")) { newx = 420; newy = 345;}
+			else if (loc.equals( "Conservatory-Ballroom Hallway")) { newx = 150; newy = 435;}
+			else if (loc.equals( "Ballroom-Kitchen Hallway")) { newx = 330; newy = 435;}
+		  }
+		int savedX = player.x;
+		player.x = newx;
+		int savedY = player.y;
+		player.y = newy;
+		canvas.repaint(savedX, savedY, player.width, player.height);
+		canvas.repaint(player.x, player.y, player.width, player.height);
 	}
 	
 	public void move(Token player, int newx, int newy) {
