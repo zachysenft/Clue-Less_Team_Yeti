@@ -256,6 +256,7 @@ public class PlayerMessage implements Serializable{
 		private static final long serialVersionUID = 8;
 		
 		private String message;
+		private ArrayList<Card> winCards;
 		
 		public EndGameMessage() {
 			this.setMessageType("End Game");
@@ -268,6 +269,16 @@ public class PlayerMessage implements Serializable{
 		public String getMessage() {
 			return this.message;
 		}
+		
+		public void setCards(ArrayList<Card> card) {
+			this.winCards = card;
+		}
+		
+		public ArrayList<Card> getCards() {
+			return this.winCards;
+		}
 	}
+	
+	//public static class AccuMessage extends PlayerMessage {
 	
 }

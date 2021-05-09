@@ -42,6 +42,7 @@ public class BoardGame{
     private final static String [] weapons = {"Dagger", "Rope", "Lead Pipe","Candlestick","Revolver", "Wrench"};
     private static PlayerMessage.SuggestionOrAccusation suggorAccu;
     private static ArrayList<Card> dealCards = new ArrayList<Card>();
+    private static ArrayList<Card> winCards = new ArrayList<Card>();
     private static boolean flag = true;
     
     private static Map<String, Integer> locationNameToIDMap = new HashMap<String, Integer>(){{	
@@ -53,20 +54,7 @@ public class BoardGame{
     	put("Ballroom", 6);
     	put("Lounge", 7);
     	put("Dining Room", 8);
-    	put("Kitchen", 9);
-//    	put("Hallway 12", 12);
-//    	put("Hallway 23", 23);
-//    	put("Hallway 14", 14);
-//    	put("Hallway 25", 25);
-//    	put("Hallway 36", 36);
-//    	put("Hallway 47", 47);
-//    	put("Hallway 45", 45);
-//    	put("Hallway 56", 56);
-//    	put("Hallway 58", 58);
-//    	put("Hallway 69", 69);
-//    	put("Hallway 78", 78);
-//    	put("Hallway 89", 89);
-    	
+    	put("Kitchen", 9);    	
     	put("Study-Library Hallway", 12);
     	put("Library-Conservatory Hallway", 23);
     	put("Study-Hall Hallway", 14);
@@ -80,7 +68,6 @@ public class BoardGame{
     	put("Lounge-Dining Hallway", 78);
     	put("Dining-Kitchen Hallway", 89);
     	
- 
     	// Starting locations
     	put("ScarletStart",101);
     	put("MustardStart",102);
@@ -95,240 +82,12 @@ public class BoardGame{
 		storeWinCondinDB();
 	}
     
-    public void newGame() {
-        
-        Scanner input = new Scanner(System.in);
-        System.out.println("How many players are there?: ");
-        
-        int numPlayers = input.nextInt();
-
-        
-        for (int i = 0; i < numPlayers; i++){
-            
-            Player x = new Player();
-            this.addPlayer(x);
-            x.setPlayerActive();
-            x.setPlayerID(i);
-            x.setPlayerName(players[i]);
-            x.setOrderNum(i);
-            x.setLocation(new Hallway(startingHallways[i], "Hallway" + startingHallways[i], true));
-            
-        }
-        
-        //generate win condition
-        ArrayList<Card> cards = generateWinCondition();
-        storeWinCondinDB();
-        //deal cards to players
-        //dealCards(cards);
-        
-        boolean gameWon = false;
-        int currPlayerIndex = -1; //tracks who's turn it is
-        
-
-        //instantiate rooms and rest of hallways - zach
-        for(int i = 0; i < rooms.length; i++) {
-      	  room_list.add(new Room(i+1, rooms[i]));
-        }
-        
-        Hallway Hallway14 = new Hallway(14, "Hallway 14");
-        Hallway Hallway25 = new Hallway(25, "Hallway 25");
-        Hallway Hallway45 = new Hallway(45, "Hallway 45");
-        Hallway Hallway56 = new Hallway(56, "Hallway 56");
-        Hallway Hallway58 = new Hallway(58, "Hallway 58");
-        Hallway Hallway89 = new Hallway(89, "Hallway 89");
-        // going to add the rest here just so they have names....
-        Hallway Hallway47 = new Hallway(47, "Hallway 47");
-        Hallway Hallway12 = new Hallway(12, "Hallway 12");
-        Hallway Hallway78 = new Hallway(47, "Hallway 78");
-        Hallway Hallway23 = new Hallway(23, "Hallway 23");
-        Hallway Hallway36 = new Hallway(36, "Hallway 36");
-        Hallway Hallway69 = new Hallway(69, "Hallway 69");
-        if(numPlayers < 6) {
-      	  int x = numPlayers; //4 players means last 2 hallways in array have not been instantiated
-      	  
-      	  for(int i = x; i < 6; i++) {
-      		  Hallway addHallway = new Hallway(startingHallways[i], "Hallway " + startingHallways[i]);
-      	  }
-      	  
-        }
-        
-        
-        //instantiate inactive players - Ashley
-	int numInactivePlayers = players.length - numPlayers;
-	
-	for (int i = 0; i < numInactivePlayers; i++){
-            
-            Player x = new Player();
-            this.addInactivePlayer(x);
-            x.setPlayerName(players[i + numPlayers]);
-            x.setLocation(new Hallway(startingHallways[i + numPlayers], "Hallway" + startingHallways[i + numPlayers], false));
-            
-        }
-	
-        //-Dawit and Matt
-        //while game is not won - make accusation (y/n), option to move (y/n), option to make sugg (y/n)
-        //check if suggestion is disprovable, choose card to show, end turn
-        //PowerPoint - abby
-        
-        while (gameWon !=true) {
-        	currPlayerIndex++;
-        	currPlayerIndex = currPlayerIndex % activePlayers.size();
-        	currPlayerIndex = checkLostGame(currPlayerIndex);
-        	while (activePlayers.get(currPlayerIndex).getLostGameFlag() == true) { //if the current player lost the game
-        		System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() + "'s turn is skipped because he/she lost the game");
-            	currPlayerIndex++;
-            	currPlayerIndex = currPlayerIndex % activePlayers.size();
-        	}
-        	System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +"'s turn to play!");
+    //returns the winning cards 
+    public ArrayList<Card> getWinCards() {
+    	return winCards;
+    }
  
-        	
-        	//MAKING ACCUSATION
-        	
-        	System.out.println("Would you like to make an accusation? (yes/no)");
-        	String accAnswer = input.next();
-        	String accChar=null;
-        	String winChar = "";
-			String winLocation = "";
-			String winWeapon = "";
-			String accLocation = null;
-			String accWeapon = null;
-			
-        	if (accAnswer.equalsIgnoreCase("yes")) {
-        		System.out.println("Enter a character: ");
-        		accChar = input.next();
-        		System.out.println("Enter a location: ");
-        		accLocation = input.next();
-        		System.out.println("Enter a weapon");
-        		accWeapon = input.next();
-        		PlayerMessage pm = new PlayerMessage();
-        		//suggorAccu = new SuggestionOrAccusation(accChar, accLocation, accWeapon, true);
-        		//PlayerMessage.SuggestionOrAccusation sugAcc = pm.new SuggestionOrAccusation(accChar, accLocation, accWeapon, true);
-			
-			
-			try{  
-				Class.forName("com.mysql.jdbc.Driver");  
-				Connection con=DriverManager.getConnection(  
-				"jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");  
-				//here TeamYeti is database name, root is username and teamyeti is password  
-				Statement stmt=con.createStatement();  
-				ResultSet rs=stmt.executeQuery("select Player, Room, Weapon from CLUELESS_SUGGESTIONS where Winning_Flg='T'");
-				rs.next();
-				winChar = rs.getString(1);
-				winLocation = rs.getString(2);
-				winWeapon = rs.getString(3);
-
-				con.close();  
-				}catch(Exception e){ System.out.println(e);}  
-				}  
-			
-        		if (accChar == winChar && accLocation == winLocation && accWeapon == winWeapon) {
-        			//if statement for if the accusation matches what's in the database
-        			//activePlayers.get(currPlayerIndex).set
-        			endGame();
-        		} else { //if you were wrong
-        			activePlayers.get(currPlayerIndex).setLostGameFlag();
-        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() + " has lost the game.");
-        			System.out.println("You will now only be able to disprove suggestions.");
-        		}
-        		
-        	}
-        	
-        	//MOVE OPTION
-        	
-        	if (this.activePlayers.get(currPlayerIndex).getLostGameFlag() == true) {
-        		//do nothing/exit while loop iteration
-        	} else { //if player hasn't lost the game
-        		System.out.println("You are currently in "); 
-        		System.out.println("Would you like to move somewhere? (yes/no)");
-        		String moveAns = input.next();
-        		if (moveAns.equalsIgnoreCase("yes")) { //if they want to move somewhere
-        			System.out.println("Where would you like to move?");
-        			String moveLoc = input.next(); // will use name for this... gonna be a little weird with hallways
-        			Location destLoc = null;
-        			if (moveLoc.startsWith("Hallway")) { //if they want to move to a hallway
-        				if (moveLoc.endsWith("14")) {
-        					destLoc = Hallway14;
-        				} else if (moveLoc.endsWith("47")) {
-        					destLoc = Hallway47;
-        				} else if (moveLoc.endsWith("12")) {
-        					destLoc = Hallway12;
-        				} else if (moveLoc.endsWith("45")) {
-        					destLoc = Hallway45;
-        				} else if (moveLoc.endsWith("78")) {
-        					destLoc = Hallway78;
-        				} else if (moveLoc.endsWith("25")) {
-        					destLoc = Hallway25;
-        				} else if (moveLoc.endsWith("58")) {
-        					destLoc = Hallway58;
-        				} else if (moveLoc.endsWith("23")) {
-        					destLoc = Hallway23;
-        				} else if (moveLoc.endsWith("56")) {
-        					destLoc = Hallway56;
-        				} else if (moveLoc.endsWith("89")) {
-        					destLoc = Hallway89;
-        				} else if (moveLoc.endsWith("36")) {
-        					destLoc = Hallway36;
-        				} else if (moveLoc.endsWith("69")) {
-        					destLoc = Hallway69;
-        				}
-  
-        				
-        				
-        			} else { //they move to a room
-        				if (moveLoc.equalsIgnoreCase("Study")) {
-        					destLoc = room_list.get(0);
-        			} 	else if (moveLoc.equalsIgnoreCase("Library")) {
-        					destLoc = room_list.get(1);
-        			}	else if (moveLoc.equalsIgnoreCase("Conservatory")) {
-							destLoc = room_list.get(2);
-        			} 	else if (moveLoc.equalsIgnoreCase("Hall")) {
-							destLoc = room_list.get(3);
-        			} 	else if (moveLoc.equalsIgnoreCase("Billiard Room")) {
-							destLoc = room_list.get(4);
-        			} 	else if (moveLoc.equalsIgnoreCase("Ball Room")) {
-							destLoc = room_list.get(5);
-        			} 	else if (moveLoc.equalsIgnoreCase("Lounge")) {
-							destLoc = room_list.get(6);
-        			} 	else if (moveLoc.equalsIgnoreCase("Dining Room")) {
-							destLoc = room_list.get(7);
-        			} 	else if (moveLoc.equalsIgnoreCase("Kitchen")) {
-							destLoc = room_list.get(8);
-        			
-        		} 
-        				
-        			}
-        			activePlayers.get(currPlayerIndex).updateLocation(destLoc);
-        			System.out.println(activePlayers.get(currPlayerIndex).getPlayerName() +" has been updated to "+ activePlayers.get(currPlayerIndex).getLocation());
-        } else { //do nothing, they don't want to move
-        	
-        }
-        	// INSERT SUGGESTION CODE HERE
-        	
-        	}
-        }
         
-        //} 
-        
-   /*/---------------- TODO 
-    public String getRandomCards(int index) { // ArrayList<Card> card) {
-    	 generateWinCondition();
-    	
-    	String s="";
-    	for (int i = index; i < dealCards.size(); i=i + 3) {
-    		Card cards = dealCards.get(i);
-       		 s += cards.getName() + "\n";
-    	}
-       
-    	return s;
-    }
-    
-    public String handleMessage (String msg) {   //(Object msg) {
-    	//if (msg instanceof PlayerMessage)
-    		return "good"; //TODO
-    	
-    	//return "not good";
-    }
-    */ //----------------
     public int checkLostGame(int currIndex) {
     	int newCurrIndex = currIndex;
     	while (this.activePlayers.get(newCurrIndex).getLostGameFlag() == true) {
@@ -342,43 +101,6 @@ public class BoardGame{
     public static int getLocationID(String locationName) {
     	return locationNameToIDMap.get(locationName);
     }
-    public static void endGame() {
-        
-        System.out.println("Game Over!");
-        
-        try{  
-		Class.forName("com.mysql.jdbc.Driver");  
-		Connection con=DriverManager.getConnection(  
-		"jdbc:mysql://localhost:3306/TeamYeti","root","teamyeti");  
-		//here TeamYeti is database name, root is username and teamyeti is password  
-		Statement stmt=con.createStatement();  
-
-		stmt.executeUpdate("delete from CLUELESS_SUGGESTIONS");
-
-		con.close();  
-		}catch(Exception e){ System.out.println(e);}  
-		  
-        
-        
-        Scanner input = new Scanner(System.in);
-        System.out.println("New Game? Y or N: ");
-        
-        String choice = input.nextLine();
-        
-        if (choice == "N"){
-            
-            return;
-            
-        }
-        
-        if (choice == "Y"){
-            
-            //newGame();
-            
-        }
-        
-    }
-    
     
     public ArrayList<Card> generateWinCondition(){
         
@@ -401,8 +123,11 @@ public class BoardGame{
         	Card singleCard = myVar.createCard();
         	dealCards.add(singleCard);
         }
+        winCards.add(dealCards.get(rndPlayer));  //win card1 (get it before removed)
         dealCards.remove(rndPlayer);
+        winCards.add(dealCards.get(rndWeapon + 5));  //win card2
         dealCards.remove(rndWeapon + 5);
+        winCards.add(dealCards.get(rndRoom + 10));  // win card3
         dealCards.remove(rndRoom + 10);
      
         //shuffle(0,5);     //shffle person
@@ -504,35 +229,7 @@ public class BoardGame{
 		con.close();  
 		}catch(Exception e){ System.out.println("Error while inserting to the DB \n" + e);}  
 		}  
-        
-    
-    public boolean isPlayerActive(Player player){
-        
-        return activePlayers.contains(player);
-        
-    }
-	
-   
-    public void addPlayer(Player player){
-        
-        activePlayers.add(player);
-        
-    }
-	
-    public void addInactivePlayer(Player player){
-	    
-	 inactivePlayers.add(player);
-	    
-    }
-    
-   
-    
-    public ArrayList<Player> getActivePlayers(){
-    	
-    	return activePlayers;
-    	
-    }
-    
+           
     public boolean checkAcussation(String ply, String loc, String wpn) {
         
         boolean results = false;
@@ -558,6 +255,7 @@ public class BoardGame{
         return results;
       }
     
+ /*
     public void displayAllCards(){
         
         for (int i = 0; i < activePlayers.size(); i++){
@@ -572,7 +270,7 @@ public class BoardGame{
         }
         
     }
-  
+ */ 
     
     /** test driver code */
      public static void main(String []args){

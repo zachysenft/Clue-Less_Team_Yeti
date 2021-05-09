@@ -2,6 +2,7 @@ package UI;
 
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ import clueless.Location.LocationType;
 import clueless.Player;
 import clueless.PlayerMessage;
 import clueless.PlayerMessage.DealCardMessage;
+import clueless.PlayerMessage.EndGameMessage;
 import clueless.PlayerMessage.EndTurnMessage;
 import clueless.PlayerMessage.MoveMsg;
 import clueless.PlayerMessage.OtherMessage;
@@ -24,6 +26,7 @@ import clueless.PlayerMessage.SuggestionResponse;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,21 +52,28 @@ import javax.swing.UIManager;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 
+import javax.imageio.ImageIO;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
+import javax.swing.Popup;
 
 public class ClientUI extends JFrame implements ActionListener {	
 
 	// Socket Related
 	private static Socket clientSocket;
-	private static int PORT;
-	private PrintWriter out;
+	//private static int PORT;
+	
 	private OutputStream outputStream;
 	private static ObjectOutputStream objectOutputStream;
 	InputStream inputStream;
@@ -76,24 +86,26 @@ public class ClientUI extends JFrame implements ActionListener {
 	private static JPanel contentPane;
 	private JTextArea txtAreaLogs;
 	private static JTextArea playersCard;
-	private JLabel cardLabel;
+	private static JTextArea cheatSheet;
+	//private JLabel cardLabel;
 	private JButton btnStart;
 	private static JButton btnStartGame;
 	private JPanel panelNorth;
 	private static JLabel lblChatClient;
 	private JPanel panelNorthSouth;
 	private JPanel panelNorthWest;
-	private JPanel pannelCollection;
+	//private JPanel pannelCollection;
 	private JPanel movePanel;
 	private static JButton suggBtn;
 	private static JButton moveBtn;
 	private static JButton accusationBtn;
 	private static JButton endBtn;
-	private JLabel lblPort;
+	//private JLabel lblPort;
 	private JLabel lblName;
-	private JLabel lblNames;
+	//private JLabel lblNames;
 	private JPanel panelSouth;
 	private static JButton btnSend;
+	private static JButton viewImg;
 	private JTextField txtMessage;
 	private JTextField txtNickname;
 	private JTextField txtPort;
@@ -102,52 +114,12 @@ public class ClientUI extends JFrame implements ActionListener {
     private JComboBox<String> weaponList; 
     private JComboBox<String> locationList;
     private JComboBox<String> moveLocation;
-	
-	//private static BoardGame game;
-	//private int numPlayers = 0;
-
+    private static HashMap<String, Integer> nameToCardImageMap = new HashMap<>();
+    private static ImageIcon[] imgList = new ImageIcon[21];
+    private static JPanel plyrCards;
 	/**
 	 * Launch the application.
-	 */
-    /*   * Moved to BoardGame class **
-private static Map<String, Integer> idToLocName = new HashMap<String, Integer>(){{
-    	
-    	put("Study", 1);
-    	put("Library", 2);
-    	put("Conservatory", 3);
-    	put("Hall", 4);
-    	put("Billiard Room", 5);
-    	put("Ballroom", 6);
-    	put("Lounge", 7);
-    	put("Dining Room", 8);
-    	put("Kitchen", 9);
-    	put("Hallway 12", 12);
-    	put("Hallway 23", 23);
-    	put("Hallway 14", 14);
-    	put("Hallway 25", 25);
-    	put("Hallway 36", 36);
-    	put("Hallway 47", 47);
-    	put("Hallway 45", 45);
-    	put("Hallway 56", 56);
-    	put("Hallway 58", 58);
-    	put("Hallway 69", 69);
-    	put("Hallway 78", 78);
-    	put("Hallway 89", 89);
-    	
-    	// Starting locations
-    	put("ScarletStart",101);
-    	put("MustardStart",102);
-    	put("WhiteStart",103);
-    	put("GreenStart",104);
-    	put("PeacockStart",105);
-    	put("PlumStart",106);
-    	
-    
-    	
-    
-    }};
-    */
-    
+	 */    
     
 	public static void main(String[] args) {
 		
@@ -172,6 +144,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	 * Create the frame.
 	 */
 	public ClientUI() { 
+		loadImges();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(500, 500, 770, 500);
 		contentPane = new JPanel();
@@ -199,12 +172,6 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		lblName = new JLabel("Nickname");
 		panelNorthSouth.add(lblName);
 		
-		//JLabel lbl = new JLabel("Select one");
-	    //lbl.setVisible(true);
-		
-	 //--------------------------------------
-	//ADDED for TEST 
-	    //pannelCollection = new JPanel(new GridLayout(10, 1, 10, 5));
 		panelNorthWest = new JPanel(new GridLayout(2,0));//(10, 1, 10, 5)); //new JPanel();
 		panelNorth.add(panelNorthWest, BorderLayout.WEST);
 		panelNorthWest.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
@@ -248,8 +215,6 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
             moveBtn.setEnabled(false);
 	    
 	    panelNorth.add(movePanel, BorderLayout.EAST); //contentPane.add(movePanel, BorderLayout.EAST);
-	    //pannelCollection.add(movePanel);
-	    //panelNorth.add(pannelCollection, BorderLayout.WEST);// panelNorthWest, BorderLayout.WEST);
 	    
 		txtNickname = new JTextField();
 		txtNickname.setColumns(10);
@@ -278,30 +243,46 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 
-		txtAreaLogs = new JTextArea();
+		txtAreaLogs = new JTextArea();  //txtAreaLogs = new JTextArea(10, 70);
 		txtAreaLogs.setBackground(Color.BLACK);
 		txtAreaLogs.setForeground(Color.WHITE);
 		txtAreaLogs.setLineWrap(true);
-		//-------------------
-		//ArrayList<Card> plCards = ServerUI.plyrsCard();
-		//int index = sui.cardNumIndex();
-		//String plCard = ServerUI.plyrsCard(); //game.getRandomCards(index); //, plCards);
+		
 		playersCard = new JTextArea(5,20);
 		playersCard.setBackground(Color.BLACK);
 		playersCard.setForeground(Color.WHITE);
 		playersCard.setLineWrap(true);
 		playersCard.setText(""); //plCard );
-		//cardLabel = new JLabel("Player card");
-		//JPanel cardPanel = new JPanel();
-		//cardPanel.add(playersCard);
-		//cardPanel.add(cardLabel);
+		
+		
+		cheatSheet = new JTextArea(5,20);
+		cheatSheet.setBackground(Color.WHITE);
+		cheatSheet.setForeground(Color.BLACK); 
+		cheatSheet.setLineWrap(true);
+		cheatSheet.setText("CHEAT SHEET\n");
+		JScrollPane cheatSheatPane = new JScrollPane();
+		contentPane.add(cheatSheatPane, BorderLayout.EAST);
+		cheatSheatPane.setViewportView(cheatSheet);
+		 
 		
 		JScrollPane scrollPane1 = new JScrollPane();
-		contentPane.add(scrollPane1, BorderLayout.WEST);
+		
+		viewImg = new JButton("View Cards");        
+		JPanel cardviews = new JPanel();
+		cardviews.setLayout(new BoxLayout(cardviews, BoxLayout.PAGE_AXIS));
+		cardviews.add(viewImg);
+		
+		viewImg.addActionListener(this);
+        viewImg.setEnabled(false);
+		
+		cardviews.add(scrollPane1);
+		contentPane.add(cardviews, BorderLayout.WEST);
+		
+		//contentPane.add(scrollPane1, BorderLayout.WEST);
 		scrollPane1.setViewportView(playersCard);
-		//----------------
 		scrollPane.setViewportView(txtAreaLogs);
 
+		/*
 		panelSouth = new JPanel();
 		FlowLayout fl_panelSouth = (FlowLayout) panelSouth.getLayout();
 		fl_panelSouth.setAlignment(FlowLayout.RIGHT);
@@ -315,12 +296,113 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		btnSend.addActionListener(this);
 		btnSend.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		panelSouth.add(btnSend);
+		*/
+	}
+
+	private void loadImges() {
+	    
+		ImageIcon icon1 = getCardImage("/cardimages/ballroom.png");   //("/imageFiles/ballroom.png");
+		imgList[0]= icon1;
+		nameToCardImageMap.put("Ballroom", 0);
+		
+		ImageIcon icon2 = getCardImage("/cardimages/billiard.png"); //("/imageFiles/billiard.png");
+		imgList[1]= icon2;
+		nameToCardImageMap.put("Billiard Room", 1);
+		
+		ImageIcon icon3 = getCardImage("/cardimages/candlestick2.png"); //("/imageFiles/candlestick.png");
+		imgList[2]= icon3;
+		nameToCardImageMap.put("Candlestick", 2);
+		
+		ImageIcon icon4 = getCardImage("/cardimages/conservatory.png"); //("/imageFiles/conservatory.png");
+		imgList[3]= icon4;
+		nameToCardImageMap.put("Conservatory", 3);
+		
+		ImageIcon icon5 = getCardImage("/cardimages/dagger2.png");  //("/imageFiles/dagger.png");
+		imgList[4]= icon5;
+		nameToCardImageMap.put("Dagger", 4);
+		
+		ImageIcon icon6 = getCardImage("/cardimages/diningroom.png");   //("/imageFiles/diningroom.png");
+		imgList[5]= icon6;
+		nameToCardImageMap.put("Dining Room", 5);
+		
+		ImageIcon icon7 = getCardImage("/cardimages/green2.png");  //("/imageFiles/green.png");
+		imgList[6]= icon7;
+		nameToCardImageMap.put("Mr. Green", 6);
+		
+		ImageIcon icon8 = getCardImage("/cardimages/hall.png");  //("/imageFiles/hall.png");
+		imgList[7]= icon8;
+		nameToCardImageMap.put("Hall",7);
+		
+		ImageIcon icon9 = getCardImage("/cardimages/kitchen.png");  //("/imageFiles/kitchen.png");
+		imgList[8]= icon9;
+		nameToCardImageMap.put("Kitchen",8);
+		
+		ImageIcon icon10 = getCardImage("/cardimages/library.png");   //("/imageFiles/library.png");
+		imgList[9]= icon10;
+		nameToCardImageMap.put("Library", 9);
+		
+		ImageIcon icon11 = getCardImage("/cardimages/lounge.png");  //("/imageFiles/lounge.png");
+		imgList[10]= icon11;
+		nameToCardImageMap.put("Lounge", 10);
+		
+		ImageIcon icon12 = getCardImage("/cardimages/mustard2.png");  //("/imageFiles/mustard.png");
+		imgList[11]= icon12;
+		nameToCardImageMap.put("Colonel Mustard", 11);
+		
+		ImageIcon icon13 = getCardImage("/cardimages/peacock2.png");  //("/imageFiles/peacock.png");
+		imgList[12]= icon13;
+		nameToCardImageMap.put("Mrs. Peacock", 12);
+		
+		ImageIcon icon14 = getCardImage("/cardimages/pipe2.png");  //("/imageFiles/pipe.png");
+		imgList[13]= icon14;
+		nameToCardImageMap.put("Lead Pipe", 13);
+		
+		ImageIcon icon15 = getCardImage("/cardimages/plum2.png");  //("/imageFiles/plum.png");
+		imgList[14]= icon15;
+		nameToCardImageMap.put("Professor Plum", 14);
+		
+		ImageIcon icon16 = getCardImage("/cardimages/revolver2.png");  //("/imageFiles/revolver.png");
+		imgList[15]= icon16;
+		nameToCardImageMap.put("Revolver",15);
+		
+		ImageIcon icon17 = getCardImage("/cardimages/rope2.png");  //("/imageFiles/rope.png");
+		imgList[16]= icon17;
+		nameToCardImageMap.put("Rope", 16);
+		
+		ImageIcon icon18 = getCardImage("/cardimages/scarlet2.png");  //("/imageFiles/scarlet.png");
+		imgList[17]= icon18;
+		nameToCardImageMap.put("Miss Scarlet", 17);
+		
+		ImageIcon icon19 = getCardImage("/cardimages/study.png");   //("/imageFiles/study.png");
+		imgList[18]= icon19;
+		nameToCardImageMap.put("Study", 18);
+		
+		ImageIcon icon20 = getCardImage("/cardimages/white2.png");  //("/imageFiles/white.png");
+		imgList[19]= icon20;
+		nameToCardImageMap.put("Mrs. White", 19);
+		
+		ImageIcon icon21 = getCardImage("/cardimages/wrench2.png");  //("/imageFiles/wrench.png");
+		imgList[20]= icon21;
+		nameToCardImageMap.put("Wrench", 20);
+		
+	}
+
+	public ImageIcon getCardImage(String cardName) {
+		try {
+			BufferedImage img = ImageIO.read(getClass().getResource(cardName));
+			ImageIcon image = new ImageIcon(img);
+			//ImageIcon icon = new ImageIcon(img);
+			return image;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null; //new ImageIcon();
 	}
 	
 	private static void showPane(String info) throws IOException {
 		int result = JOptionPane.showConfirmDialog(contentPane, //showMessageDialog(contentPane, 
                      info, "Suggestion Response", JOptionPane.YES_NO_OPTION);
-            
 		
 		SuggestionResponse suggResp = new SuggestionResponse();
 		String resp ="";
@@ -335,16 +417,57 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		objectOutputStream.writeObject(suggResp);		
 	}
 	
-	public static void setCards(PlayerMessage msg) {
-		DealCardMessage cardMsg = (DealCardMessage) msg;
+	private static void showAccusationCards(PlayerMessage msg) {
+		GridLayout layout = new GridLayout(1, 3);
+		layout.setHgap(5);
+		JPanel accCards = new JPanel(layout); //new GridLayout());	
+		EndGameMessage cardMsg = (EndGameMessage) msg;
 		ArrayList<Card> c = cardMsg.getCards();
 		if (c.size() > 0) {
 			for (Card card: c) {
-			   playersCard.append(card.getName() + "\n");  //setText(cards); 
+			  String cname = card.getName(); // + "\n");  //setText(cards); 
+			  int i = nameToCardImageMap.get(cname); 
+			  Image image = imgList[i].getImage(); // transform it 
+			  Image newimg = image.getScaledInstance(175, 175,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			  ImageIcon imageIcon = new ImageIcon(newimg);
+			  JLabel ilabel = new JLabel(imageIcon); //(imgList[i]);
+			  accCards.add(ilabel);
+			}			
+			  JOptionPane.showMessageDialog(null, 
+                        accCards, 
+                        "Winning Cards",
+                        JOptionPane.ERROR_MESSAGE); 
+			 
+		}
+	}
+	
+	public static void setCards(PlayerMessage msg) {
+		DealCardMessage cardMsg = (DealCardMessage) msg;
+		ArrayList<Card> c = cardMsg.getCards();
+		
+		GridLayout layout = new GridLayout(2, 3);
+		layout.setHgap(5);
+		layout.setVgap(5);
+		plyrCards = new JPanel(layout);
+		
+		if (c.size() > 0) {
+			for (Card card: c) {
+				//Add list of cards to textArea
+				 playersCard.append(card.getName() + "\n");  
+				 
+				 //Create Cards image
+				 String cname = card.getName(); // + "\n");  //setText(cards); 
+				 int i = nameToCardImageMap.get(cname); 
+				 Image image = imgList[i].getImage(); // transform it 
+				 Image newimg = image.getScaledInstance(175, 175,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+				 ImageIcon imageIcon = new ImageIcon(newimg);
+				 JLabel ilabel = new JLabel(imageIcon); //(imgList[i]);
+				 plyrCards.add(ilabel);
+							
 			}
 		} 
-		Location loc = cardMsg.getStartLocation();
-		//player.setLocation(loc);
+		
+		
 	}
 	private static OtherMessage createOtherMessage(String msg) {
 		OtherMessage otherMsg = new OtherMessage();
@@ -363,7 +486,8 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				btnStart.setText("JOIN");
 				stop();
 			}
-		}else if(e.getSource() == btnSend) {
+		}
+		/*else if(e.getSource() == btnSend) {
 			String message = txtMessage.getText().trim();
 			if(!message.isEmpty()) {
 				//out.println(message);
@@ -375,7 +499,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				}
 				txtMessage.setText("");
 			}
-		}
+		} */
 		else if (e.getSource() == suggBtn) {
 			//
 			String player = (String)personList.getSelectedItem().toString();
@@ -401,39 +525,16 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 		} 
 		
 		else if (e.getSource() == moveBtn) {
-			/*
-			String location = (String)moveLocation.getSelectedItem().toString();
-			//String location = JOptionPane.showInputDialog("Enter Location");
-			//String playerName = clientName;
-			int locId = locationIDMap.get(location);
-			Location loc = new Location(locId, location, LocationType.ROOM); //??????
-			MoveMsg moveMsg = new MoveMsg(loc);
-			try {
-				objectOutputStream.writeObject(moveMsg);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}  */
-			//get player name
-			//String location = JOptionPane.showInputDialog("Enter Location");
-			//String[] roomArr = {"Kitchen", "Ballroom", "Dining Room", "Lounge", "Hall", "Conservatory", "Billiard Room", "Library", "Study"};
-			//String[] hallwayArr = {"Hallway 14", "Hallway 47", "Hallway 78", "Hallway 89", "Hallway 69", "Hallway 36", "Hallway 23", "Hallway 12", "Hallway 45", "Hallway 58", "Hallway 56", "Hallway 25"}; 
-			//ArrayList<String> room = new ArrayList<>(Arrays.asList(roomArr));
-			//ArrayList<String> hallway = new ArrayList<>(Arrays.asList(hallwayArr));
-			
 			
 			
 			String location = moveLocation.getSelectedItem().toString();
-			String playerName = clientName;
+			//String playerName = clientName;
 			LocationType loctype;
-			//String ms = playerName + " has moved to "+ location;
-			//OtherMessage msg = createOtherMessage(ms);
-			//if (room.contains(location) == true){
-			//	loctype = LocationType.ROOM;
-			//}
+			
 			if (location.toLowerCase().contains("hallway")) 
 				loctype = LocationType.HALLWAY;
 			else {
-				 //loctype = LocationType.HALLWAY;
+				 
 				loctype = LocationType.ROOM;
 			}
 			int locid = BoardGame.getLocationID(location);
@@ -467,9 +568,6 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			
 		} 
 		else if(e.getSource() == btnStartGame) {
-			//String start = "start game";
-			//out.println(start);
-			//btnStartGame.setEnabled(false);
 			moveBtn.setEnabled(true);
 			suggBtn.setEnabled(true);
 			accusationBtn.setEnabled(true);
@@ -492,6 +590,12 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+		}
+		else if(e.getSource() == viewImg) {
+			JOptionPane.showMessageDialog(null, //accCards,
+                    plyrCards, //CardDetailPanel(cards),
+                    "Player Cards",
+                    JOptionPane.INFORMATION_MESSAGE); 
 		}
 		
 		//Refresh UI
@@ -542,7 +646,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 	public static void turnOnOffButtons() {
 		if (!gameEnded) {
 			if (clientName.equalsIgnoreCase(turn)) {
-				if (!btnSend.isEnabled()) {btnSend.setEnabled(true);}
+				//if (!btnSend.isEnabled()) {btnSend.setEnabled(true);}
 				if (canMakeSuggestion) {
 					if (!suggBtn.isEnabled()) {suggBtn.setEnabled(true);}
 				}
@@ -552,7 +656,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
 				
 			} else {
-				if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
+				//if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
 				if (suggBtn.isEnabled()) {suggBtn.setEnabled(false);}
 				if (moveBtn.isEnabled())  {moveBtn.setEnabled(false);}
 				if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
@@ -560,7 +664,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 				if (endBtn.isEnabled()) {endBtn.setEnabled(false);}
 			}
 		} else {
-    			if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
+    			//if (btnSend.isEnabled()) {btnSend.setEnabled(false);}
     			if (suggBtn.isEnabled()) {suggBtn.setEnabled(false);}
     			if (moveBtn.isEnabled())  {moveBtn.setEnabled(false);}
    		 	if (btnStartGame.isEnabled())  {btnStartGame.setEnabled(false);}
@@ -588,6 +692,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 					//Reading DealCards message
 					plmsg = (PlayerMessage) objectInputStream.readObject();
 					if (plmsg.getMessageType().equalsIgnoreCase("DealCards")) {
+						viewImg.setEnabled(true);
 						DealCardMessage dcards = (DealCardMessage) plmsg;
 						setCards(plmsg);
 						lblChatClient.setText(clientName + "("+dcards.getPlayerCharName()+")");
@@ -600,8 +705,6 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 						OtherMessage other = (OtherMessage) plmsg;
 						if ((other.getMessage()) != null) {
 							String otherMsg = other.getMessage();
-							
-
 							if (otherMsg.contains("You can not make suggestion")) { //this should happen only once
 								//String id = otherMsg.substring(3);
 								//int plyrID = Integer.parseInt(id);
@@ -611,15 +714,16 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 								if (turn != null)
 									turnOnOffButtons();
 								}
-
-								
-
+							else if (otherMsg.contains("disprovedCard")) {
+								String disprovedCard = otherMsg.substring(13);
+								cheatSheet.append(disprovedCard +"\n");
+							}							
 							else {
 								turn = other.getPlayerTurn();
 								addToLogs(otherMsg);
 								if (turn != null)
 									turnOnOffButtons();
-								}
+							}
 						}
 					}
 					else if (plmsg.getMessageType().equalsIgnoreCase("SuggestionResponse")) {
@@ -640,6 +744,7 @@ private static Map<String, Integer> idToLocName = new HashMap<String, Integer>()
 						}
 					}
 					else if (plmsg.getMessageType().equalsIgnoreCase("End Game")) {
+						showAccusationCards(plmsg);
 						turn="other";
 						turnOnOffButtons();	
 						gameEnded = true;
