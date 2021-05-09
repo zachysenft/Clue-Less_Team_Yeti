@@ -239,7 +239,6 @@ public class ServerUI extends JFrame implements ActionListener {
 			OtherMessage ms = createOtherMessage(pName + " moved to " + loc);
 			plyr.setLocation(location);
 			broadcastMessage(ms);
-			
 			String charName = plyr.getCharacterName();
 			gui.move(charName, loc);
 		}	
@@ -364,11 +363,12 @@ public class ServerUI extends JFrame implements ActionListener {
 					broadcastMessage(om);
 					
 					//Request the other player to show card
+					//should be while loop
 					SuggestionResponse resp = new SuggestionResponse();
 					resp.setMessage("Do you want to disprove "+ name +"'s Suggestion?");
 					
 					//Next player to disprove suggestion
-					int nextPlyr = (nameToIdMap.get(name)) % players.size(); 
+					int nextPlyr = (nameToIdMap.get(name)) % players.size(); // + 1) % numPlayer; Maping id to name???
 					String nextName = players.get(nextPlyr).getPlayerName();
 					//resp.setPlayerTurn(nextName);
 					numPlayersDisproveSugg++;
@@ -588,6 +588,9 @@ public class ServerUI extends JFrame implements ActionListener {
 								  String disprovedCard =  "disprovedCard " + card.getName();
 								  OtherMessage disprovedCrd = createOtherMessage(disprovedCard);
 								  
+								  //String nxtTurn = getNextTurnAfterSuggestion(); 
+								  //resMsg.setPlayerTurn(nxtTurn);
+								  //sendMessageToAPlayer(suggestionMaker, resMsg);
 								  OtherMessage notifyAll = createOtherMessage("Suggestion was disproved by " + name);
 								  //notifyAll.setPlayerTurn(nxtTurn);
 								  broadcastMessage(notifyAll); //if we need to tell others??

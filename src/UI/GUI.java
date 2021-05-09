@@ -151,7 +151,7 @@ public class GUI extends JPanel {
 			else if (loc.equals( "Billiard-Dining Hallway")) {newx = 330; newy = 255;}
 			else if (loc.equals( "Library-Conservatory Hallway")) {newx = 60; newy = 345;}
 			else if (loc.equals( "Billiard-Ballroom Hallway")) {newx = 240; newy = 345;}
-			else if (loc.equals( "Dining-Kitchen Hallway")) {newx = 420; newy = 435;}
+			else if (loc.equals( "Dining-Kitchen Hallway")) {newx = 420; newy = 345;}
 			else if (loc.equals( "Conservatory-Ballroom Hallway")) {newx = 150; newy = 435;}
 			else if (loc.equals( "Ballroom-Kitchen Hallway")) {newx = 330; newy = 435;}
 		}

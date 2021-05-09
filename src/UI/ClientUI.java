@@ -552,6 +552,9 @@ public class ClientUI extends JFrame implements ActionListener {
 			if (loctype == LocationType.HALLWAY) {
 				suggBtn.setEnabled(false);
 			}
+			else {
+				suggBtn.setEnabled(true);
+			}
 		} 
 		
 		else if (e.getSource() == accusationBtn) {
